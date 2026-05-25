@@ -13,8 +13,8 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      {/* Main image */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-ink-800 border border-bone/5">
+      {/* Main image — white background so product photos render faithfully */}
+      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-white border border-bone/10">
         {images.map((src, i) => (
           <img
             key={src}
@@ -49,7 +49,7 @@ export default function ProductGallery({ product }) {
               key={src}
               onClick={() => setActive(i)}
               aria-label={`View ${i + 1}`}
-              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition ${
+              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition bg-white ${
                 i === active
                   ? 'border-amber'
                   : 'border-bone/10 hover:border-bone/30 opacity-70 hover:opacity-100'
@@ -60,7 +60,6 @@ export default function ProductGallery({ product }) {
                 alt=""
                 aria-hidden
                 className="absolute inset-0 w-full h-full object-contain p-1.5"
-                style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}
               />
             </button>
           ))}
