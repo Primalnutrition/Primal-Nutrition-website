@@ -1,5 +1,6 @@
-/* Product visual — renders the real product photo on a dark masculine
-   backdrop. Falls back to a CSS bottle mock if no image set. */
+/* Product visual — renders the real product photo on a white
+   backdrop so photos with white/light backgrounds render faithfully.
+   Falls back to a CSS bottle mock if no image set. */
 export default function ProductVisual({ product }) {
   if (product.image) return <ImageVisual product={product} />
   return <FallbackVisual product={product} />
@@ -7,7 +8,7 @@ export default function ProductVisual({ product }) {
 
 function ImageVisual({ product }) {
   return (
-    <div className="relative w-full aspect-square rounded-2xl bg-ink-800 border border-bone/5 overflow-hidden">
+    <div className="relative w-full aspect-square rounded-2xl bg-white border border-bone/5 overflow-hidden">
       {/* Raw image — no filters, no scale, full container, never cropped */}
       <img
         src={product.image}
