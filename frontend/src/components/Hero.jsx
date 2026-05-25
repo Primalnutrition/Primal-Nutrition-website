@@ -92,7 +92,7 @@ export default function Hero() {
               </div>
 
               {/* Trust micro-stats */}
-              <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-bone/60 animate-fade-up">
+              <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-bone/60 animate-fade-up pb-6">
                 <Stat label="Verified buyers" valueNode={<><CountUp end={12400} duration={2200} />+</>} />
                 <Stat label="Avg. rating" valueNode={<><CountUp end={4.8} decimals={1} duration={1600} /> ★</>} />
                 <Stat label="Lab-tested" value="3rd Party" />
@@ -101,7 +101,7 @@ export default function Hero() {
             </div>
 
             {/* Right: product showcase */}
-            <div className="lg:col-span-5 relative z-10 flex justify-center lg:justify-end animate-fade-up">
+            <div className="lg:col-span-5 relative z-10 flex justify-center lg:justify-end lg:translate-x-12 animate-fade-up">
               <Bottle3D />
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function Hero() {
         </button>
 
         {/* Dot indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30">
           {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
             <button
               key={i}
@@ -204,7 +204,7 @@ export default function Hero() {
 
 function Stat({ label, value, valueNode }) {
   return (
-    <div className="flex items-baseline gap-2">
+    <div className="flex items-baseline gap-2 whitespace-nowrap">
       <span className="font-stencil text-gradient-primal text-2xl leading-none">{valueNode || value}</span>
       <span className="text-[11px] uppercase tracking-widest text-bone/50">{label}</span>
     </div>
@@ -285,7 +285,7 @@ function Bottle3D() {
         ✓ FSSAI Licensed
       </FloatingChip>
       <FloatingChip
-        positionClass="top-32 -right-2"
+        positionClass="top-32 right-12"
         tilt={tilt}
         offset={-CHIP_OFFSET * 1.3}
         delay="1s"
