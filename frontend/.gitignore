@@ -1,0 +1,24 @@
+node_modules/
+.env
+.env.local
+.env.production
+dist/
+.DS_Store
+*.log
+.netlify/
+
+# Source design assets in root only — production assets in /public/ are kept
+/*.mp4
+/*.zip
+/*.docx
+/*.pdf
+/*.jpeg
+/*.jpg
+
+# Brand source backups (production assets live in /public after build)
+/_brand/
+/_frames/
+/_originals_backup/
+/_founder.txt
+/_changes.txt
+/color-probe/

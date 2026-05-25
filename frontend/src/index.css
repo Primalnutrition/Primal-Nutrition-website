@@ -1,0 +1,347 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   THEME PALETTES — selectable via [data-theme] on <html>
+   All colors are space-separated RGB triplets so they work
+   with Tailwind's rgb(var(--c-x) / <alpha-value>) syntax.
+   ========================================================= */
+
+/* OPTION A — PRIMAL BRAND (sampled directly from the T-Rex label PDF)
+   Brand red: #EC1E27 — confirmed dominant in 10,949 sampled label pixels.
+   Brand blue: #2A419B — sampled from the Primal logo on the label.        */
+:root,
+[data-theme='a'] {
+  --c-ink: 10 10 10;
+  --c-ink-800: 20 20 20;
+  --c-ink-700: 28 28 28;
+  --c-ink-600: 38 38 38;
+
+  --c-bone: 245 241 232;
+  --c-bone-dim: 216 210 194;
+  --c-bone-dark: 163 158 145;
+
+  /* "amber" token = exact label brand red (#EC1E27) for solid uses */
+  --c-amber: 236 30 39;           /* #EC1E27 — LABEL CANONICAL */
+  --c-amber-light: 243 70 79;
+  --c-amber-glow: 248 110 118;
+  --c-amber-dark: 165 18 24;
+
+  /* Brand gradient — fire/blood, no purple. Masculine industrial.
+     cherry → label red → deep maroon → near-ink black */
+  --c-grad-1: 243 58 69;          /* #F33A45 cherry highlight */
+  --c-grad-2: 236 30 39;          /* #EC1E27 EXACT BRAND RED */
+  --c-grad-3: 139 15 24;          /* #8B0F18 deep maroon */
+  --c-grad-4: 30 8 10;            /* #1E080A near-ink blood */
+
+  --c-forest: 42 65 155;           /* #2A419B EXACT BRAND BLUE */
+  --c-rust: 200 24 36;
+}
+
+/* OPTION B — Clinical Premium (dark variant of warm-white concept) */
+[data-theme='b'] {
+  --c-ink: 12 17 22;
+  --c-ink-800: 18 24 30;
+  --c-ink-700: 26 33 41;
+  --c-ink-600: 36 45 56;
+
+  --c-bone: 230 234 240;
+  --c-bone-dim: 190 196 207;
+  --c-bone-dark: 130 138 150;
+
+  --c-amber: 70 122 130;
+  --c-amber-light: 110 165 170;
+  --c-amber-glow: 150 190 195;
+  --c-amber-dark: 35 80 88;
+
+  /* Theme B gradient = teal sweep (deepened to feel less pastel) */
+  --c-grad-1: 110 165 170;
+  --c-grad-2: 70 122 130;
+  --c-grad-3: 35 80 88;
+  --c-grad-4: 12 17 22;
+
+  --c-forest: 19 78 74;
+  --c-rust: 80 100 120;
+}
+
+/* OPTION C — Heritage Gold (amber + forest test variant) */
+[data-theme='c'] {
+  --c-ink: 10 10 10;
+  --c-ink-800: 20 20 20;
+  --c-ink-700: 28 28 28;
+  --c-ink-600: 38 38 38;
+
+  --c-bone: 245 241 232;
+  --c-bone-dim: 216 210 194;
+  --c-bone-dark: 163 158 145;
+
+  --c-amber: 200 146 61;
+  --c-amber-light: 228 183 101;
+  --c-amber-glow: 244 211 134;
+  --c-amber-dark: 139 102 32;
+
+  /* Theme C gradient = amber sweep (deepened to ink for masculine fail-off) */
+  --c-grad-1: 244 211 134;
+  --c-grad-2: 228 183 101;
+  --c-grad-3: 139 102 32;
+  --c-grad-4: 18 13 8;
+
+  --c-forest: 31 58 43;
+  --c-rust: 160 66 28;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(var(--c-ink));
+  }
+  body {
+    background-color: rgb(var(--c-ink));
+    color: rgb(var(--c-bone));
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  ::selection {
+    background: rgb(var(--c-amber));
+    color: rgb(var(--c-ink));
+  }
+  /* Bebas Neue has no true italic — kill auto-italic on display classes
+     so masculine all-caps reads as it should */
+  .font-display.italic,
+  .font-stencil.italic { font-style: normal; }
+  /* Hero/heading display defaults — tightened tracking, locked uppercase */
+  h1, h2, h3, .font-display { letter-spacing: 0.005em; }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto max-w-7xl px-6 lg:px-10;
+  }
+  .eyebrow {
+    @apply text-xs uppercase tracking-[0.25em] font-medium text-amber;
+  }
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 text-bone font-semibold px-7 py-4 rounded-full transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-100;
+    background: linear-gradient(
+      120deg,
+      rgb(var(--c-grad-1)) 0%,
+      rgb(var(--c-grad-2)) 30%,
+      rgb(var(--c-grad-3)) 65%,
+      rgb(var(--c-grad-4)) 100%
+    );
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    box-shadow: 0 10px 40px -10px rgb(var(--c-grad-3) / 0.55);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      120deg,
+      rgb(var(--c-grad-1)),
+      rgb(var(--c-grad-2)) 30%,
+      rgb(var(--c-grad-3)) 65%,
+      rgb(var(--c-grad-4))
+    );
+    background-size: 220% 220%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    filter: blur(10px);
+    animation: gradientX 6s ease-in-out infinite;
+  }
+  .btn-primary:hover::before { opacity: 0.75; }
+  .btn-primary:hover {
+    background-position: 100% 50%;
+    box-shadow:
+      0 18px 60px -12px rgb(var(--c-grad-3) / 0.6),
+      0 0 0 4px rgb(var(--c-grad-2) / 0.12);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-bone/20 text-bone font-medium px-7 py-4 rounded-full transition-all duration-300 hover:border-amber hover:text-amber hover:bg-amber/5 hover:-translate-y-0.5;
+  }
+  .card-lift {
+    @apply transition-all duration-500;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-lift:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 30px 60px -28px rgb(var(--c-amber) / 0.25),
+      0 0 0 1px rgb(var(--c-amber) / 0.2);
+  }
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+/* Themed gradient backgrounds */
+.gradient-amber {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgb(var(--c-amber-light) / 0.18), transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgb(var(--c-rust) / 0.12), transparent 50%);
+}
+
+.hairline {
+  border-top: 1px solid rgb(var(--c-bone) / 0.08);
+}
+
+/* ----- Scroll reveal system -------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-reveal][data-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children */
+[data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-reveal-stagger][data-revealed] > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal-stagger][data-revealed] > *:nth-child(1)  { transition-delay: 0ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(2)  { transition-delay: 70ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(3)  { transition-delay: 140ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(4)  { transition-delay: 210ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(5)  { transition-delay: 280ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(6)  { transition-delay: 350ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(7)  { transition-delay: 420ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(8)  { transition-delay: 490ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(9)  { transition-delay: 560ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(10) { transition-delay: 630ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(11) { transition-delay: 700ms; }
+[data-reveal-stagger][data-revealed] > *:nth-child(12) { transition-delay: 770ms; }
+
+/* ----- Marquee --------------------------------------------------------- */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee-mask:hover .marquee-track { animation-play-state: paused; }
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+}
+
+/* ----- Animated gradient text — uses brand gradient stops ------------- */
+.text-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgb(var(--c-grad-1)) 0%,
+    rgb(var(--c-grad-2)) 25%,
+    rgb(var(--c-grad-3)) 60%,
+    rgb(var(--c-grad-4)) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientX 7s ease-in-out infinite;
+}
+
+/* ----- Brand gradient utilities --------------------------------------- */
+.bg-gradient-primal {
+  background: linear-gradient(
+    120deg,
+    rgb(var(--c-grad-1)) 0%,
+    rgb(var(--c-grad-2)) 30%,
+    rgb(var(--c-grad-3)) 65%,
+    rgb(var(--c-grad-4)) 100%
+  );
+}
+.text-gradient-primal {
+  background: linear-gradient(
+    120deg,
+    rgb(var(--c-grad-1)) 0%,
+    rgb(var(--c-grad-2)) 30%,
+    rgb(var(--c-grad-3)) 65%,
+    rgb(var(--c-grad-4)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.border-gradient-primal {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgb(var(--c-ink-800)), rgb(var(--c-ink-800))) padding-box,
+    linear-gradient(120deg, rgb(var(--c-grad-1)), rgb(var(--c-grad-3)) 50%, rgb(var(--c-grad-4))) border-box;
+}
+
+/* ----- 3D tilt utility ------------------------------------------------- */
+.tilt-target {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tilt-target:hover {
+  transform: perspective(800px) rotateX(2deg) rotateY(-3deg) translateY(-4px);
+}
+
+/* ----- Pulse ring for featured cards — uses brand gradient ------------ */
+.glow-ring {
+  position: relative;
+}
+.glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgb(var(--c-grad-2) / 0.6),
+    rgb(var(--c-grad-3) / 0.7),
+    rgb(var(--c-grad-4) / 0.6),
+    transparent
+  );
+  background-size: 250% 250%;
+  -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+  mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradientX 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ----- Accessibility: reduced motion ---------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal],
+  [data-reveal-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -6,3 +6,18 @@ node_modules/
 nohup.out
 dist/
 .DS_Store
+.netlify/
+
+# Frontend source design assets (root-level only — production assets in /public/ kept)
+/frontend/*.mp4
+/frontend/*.zip
+/frontend/*.docx
+/frontend/*.pdf
+/frontend/*.jpeg
+/frontend/*.jpg
+/frontend/_brand/
+/frontend/_frames/
+/frontend/_originals_backup/
+/frontend/_founder.txt
+/frontend/_changes.txt
+/frontend/color-probe/
