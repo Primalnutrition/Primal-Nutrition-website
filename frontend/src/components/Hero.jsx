@@ -211,32 +211,12 @@ function Stat({ label, value, valueNode }) {
   )
 }
 
-/* Interactive 3D product viewer — uses 6 turntable frames as a true 360 rotator
-   driven by cursor X-position. Cursor Y-position adds subtle 3D tilt. Glows
-   parallax for depth. Awwwards-style. */
-const BOTTLE_FRAMES = [
-  '/products/trex-liquid-01.png',
-  '/products/trex-liquid-02.png',
-  '/products/trex-liquid-03.png',
-  '/products/trex-liquid-04.png',
-  '/products/trex-liquid-05.png',
-  '/products/trex-liquid-06.png',
-]
-const FRAME_COUNT = BOTTLE_FRAMES.length
-
+/* Interactive product showcase — mouse-tracking 3D tilt, no dark backdrop,
+   bottle floats against the page gradient. Awwwards-style. */
 function Bottle3D() {
   const wrapRef = useRef(null)
   const rafRef = useRef(null)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
-  const [frame, setFrame] = useState(0)
-
-  // Preload every frame once so rotation is instant (no flicker on first sweep)
-  useEffect(() => {
-    BOTTLE_FRAMES.forEach((src) => {
-      const img = new Image()
-      img.src = src
-    })
-  }, [])
 
   const handleMove = (e) => {
     if (rafRef.current) return
@@ -247,29 +227,16 @@ function Bottle3D() {
       const r = el.getBoundingClientRect()
       const x = (e.clientX - (r.left + r.width / 2)) / (r.width / 2)
       const y = (e.clientY - (r.top + r.height / 2)) / (r.height / 2)
-      const clampedX = Math.max(-1, Math.min(1, x))
-      const clampedY = Math.max(-1, Math.min(1, y))
-      setTilt({ x: clampedX, y: clampedY })
-      // Map cursor X from [-1, 1] to a frame index in [0, FRAME_COUNT - 1].
-      // Left side = first frame, right side = last frame — like spinning a real bottle.
-      const idx = Math.round(((clampedX + 1) / 2) * (FRAME_COUNT - 1))
-      setFrame(idx)
+      setTilt({
+        x: Math.max(-1, Math.min(1, x)),
+        y: Math.max(-1, Math.min(1, y)),
+      })
     })
   }
 
-  const handleLeave = () => {
-    setTilt({ x: 0, y: 0 })
-    setFrame(Math.floor(FRAME_COUNT / 2))   // resting frame = mid-rotation
-  }
+  const handleLeave = () => setTilt({ x: 0, y: 0 })
 
-  // Touch support so mobile users can spin too
-  const handleTouch = (e) => {
-    const t = e.touches?.[0]
-    if (!t) return
-    handleMove({ clientX: t.clientX, clientY: t.clientY })
-  }
-
-  const MAX_TILT = 12
+  const MAX_TILT = 14
   const GLOW_OFFSET = 22
   const CHIP_OFFSET = 24
 
@@ -278,9 +245,7 @@ function Bottle3D() {
       ref={wrapRef}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      onTouchMove={handleTouch}
-      onTouchEnd={handleLeave}
-      className="relative w-[340px] sm:w-[440px] lg:w-[560px] aspect-[3/4] cursor-grab active:cursor-grabbing"
+      className="relative w-[340px] sm:w-[440px] lg:w-[560px] aspect-[3/4]"
       style={{ perspective: '1400px' }}
     >
       {/* Ambient glow layers — drift opposite cursor for parallax depth */}
@@ -293,37 +258,21 @@ function Bottle3D() {
         style={{ transform: `translate3d(${tilt.x * GLOW_OFFSET * 1.4}px, ${tilt.y * GLOW_OFFSET * 1.4}px, 0)` }}
       />
 
-      {/* The bottle — true 3D rotation via frame switching + subtle vertical tilt */}
+      {/* The bottle — bare PNG, tilts in 3D */}
       <div
         className="relative w-full h-full transition-transform duration-150 ease-out will-change-transform"
         style={{
-          transform: `rotateX(${-tilt.y * MAX_TILT}deg) translateZ(40px)`,
+          transform: `rotateY(${tilt.x * MAX_TILT}deg) rotateX(${-tilt.y * MAX_TILT}deg) translateZ(40px)`,
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Stack all 6 frames; only the active one is visible (instant swap, no flicker because all preloaded) */}
-        {BOTTLE_FRAMES.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt={`T-Rex 500ml — view ${i + 1}`}
-            className="absolute inset-0 w-full h-full object-contain select-none drop-shadow-[0_40px_60px_rgba(214,168,90,0.35)]"
-            style={{
-              opacity: i === frame ? 1 : 0,
-              transition: 'opacity 80ms linear',
-            }}
-            loading={i === 0 ? 'eager' : 'lazy'}
-            draggable={false}
-          />
-        ))}
-
-        {/* Rotation hint — fades out on hover */}
-        <div
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.28em] text-bone/50 font-brand pointer-events-none transition-opacity duration-300"
-          style={{ opacity: tilt.x === 0 && tilt.y === 0 ? 1 : 0 }}
-        >
-          ← drag to rotate →
-        </div>
+        <img
+          src="/products/trex-liquid-01.png"
+          alt="T-Rex 500ml"
+          className="w-full h-full object-contain select-none drop-shadow-[0_40px_60px_rgba(214,168,90,0.35)]"
+          loading="eager"
+          draggable={false}
+        />
       </div>
 
       {/* Floating chips — parallax opposite the bottle (parallax depth) */}
