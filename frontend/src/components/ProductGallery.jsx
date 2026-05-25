@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 
 /* PDP gallery — main image + thumbnail strip below.
-   Black background matches the dark backgrounds of product photos. */
+   Black background matches product photo backgrounds.
+   object-contain shows every image in full — nothing cropped, nothing overlaid. */
 export default function ProductGallery({ product }) {
   const images = product.gallery && product.gallery.length > 0
     ? product.gallery
@@ -13,8 +14,8 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      {/* Main image */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-black">
+      {/* Main image — no overlays, no filters, object-contain shows full image */}
+      <div className="relative w-full aspect-square rounded-2xl bg-black overflow-hidden">
         {images.map((src, i) => (
           <img
             key={src}
