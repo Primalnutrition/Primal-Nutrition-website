@@ -9,7 +9,7 @@ export default function ProductVisual({ product }) {
 function ImageVisual({ product }) {
   return (
     <div className="relative w-full aspect-square rounded-2xl bg-black overflow-hidden">
-      {/* Raw image — no filters, no overlays, full container */}
+      {/* Full image, no overlays, no filters — object-contain shows entire image */}
       <img
         src={product.image}
         alt={product.name}
