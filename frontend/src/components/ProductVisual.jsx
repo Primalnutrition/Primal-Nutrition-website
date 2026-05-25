@@ -7,9 +7,7 @@ export default function ProductVisual({ product }) {
 
 function ImageVisual({ product }) {
   return (
-    <div className="relative w-full aspect-square rounded-2xl bg-ink-800 border border-bone/5 overflow-visible">
-      <div className="absolute inset-0 bg-ink-800 rounded-2xl" />
-
+    <div className="relative w-full aspect-square rounded-2xl bg-ink-800 border border-bone/5 overflow-hidden">
       {/* Raw image — no filters, no scale, full container, never cropped */}
       <img
         src={product.image}
