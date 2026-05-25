@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 /* PDP gallery — main image + thumbnail strip below.
-   Falls back to single-image ProductVisual styling if no gallery. */
+   Black background matches the dark backgrounds of product photos. */
 export default function ProductGallery({ product }) {
   const images = product.gallery && product.gallery.length > 0
     ? product.gallery
@@ -13,8 +13,8 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      {/* Main image — white background so product photos render faithfully */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-white border border-bone/10">
+      {/* Main image */}
+      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-black">
         {images.map((src, i) => (
           <img
             key={src}
@@ -49,7 +49,7 @@ export default function ProductGallery({ product }) {
               key={src}
               onClick={() => setActive(i)}
               aria-label={`View ${i + 1}`}
-              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition bg-white ${
+              className={`relative aspect-square rounded-lg overflow-hidden border-2 transition bg-black ${
                 i === active
                   ? 'border-amber'
                   : 'border-bone/10 hover:border-bone/30 opacity-70 hover:opacity-100'
@@ -59,7 +59,7 @@ export default function ProductGallery({ product }) {
                 src={src}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 w-full h-full object-contain p-1.5"
+                className="absolute inset-0 w-full h-full object-contain p-1"
               />
             </button>
           ))}
