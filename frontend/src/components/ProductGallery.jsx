@@ -15,8 +15,6 @@ export default function ProductGallery({ product }) {
     <div>
       {/* Main image */}
       <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-ink-800 border border-bone/5">
-        <div className="absolute inset-0 bg-ink-800" />
-
         {images.map((src, i) => (
           <img
             key={src}
@@ -31,13 +29,13 @@ export default function ProductGallery({ product }) {
         ))}
 
         {/* Category chip */}
-        <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.2em] text-bone bg-ink/80 backdrop-blur-md rounded-full px-2.5 py-1 font-brand font-semibold border border-bone/10">
+        <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.2em] text-bone bg-ink/80 backdrop-blur-md rounded-full px-2.5 py-1 font-brand font-semibold border border-bone/10 z-10">
           {product.categoryLabel}
         </div>
 
         {/* Badge */}
         {product.badge && (
-          <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold">
+          <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold z-10">
             {product.badge}
           </div>
         )}
@@ -57,7 +55,6 @@ export default function ProductGallery({ product }) {
                   : 'border-bone/10 hover:border-bone/30 opacity-70 hover:opacity-100'
               }`}
             >
-              <div className="absolute inset-0 bg-ink-800" />
               <img
                 src={src}
                 alt=""
