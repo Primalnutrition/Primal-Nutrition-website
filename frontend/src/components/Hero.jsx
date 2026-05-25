@@ -1,8 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CountUp from './CountUp.jsx'
-
-// Lazy-load the 3D scene so the ~250kb three.js bundle doesn't block first paint
-const Bottle3DScene = lazy(() => import('./Bottle3DScene.jsx'))
 
 const SLIDE_COUNT = 2
 
@@ -261,22 +258,21 @@ function Bottle3D() {
         style={{ transform: `translate3d(${tilt.x * GLOW_OFFSET * 1.4}px, ${tilt.y * GLOW_OFFSET * 1.4}px, 0)` }}
       />
 
-      {/* The bottle — true 3D scene built in Three.js. PNG shows while the
-          3D bundle loads on first paint, then it gets swapped in. */}
-      <div className="relative w-full h-full">
-        <Suspense
-          fallback={
-            <img
-              src="/products/trex-liquid-01.png"
-              alt="T-Rex 500ml"
-              className="w-full h-full object-contain select-none drop-shadow-[0_40px_60px_rgba(214,168,90,0.35)]"
-              loading="eager"
-              draggable={false}
-            />
-          }
-        >
-          <Bottle3DScene />
-        </Suspense>
+      {/* The bottle — bare PNG, tilts in 3D */}
+      <div
+        className="relative w-full h-full transition-transform duration-150 ease-out will-change-transform"
+        style={{
+          transform: `rotateY(${tilt.x * MAX_TILT}deg) rotateX(${-tilt.y * MAX_TILT}deg) translateZ(40px)`,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        <img
+          src="/products/trex-liquid-01.png"
+          alt="T-Rex 500ml"
+          className="w-full h-full object-contain select-none drop-shadow-[0_40px_60px_rgba(214,168,90,0.35)]"
+          loading="eager"
+          draggable={false}
+        />
       </div>
 
       {/* Floating chips — parallax opposite the bottle (parallax depth) */}
