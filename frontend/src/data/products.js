@@ -87,7 +87,7 @@ export const products = [
         cycle: 'Daily for sustained benefit. Best results across 8–12 weeks of consistent use.',
       },
       whoFor: [
-        'Men aged 32–58',
+        'High performance men',
         'Lifters, athletes, executives',
         'Reduced energy, drive, recovery',
         'Want a natural path before pharmaceuticals',
