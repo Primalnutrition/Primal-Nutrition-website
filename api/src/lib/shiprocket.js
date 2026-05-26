@@ -69,11 +69,12 @@ async function shiprocketFetch(path, options = {}) {
 
 /**
  * Check serviceability for a pincode.
- * @param {{ pickupPincode: string, deliveryPincode: string, weight: number }} params
+ * @param {{ pickupPincode: string, deliveryPincode: string, weight: number, cod?: boolean }} params
  */
-export async function checkServiceability({ pickupPincode, deliveryPincode, weight }) {
+export async function checkServiceability({ pickupPincode, deliveryPincode, weight, cod = false }) {
+  const codFlag = cod ? 1 : 0
   return shiprocketFetch(
-    `/courier/serviceability/?pickup_postcode=${pickupPincode}&delivery_postcode=${deliveryPincode}&weight=${weight}&cod=0`
+    `/courier/serviceability/?pickup_postcode=${pickupPincode}&delivery_postcode=${deliveryPincode}&weight=${weight}&cod=${codFlag}`
   )
 }
 
@@ -85,6 +86,34 @@ export async function createShipment(orderPayload) {
   return shiprocketFetch('/orders/create/adhoc', {
     method: 'POST',
     body: JSON.stringify(orderPayload),
+  })
+}
+
+/**
+ * Assign a courier + generate AWB for a shipment.
+ * Without this, the order sits as "NEW" in Shiprocket and never actually ships.
+ *
+ * @param {{ shipmentId: string|number, courierId?: string|number }} params
+ *   shipmentId — returned by createShipment
+ *   courierId — optional; omit to let Shiprocket pick the recommended courier
+ */
+export async function assignAwb({ shipmentId, courierId }) {
+  const body = { shipment_id: Number(shipmentId) }
+  if (courierId) body.courier_id = Number(courierId)
+  return shiprocketFetch('/courier/assign/awb', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
+/**
+ * Schedule pickup for a shipment (post-AWB).
+ * @param {{ shipmentId: string|number }} params
+ */
+export async function requestPickup({ shipmentId }) {
+  return shiprocketFetch('/courier/generate/pickup', {
+    method: 'POST',
+    body: JSON.stringify({ shipment_id: [Number(shipmentId)] }),
   })
 }
 

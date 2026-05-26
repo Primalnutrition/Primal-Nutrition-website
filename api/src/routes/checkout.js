@@ -17,6 +17,7 @@ import {
 import {
   checkServiceability,
   createShipment,
+  assignAwb,
 } from '../lib/shiprocket.js'
 import {
   createDraftOrder,
@@ -62,6 +63,8 @@ const CreateOrderSchema = z.object({
   items: z.array(CartItemSchema).min(1).max(50),
   couponCode: z.string().max(30).optional(),
 })
+
+const CreateCodOrderSchema = CreateOrderSchema
 
 const VerifyPaymentSchema = z.object({
   razorpayOrderId: z.string().min(1),
@@ -217,13 +220,67 @@ router.post('/verify-payment', async (req, res, next) => {
   }
 })
 
+/**
+ * POST /api/checkout/create-cod-order
+ *
+ * Cash-on-Delivery flow — skips Razorpay entirely.
+ * Creates a draft order in our DB (payment_method='cod', status stays 'pending'
+ * until shipped), then immediately pushes it to Shiprocket as a COD shipment.
+ *
+ * Returns the order confirmation directly — no payment modal to open.
+ */
+router.post('/create-cod-order', async (req, res, next) => {
+  const result = CreateCodOrderSchema.safeParse(req.body)
+  if (!result.success) {
+    return res.status(422).json({ error: 'VALIDATION_ERROR', issues: result.error.issues })
+  }
+
+  try {
+    const draft = await createDraftOrder({ ...result.data, paymentMethod: 'cod' })
+
+    logger.info(
+      { internalOrderId: draft.internalOrderId, total: draft.totalRupees },
+      'COD order created — sending to Shiprocket'
+    )
+
+    // Fire shipment creation now (no payment step). Surface failures so the
+    // user sees "Shiprocket couldn't accept this order" rather than a silent
+    // pending state.
+    try {
+      await createShipmentForOrder(draft.internalOrderId, { paymentMethod: 'COD' })
+    } catch (shipErr) {
+      logger.error({ err: shipErr.message, internalOrderId: draft.internalOrderId }, 'COD shipment creation failed')
+      return res.status(502).json({
+        error: 'SHIPMENT_FAILED',
+        message: shipErr.message,
+        internalOrderId: draft.internalOrderId,
+        orderNumber: draft.orderNumber,
+      })
+    }
+
+    return res.status(201).json({
+      internalOrderId: draft.internalOrderId,
+      orderNumber: draft.orderNumber,
+      total: draft.totalRupees,
+      paymentMethod: 'cod',
+    })
+  } catch (err) {
+    logger.error({ err: err.message }, 'create-cod-order failed')
+    return next(err)
+  }
+})
+
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
 /**
- * Build the Shiprocket payload from a paid order and create the shipment.
- * Stores the returned Shiprocket order id back on the row.
+ * Build the Shiprocket payload from an order and create the shipment.
+ * Then assigns an AWB + courier so the order actually ships — without this
+ * step the order sits as "NEW" in Shiprocket and never moves.
+ *
+ * @param {string} internalOrderId
+ * @param {{ paymentMethod?: 'Prepaid' | 'COD' }} opts
  */
-async function createShipmentForOrder(internalOrderId) {
+async function createShipmentForOrder(internalOrderId, { paymentMethod = 'Prepaid' } = {}) {
   if (!config.shiprocket.email || !config.shiprocket.password) {
     logger.warn('Shiprocket not configured — skipping shipment creation')
     return
@@ -237,6 +294,7 @@ async function createShipmentForOrder(internalOrderId) {
   const addr = order.shipping_address
   const customer = order.customer
   const [firstName, ...rest] = (customer.name ?? 'Customer').split(' ')
+  const isCOD = paymentMethod === 'COD'
 
   const payload = {
     order_id: order.order_number,
@@ -259,7 +317,7 @@ async function createShipmentForOrder(internalOrderId) {
       units: i.qty,
       selling_price: Number(i.unit_price),
     })),
-    payment_method: 'Prepaid',
+    payment_method: paymentMethod,
     sub_total: Number(order.subtotal),
     length: 15,
     breadth: 10,
@@ -267,14 +325,44 @@ async function createShipmentForOrder(internalOrderId) {
     weight: Math.max(0.5, order.order_items.reduce((sum, i) => sum + i.qty * 0.5, 0)),
   }
 
+  if (isCOD) {
+    payload.cod_collectable_amount = Number(order.total)
+  }
+
   const result = await createShipment(payload)
+  const shiprocketOrderId = String(result.order_id ?? result.shiprocket_order_id ?? '')
+  const shipmentId = result.shipment_id ?? result.shipment?.shipment_id
+
   await applyShipmentDetails(internalOrderId, {
-    shiprocketOrderId: String(result.order_id ?? result.shiprocket_order_id ?? ''),
+    shiprocketOrderId,
     awbCode: result.awb_code ?? null,
     courierName: result.courier_name ?? null,
   })
 
-  logger.info({ internalOrderId, shiprocketOrderId: result.order_id }, 'Shipment created in Shiprocket')
+  logger.info({ internalOrderId, shiprocketOrderId, shipmentId }, 'Shipment created in Shiprocket')
+
+  // Assign AWB so the order actually books a courier and ships.
+  // Without this, the order sits in "NEW" in the Shiprocket dashboard
+  // and looks like a test / unplaced order.
+  if (!shipmentId) {
+    logger.warn({ internalOrderId, shiprocketOrderId }, 'No shipment_id from Shiprocket — cannot assign AWB')
+    return
+  }
+
+  try {
+    const awbResult = await assignAwb({ shipmentId })
+    const awbData = awbResult?.response?.data ?? awbResult?.data ?? awbResult
+    await applyShipmentDetails(internalOrderId, {
+      awbCode: awbData?.awb_code ?? null,
+      courierName: awbData?.courier_name ?? null,
+      status: 'shipped',
+      shippedAt: new Date().toISOString(),
+    })
+    logger.info({ internalOrderId, awbCode: awbData?.awb_code, courier: awbData?.courier_name }, 'AWB assigned — order is now placed for shipping')
+  } catch (awbErr) {
+    logger.error({ err: awbErr.message, internalOrderId, shipmentId }, 'AWB assignment failed — order is in Shiprocket but not yet booked')
+    throw awbErr
+  }
 }
 
 export default router

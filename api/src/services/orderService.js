@@ -32,10 +32,11 @@ function generateOrderNumber() {
  *   customer: { name: string, email: string, phone: string },
  *   address: { fullName: string, phone: string, line1: string, line2?: string, city: string, state: string, pincode: string, country?: string },
  *   items: Array<{ productId: string, variantId: string, qty: number }>,
- *   couponCode?: string
+ *   couponCode?: string,
+ *   paymentMethod?: 'razorpay' | 'cod'
  * }} input
  */
-export async function createDraftOrder({ customer, address, items }) {
+export async function createDraftOrder({ customer, address, items, paymentMethod = 'razorpay' }) {
   const supabase = requireSupabase()
 
   // 1. Resolve every variant from DB to get authoritative pricing
@@ -119,6 +120,7 @@ export async function createDraftOrder({ customer, address, items }) {
       tax,
       total,
       status: 'pending',
+      payment_method: paymentMethod,
     })
     .select('id, order_number, total')
     .single()
