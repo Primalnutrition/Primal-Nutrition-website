@@ -211,182 +211,138 @@ function Stat({ label, value, valueNode }) {
   )
 }
 
-/* Interactive product showcase — Awwwards-style cinematic hero:
-   - radial key-light halo behind the bottle
-   - soft elliptical contact shadow under the base
-   - floor reflection (vertically-flipped + masked fade)
-   - drifting amber dust particles
-   - gentle "breath" float animation
-   - cursor-tracked 3D tilt + parallax glows */
+/* Clean product showcase — bottle rendered at native dimensions, no animations.
+   All motion lives in the three floating chips: orbital drift + shimmer sweep
+   + amber accent pulse + magnetic cursor attraction. */
 function Bottle3D() {
   const wrapRef = useRef(null)
   const rafRef = useRef(null)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const chipRefs = useRef({})
+  const [magnetic, setMagnetic] = useState({})
 
   const handleMove = (e) => {
     if (rafRef.current) return
     rafRef.current = requestAnimationFrame(() => {
       rafRef.current = null
-      const el = wrapRef.current
-      if (!el) return
-      const r = el.getBoundingClientRect()
-      const x = (e.clientX - (r.left + r.width / 2)) / (r.width / 2)
-      const y = (e.clientY - (r.top + r.height / 2)) / (r.height / 2)
-      setTilt({
-        x: Math.max(-1, Math.min(1, x)),
-        y: Math.max(-1, Math.min(1, y)),
-      })
+      const next = {}
+      for (const [key, el] of Object.entries(chipRefs.current)) {
+        if (!el) continue
+        const r = el.getBoundingClientRect()
+        const cx = r.left + r.width / 2
+        const cy = r.top + r.height / 2
+        const dx = e.clientX - cx
+        const dy = e.clientY - cy
+        const dist = Math.hypot(dx, dy)
+        const RANGE = 180
+        if (dist < RANGE) {
+          const pull = (RANGE - dist) / RANGE  // 0..1
+          next[key] = {
+            x: dx * pull * 0.25,
+            y: dy * pull * 0.25,
+            scale: 1 + pull * 0.08,
+            glow: 0.4 + pull * 0.6,
+          }
+        } else {
+          next[key] = { x: 0, y: 0, scale: 1, glow: 0.35 }
+        }
+      }
+      setMagnetic(next)
     })
   }
 
-  const handleLeave = () => setTilt({ x: 0, y: 0 })
-
-  const MAX_TILT = 10
-  const GLOW_OFFSET = 18
+  const handleLeave = () =>
+    setMagnetic((prev) => {
+      const reset = {}
+      for (const k of Object.keys(prev)) reset[k] = { x: 0, y: 0, scale: 1, glow: 0.35 }
+      return reset
+    })
 
   return (
     <div
       ref={wrapRef}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className="relative w-[300px] sm:w-[380px] lg:w-[460px] aspect-[3/4.2]"
-      style={{ perspective: '1400px' }}
+      className="relative w-full max-w-[520px]"
     >
-      {/* Cinematic radial key-light — soft amber spotlight halo behind bottle */}
-      <div
-        className="absolute -inset-32 pointer-events-none transition-transform duration-500 ease-out"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 55% at 50% 40%, rgba(214,168,90,0.36), rgba(214,168,90,0.0) 65%)',
-          transform: `translate3d(${tilt.x * GLOW_OFFSET}px, ${tilt.y * GLOW_OFFSET}px, 0)`,
-        }}
+      {/* Bottle — natural dimensions, no animations, just a soft drop shadow */}
+      <img
+        src="/products/trex-liquid-01.png"
+        alt="T-Rex 500ml"
+        className="w-full h-auto block select-none drop-shadow-[0_30px_40px_rgba(0,0,0,0.4)]"
+        loading="eager"
+        draggable={false}
       />
 
-      {/* Wider ambient warmth that breathes */}
-      <div className="absolute -inset-20 bg-rust/12 blur-[160px] rounded-full pointer-events-none animate-pulse-glow" />
-
-      {/* Drifting Ayurvedic dust particles */}
-      <BottleParticles />
-
-      {/* Bottle + reflection stage — tilts in 3D as cursor moves */}
-      <div
-        className="relative w-full h-full transition-transform duration-200 ease-out will-change-transform"
-        style={{
-          transform: `rotateY(${tilt.x * MAX_TILT}deg) rotateX(${-tilt.y * MAX_TILT}deg) translateZ(40px)`,
-          transformStyle: 'preserve-3d',
-        }}
-      >
-        {/* Soft elliptical contact shadow under the bottle base */}
-        <div className="absolute left-1/2 bottom-[14%] -translate-x-1/2 w-3/5 h-5 rounded-full bg-black/55 blur-2xl pointer-events-none" />
-
-        {/* Bottle image — fills ~78% of stage height, gently breathes */}
-        <div className="absolute inset-0 flex items-end justify-center pb-[14%] animate-float-slow">
-          <img
-            src="/products/trex-liquid-01.png"
-            alt="T-Rex 500ml"
-            className="w-auto h-[78%] object-contain select-none drop-shadow-[0_36px_40px_rgba(0,0,0,0.5)]"
-            loading="eager"
-            draggable={false}
-          />
-        </div>
-
-        {/* Floor reflection — vertically flipped bottle, masked to fade into the floor */}
-        <div
-          className="absolute left-0 right-0 bottom-0 h-[22%] overflow-hidden flex justify-center pointer-events-none"
-          style={{
-            transform: 'scaleY(-1)',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,0.30), transparent 78%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.30), transparent 78%)',
-          }}
-        >
-          <img
-            src="/products/trex-liquid-01.png"
-            alt=""
-            aria-hidden
-            className="w-auto h-[360%] object-contain"
-            draggable={false}
-          />
-        </div>
-      </div>
-
-      {/* Floating chips — repositioned for the portrait bottle aspect, parallax opposite the bottle for depth */}
-      <FloatingChip
-        positionClass="top-10 -left-6"
-        tilt={tilt}
-        offset={-22}
-        delay="0.5s"
+      {/* Floating labels — only these move */}
+      <FloatingLabel
+        positionClass="top-[6%] -left-4 sm:-left-6"
+        orbit="A"
+        chipKey="fssai"
+        chipRefs={chipRefs}
+        magnetic={magnetic.fssai}
       >
         ✓ FSSAI Licensed
-      </FloatingChip>
-      <FloatingChip
-        positionClass="top-40 -right-6"
-        tilt={tilt}
-        offset={-28}
-        delay="1s"
+      </FloatingLabel>
+      <FloatingLabel
+        positionClass="top-[34%] -right-4 sm:-right-6"
+        orbit="B"
+        chipKey="natural"
+        chipRefs={chipRefs}
+        magnetic={magnetic.natural}
+      >
+        100% Natural
+      </FloatingLabel>
+      <FloatingLabel
+        positionClass="bottom-[18%] -left-6 sm:-left-10"
+        orbit="C"
+        chipKey="servings"
+        chipRefs={chipRefs}
+        magnetic={magnetic.servings}
       >
         50 Servings
-      </FloatingChip>
-      <FloatingChip
-        positionClass="bottom-40 -left-10"
-        tilt={tilt}
-        offset={-16}
-        delay="1.5s"
-      >
-        ₹40 / Day
-      </FloatingChip>
+      </FloatingLabel>
     </div>
   )
 }
 
-/* Drifting amber dust particles — 12 specks rise through the hero space.
-   Indexed positions + delays so they're deterministic (no SSR flicker). */
-function BottleParticles() {
-  const specks = [
-    { left: 12, size: 4, delay: 0,    dur: 14 },
-    { left: 24, size: 3, delay: 1.5,  dur: 16 },
-    { left: 38, size: 5, delay: 3,    dur: 13 },
-    { left: 50, size: 3, delay: 4.5,  dur: 18 },
-    { left: 62, size: 4, delay: 6,    dur: 15 },
-    { left: 74, size: 3, delay: 7.5,  dur: 17 },
-    { left: 86, size: 4, delay: 9,    dur: 14 },
-    { left: 18, size: 3, delay: 10.5, dur: 16 },
-    { left: 44, size: 4, delay: 12,   dur: 19 },
-    { left: 70, size: 3, delay: 13.5, dur: 13 },
-    { left: 90, size: 5, delay: 2,    dur: 18 },
-    { left: 8,  size: 3, delay: 8,    dur: 15 },
-  ]
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-visible">
-      {specks.map((s, i) => (
-        <span
-          key={i}
-          className="absolute block rounded-full bg-amber/45"
-          style={{
-            left: `${s.left}%`,
-            bottom: '-8px',
-            width: `${s.size}px`,
-            height: `${s.size}px`,
-            animation: `riseFade ${s.dur}s linear ${s.delay}s infinite`,
-            filter: 'blur(0.5px)',
-          }}
-        />
-      ))}
-    </div>
-  )
-}
+/* Floating label — four layers of motion stacked, no animation on bottle itself.
+   - Outer: absolute positioning around the bottle
+   - Orbit: each chip drifts on its own elliptical path (CSS keyframes orbitA/B/C)
+   - Magnetic: when cursor is near, chip nudges toward it + scales up + border glows
+   - Inner pill: shimmer sweep across text, pulsing amber accent dot, border glow pulse */
+const ORBIT_DURATION = { A: '9s', B: '11s', C: '13s' }
 
-/* Chip with outer parallax container + inner float animation so they don't fight. */
-function FloatingChip({ children, positionClass, tilt, offset, delay }) {
+function FloatingLabel({ children, positionClass, orbit, chipKey, chipRefs, magnetic }) {
+  const m = magnetic ?? { x: 0, y: 0, scale: 1, glow: 0.35 }
   return (
-    <div
-      className={`absolute z-10 transition-transform duration-300 ease-out ${positionClass}`}
-      style={{ transform: `translate3d(${tilt.x * offset}px, ${tilt.y * offset}px, 0)` }}
-    >
+    <div className={`absolute z-10 ${positionClass}`}>
+      {/* Orbital drift */}
       <div
-        className="bg-ink-800/90 backdrop-blur-md border border-amber/20 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-widest font-medium animate-float shadow-[0_10px_30px_-10px_rgba(0,0,0,0.6)]"
-        style={{ animationDelay: delay }}
+        style={{
+          animation: `orbit${orbit} ${ORBIT_DURATION[orbit]} ease-in-out infinite`,
+        }}
       >
-        {children}
+        {/* Magnetic cursor pull */}
+        <div
+          ref={(el) => {
+            chipRefs.current[chipKey] = el
+          }}
+          className="transition-transform duration-300 ease-out will-change-transform"
+          style={{
+            transform: `translate(${m.x}px, ${m.y}px) scale(${m.scale})`,
+          }}
+        >
+          {/* The pill itself */}
+          <div
+            className="hero-chip-pulse bg-ink-800/85 backdrop-blur-md rounded-full px-3.5 py-1.5 text-[10px] uppercase tracking-widest font-semibold flex items-center gap-2"
+            style={{
+              border: `1px solid rgba(214, 168, 90, ${m.glow})`,
+            }}
+          >
+            <span className="hero-chip-dot inline-block w-1.5 h-1.5 rounded-full bg-amber" />
+            <span className="hero-chip-text text-bone">{children}</span>
+          </div>
+        </div>
       </div>
     </div>
   )

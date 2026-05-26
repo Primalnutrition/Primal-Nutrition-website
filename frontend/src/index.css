@@ -329,12 +329,68 @@
   pointer-events: none;
 }
 
-/* ----- Hero particle drift — Ayurvedic dust motes rising past the bottle */
-@keyframes riseFade {
-  0%   { transform: translateY(0) translateX(0) scale(1);      opacity: 0; }
-  10%  { opacity: 0.8; }
-  50%  { transform: translateY(-180px) translateX(10px) scale(0.9); opacity: 0.55; }
-  100% { transform: translateY(-380px) translateX(-6px) scale(0.4);  opacity: 0; }
+/* ----- Hero chip orbital float — each chip drifts on its own elliptical path */
+@keyframes orbitA {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(10px, -14px); }
+  50%      { transform: translate(0, -22px); }
+  75%      { transform: translate(-10px, -12px); }
+}
+@keyframes orbitB {
+  0%, 100% { transform: translate(0, 0); }
+  33%      { transform: translate(-12px, -8px); }
+  66%      { transform: translate(12px, -18px); }
+}
+@keyframes orbitC {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(14px, -18px); }
+}
+
+/* ----- Shimmer sweep across chip text */
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-100%); }
+  40%  { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+.hero-chip-text {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.hero-chip-text::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 210, 138, 0.55) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmerSweep 5s ease-in-out infinite;
+}
+
+/* ----- Amber accent dot pulsing inside chip */
+@keyframes chipDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(214, 168, 90, 0.0); transform: scale(1); }
+  50%      { box-shadow: 0 0 12px 2px rgba(214, 168, 90, 0.55); transform: scale(1.25); }
+}
+
+.hero-chip-dot {
+  animation: chipDot 2.4s ease-in-out infinite;
+}
+
+/* ----- Subtle chip border glow pulse */
+@keyframes chipBorderGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(214, 168, 90, 0.0), 0 8px 24px -8px rgba(0,0,0,0.5); }
+  50%      { box-shadow: 0 0 22px 0 rgba(214, 168, 90, 0.25), 0 8px 24px -8px rgba(0,0,0,0.5); }
+}
+
+.hero-chip-pulse {
+  animation: chipBorderGlow 3.6s ease-in-out infinite;
 }
 
 /* ----- Accessibility: reduced motion ---------------------------------- */
