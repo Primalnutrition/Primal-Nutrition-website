@@ -50,8 +50,8 @@ export default function StacksPage() {
                   {/* Header strip */}
                   <div className={`h-1.5 bg-gradient-to-r ${stack.accent}`} />
 
-                  {/* Product image collage — black bg matches dark product photo backgrounds */}
-                  <div className="relative aspect-[5/3] bg-black flex items-center justify-center overflow-hidden">
+                  {/* Product image collage — no bg, raw photos rendered as-is */}
+                  <div className="relative aspect-[5/3] flex items-center justify-center">
                     <div className="relative flex items-center justify-center gap-1">
                       {stack.items.map((it, i) => {
                         const p = productById(it.productId)
