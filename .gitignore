@@ -26,4 +26,5 @@ dist/
 # frontend/ is now a local symlink to ~/primal-revamp (deployed via Netlify CLI).
 # Don't track its contents in this repo — primal-revamp is the source of truth.
 /frontend
+/frontend.local-backup
 
