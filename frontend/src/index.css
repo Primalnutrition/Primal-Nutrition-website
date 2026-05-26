@@ -329,6 +329,14 @@
   pointer-events: none;
 }
 
+/* ----- Hero particle drift — Ayurvedic dust motes rising past the bottle */
+@keyframes riseFade {
+  0%   { transform: translateY(0) translateX(0) scale(1);      opacity: 0; }
+  10%  { opacity: 0.8; }
+  50%  { transform: translateY(-180px) translateX(10px) scale(0.9); opacity: 0.55; }
+  100% { transform: translateY(-380px) translateX(-6px) scale(0.4);  opacity: 0; }
+}
+
 /* ----- Accessibility: reduced motion ---------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,

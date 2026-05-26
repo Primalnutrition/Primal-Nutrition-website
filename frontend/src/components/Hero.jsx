@@ -211,8 +211,13 @@ function Stat({ label, value, valueNode }) {
   )
 }
 
-/* Interactive product showcase — mouse-tracking 3D tilt, no dark backdrop,
-   bottle floats against the page gradient. Awwwards-style. */
+/* Interactive product showcase — Awwwards-style cinematic hero:
+   - radial key-light halo behind the bottle
+   - soft elliptical contact shadow under the base
+   - floor reflection (vertically-flipped + masked fade)
+   - drifting amber dust particles
+   - gentle "breath" float animation
+   - cursor-tracked 3D tilt + parallax glows */
 function Bottle3D() {
   const wrapRef = useRef(null)
   const rafRef = useRef(null)
@@ -236,70 +241,136 @@ function Bottle3D() {
 
   const handleLeave = () => setTilt({ x: 0, y: 0 })
 
-  const MAX_TILT = 14
-  const GLOW_OFFSET = 22
-  const CHIP_OFFSET = 24
+  const MAX_TILT = 10
+  const GLOW_OFFSET = 18
 
   return (
     <div
       ref={wrapRef}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className="relative w-[340px] sm:w-[440px] lg:w-[560px] aspect-[3/4]"
+      className="relative w-[300px] sm:w-[380px] lg:w-[460px] aspect-[3/4.2]"
       style={{ perspective: '1400px' }}
     >
-      {/* Ambient glow layers — drift opposite cursor for parallax depth */}
+      {/* Cinematic radial key-light — soft amber spotlight halo behind bottle */}
       <div
-        className="absolute -inset-10 bg-amber/20 blur-[110px] rounded-full pointer-events-none transition-transform duration-300 ease-out"
-        style={{ transform: `translate3d(${tilt.x * GLOW_OFFSET}px, ${tilt.y * GLOW_OFFSET}px, 0)` }}
-      />
-      <div
-        className="absolute -inset-16 bg-rust/15 blur-[160px] rounded-full pointer-events-none animate-pulse-glow"
-        style={{ transform: `translate3d(${tilt.x * GLOW_OFFSET * 1.4}px, ${tilt.y * GLOW_OFFSET * 1.4}px, 0)` }}
+        className="absolute -inset-32 pointer-events-none transition-transform duration-500 ease-out"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 55% at 50% 40%, rgba(214,168,90,0.36), rgba(214,168,90,0.0) 65%)',
+          transform: `translate3d(${tilt.x * GLOW_OFFSET}px, ${tilt.y * GLOW_OFFSET}px, 0)`,
+        }}
       />
 
-      {/* The bottle — bare PNG, tilts in 3D */}
+      {/* Wider ambient warmth that breathes */}
+      <div className="absolute -inset-20 bg-rust/12 blur-[160px] rounded-full pointer-events-none animate-pulse-glow" />
+
+      {/* Drifting Ayurvedic dust particles */}
+      <BottleParticles />
+
+      {/* Bottle + reflection stage — tilts in 3D as cursor moves */}
       <div
-        className="relative w-full h-full transition-transform duration-150 ease-out will-change-transform"
+        className="relative w-full h-full transition-transform duration-200 ease-out will-change-transform"
         style={{
           transform: `rotateY(${tilt.x * MAX_TILT}deg) rotateX(${-tilt.y * MAX_TILT}deg) translateZ(40px)`,
           transformStyle: 'preserve-3d',
         }}
       >
-        <img
-          src="/products/trex-liquid-01.png"
-          alt="T-Rex 500ml"
-          className="w-full h-full object-contain select-none drop-shadow-[0_40px_60px_rgba(214,168,90,0.35)]"
-          loading="eager"
-          draggable={false}
-        />
+        {/* Soft elliptical contact shadow under the bottle base */}
+        <div className="absolute left-1/2 bottom-[14%] -translate-x-1/2 w-3/5 h-5 rounded-full bg-black/55 blur-2xl pointer-events-none" />
+
+        {/* Bottle image — fills ~78% of stage height, gently breathes */}
+        <div className="absolute inset-0 flex items-end justify-center pb-[14%] animate-float-slow">
+          <img
+            src="/products/trex-liquid-01.png"
+            alt="T-Rex 500ml"
+            className="w-auto h-[78%] object-contain select-none drop-shadow-[0_36px_40px_rgba(0,0,0,0.5)]"
+            loading="eager"
+            draggable={false}
+          />
+        </div>
+
+        {/* Floor reflection — vertically flipped bottle, masked to fade into the floor */}
+        <div
+          className="absolute left-0 right-0 bottom-0 h-[22%] overflow-hidden flex justify-center pointer-events-none"
+          style={{
+            transform: 'scaleY(-1)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,0.30), transparent 78%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0.30), transparent 78%)',
+          }}
+        >
+          <img
+            src="/products/trex-liquid-01.png"
+            alt=""
+            aria-hidden
+            className="w-auto h-[360%] object-contain"
+            draggable={false}
+          />
+        </div>
       </div>
 
-      {/* Floating chips — parallax opposite the bottle (parallax depth) */}
+      {/* Floating chips — repositioned for the portrait bottle aspect, parallax opposite the bottle for depth */}
       <FloatingChip
-        positionClass="top-12 -left-4"
+        positionClass="top-10 -left-6"
         tilt={tilt}
-        offset={-CHIP_OFFSET}
+        offset={-22}
         delay="0.5s"
       >
         ✓ FSSAI Licensed
       </FloatingChip>
       <FloatingChip
-        positionClass="top-32 right-12"
+        positionClass="top-40 -right-6"
         tilt={tilt}
-        offset={-CHIP_OFFSET * 1.3}
+        offset={-28}
         delay="1s"
       >
         50 Servings
       </FloatingChip>
       <FloatingChip
-        positionClass="bottom-24 -left-8"
+        positionClass="bottom-40 -left-10"
         tilt={tilt}
-        offset={-CHIP_OFFSET * 0.8}
+        offset={-16}
         delay="1.5s"
       >
         ₹40 / Day
       </FloatingChip>
+    </div>
+  )
+}
+
+/* Drifting amber dust particles — 12 specks rise through the hero space.
+   Indexed positions + delays so they're deterministic (no SSR flicker). */
+function BottleParticles() {
+  const specks = [
+    { left: 12, size: 4, delay: 0,    dur: 14 },
+    { left: 24, size: 3, delay: 1.5,  dur: 16 },
+    { left: 38, size: 5, delay: 3,    dur: 13 },
+    { left: 50, size: 3, delay: 4.5,  dur: 18 },
+    { left: 62, size: 4, delay: 6,    dur: 15 },
+    { left: 74, size: 3, delay: 7.5,  dur: 17 },
+    { left: 86, size: 4, delay: 9,    dur: 14 },
+    { left: 18, size: 3, delay: 10.5, dur: 16 },
+    { left: 44, size: 4, delay: 12,   dur: 19 },
+    { left: 70, size: 3, delay: 13.5, dur: 13 },
+    { left: 90, size: 5, delay: 2,    dur: 18 },
+    { left: 8,  size: 3, delay: 8,    dur: 15 },
+  ]
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-visible">
+      {specks.map((s, i) => (
+        <span
+          key={i}
+          className="absolute block rounded-full bg-amber/45"
+          style={{
+            left: `${s.left}%`,
+            bottom: '-8px',
+            width: `${s.size}px`,
+            height: `${s.size}px`,
+            animation: `riseFade ${s.dur}s linear ${s.delay}s infinite`,
+            filter: 'blur(0.5px)',
+          }}
+        />
+      ))}
     </div>
   )
 }
