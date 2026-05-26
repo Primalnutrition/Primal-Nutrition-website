@@ -50,9 +50,8 @@ export default function StacksPage() {
                   {/* Header strip */}
                   <div className={`h-1.5 bg-gradient-to-r ${stack.accent}`} />
 
-                  {/* Visual collage of products */}
-                  <div className="relative aspect-[5/3] bg-ink-800 flex items-center justify-center overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-ink-700 to-ink-900" />
+                  {/* Product image collage — no bg, raw photos rendered as-is */}
+                  <div className="relative aspect-[5/3] flex items-center justify-center">
                     <div className="relative flex items-center justify-center gap-1">
                       {stack.items.map((it, i) => {
                         const p = productById(it.productId)
@@ -62,15 +61,14 @@ export default function StacksPage() {
                             src={p?.image}
                             alt={p?.name}
                             className="h-32 w-auto object-contain"
-                            style={{ filter: 'drop-shadow(0 16px 18px rgba(0,0,0,0.6)) saturate(0.92)' }}
                           />
                         )
                       })}
                     </div>
-                    <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.22em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold">
+                    <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.22em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold z-10">
                       {stack.badge}
                     </div>
-                    <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.22em] text-bone bg-ink/80 backdrop-blur rounded-full px-2.5 py-1 font-brand font-semibold">
+                    <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.22em] text-bone bg-ink/80 backdrop-blur rounded-full px-2.5 py-1 font-brand font-semibold z-10">
                       {Math.round(stack.discount * 100)}% off
                     </div>
                   </div>

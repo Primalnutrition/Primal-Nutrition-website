@@ -22,8 +22,9 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-liquid',
-    image: '/products/trex-liquid.png',
+    image: '/products/trex-liquid-box.jpg',
     gallery: [
+      '/products/trex-liquid-box.jpg',
       '/products/trex-liquid-01.png',
       '/products/trex-liquid-02.png',
       '/products/trex-liquid-03.png',
@@ -86,13 +87,13 @@ export const products = [
         cycle: 'Daily for sustained benefit. Best results across 8–12 weeks of consistent use.',
       },
       whoFor: [
-        'Men aged 32–58',
+        'High performance men',
         'Lifters, athletes, executives',
         'Reduced energy, drive, recovery',
         'Want a natural path before pharmaceuticals',
       ],
       whoNotFor: [
-        'Under 21',
+        'Under 16',
         'Currently on TRT',
         'On blood thinners or BP medication without doctor consultation',
         'Pregnancy (obvious)',

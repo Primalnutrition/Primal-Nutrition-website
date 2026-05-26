@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-/* PDP gallery — main image + thumbnail strip below.
-   Falls back to single-image ProductVisual styling if no gallery. */
+/* PDP gallery — main image + thumbnail strip.
+   No background, no filters, no overlays — images render exactly as uploaded. */
 export default function ProductGallery({ product }) {
   const images = product.gallery && product.gallery.length > 0
     ? product.gallery
@@ -13,39 +13,32 @@ export default function ProductGallery({ product }) {
 
   return (
     <div>
-      {/* Main image */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-ink-800 border border-bone/5">
-        <div className="absolute inset-0 bg-ink-800" />
-
-        {images.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt={`${product.name} · view ${i + 1}`}
-            loading={i === 0 ? 'eager' : 'lazy'}
-            decoding="async"
-            className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${
-              i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
-          />
-        ))}
+      {/* Main image — fills full width, natural height, zero background / filter / overlay */}
+      <div className="relative w-full rounded-2xl overflow-hidden">
+        <img
+          src={images[active]}
+          alt={`${product.name} · view ${active + 1}`}
+          loading="eager"
+          decoding="async"
+          className="w-full h-auto block"
+        />
 
         {/* Category chip */}
-        <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.2em] text-bone bg-ink/80 backdrop-blur-md rounded-full px-2.5 py-1 font-brand font-semibold border border-bone/10">
+        <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.2em] text-bone bg-ink/80 backdrop-blur-md rounded-full px-2.5 py-1 font-brand font-semibold border border-bone/10 z-10">
           {product.categoryLabel}
         </div>
 
         {/* Badge */}
         {product.badge && (
-          <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold">
+          <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold z-10">
             {product.badge}
           </div>
         )}
       </div>
 
-      {/* Thumbnails (only if multiple images) */}
+      {/* Thumbnails — no bg, no tint, image fills naturally */}
       {images.length > 1 && (
-        <div className="mt-3 grid grid-cols-6 gap-2">
+        <div className="mt-3 grid grid-cols-7 gap-2">
           {images.map((src, i) => (
             <button
               key={src}
@@ -54,16 +47,14 @@ export default function ProductGallery({ product }) {
               className={`relative aspect-square rounded-lg overflow-hidden border-2 transition ${
                 i === active
                   ? 'border-amber'
-                  : 'border-bone/10 hover:border-bone/30 opacity-70 hover:opacity-100'
+                  : 'border-bone/10 hover:border-bone/30 opacity-60 hover:opacity-100'
               }`}
             >
-              <div className="absolute inset-0 bg-ink-800" />
               <img
                 src={src}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 w-full h-full object-contain p-1.5"
-                style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </button>
           ))}

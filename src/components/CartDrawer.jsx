@@ -26,6 +26,7 @@ export default function CartDrawer() {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [confirmedOrder, setConfirmedOrder] = useState(null)
+  const [paymentMethod, setPaymentMethod] = useState('online')  // 'online' | 'cod'
   const saved = compareSubtotal - subtotal
 
   // Lock body scroll when open
@@ -74,19 +75,28 @@ export default function CartDrawer() {
     setSubmitError(null)
     if (!validate()) return
     setSubmitting(true)
-    try {
-      // 1. Create the draft order
-      const draft = await api.post('/api/checkout/create-order', {
-        customer: { name: form.name, email: form.email, phone: form.phone },
-        address: {
-          fullName: form.name, phone: form.phone,
-          line1: form.line1, line2: form.line2 || undefined,
-          city: form.city, state: form.state, pincode: form.pincode, country: 'India',
-        },
-        items: lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty })),
-      })
 
-      // 2. Open Razorpay Checkout
+    const customer = { name: form.name, email: form.email, phone: form.phone }
+    const address = {
+      fullName: form.name, phone: form.phone,
+      line1: form.line1, line2: form.line2 || undefined,
+      city: form.city, state: form.state, pincode: form.pincode, country: 'India',
+    }
+    const items = lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty }))
+
+    try {
+      if (paymentMethod === 'cod') {
+        // COD — server creates order + Shiprocket shipment in one call, no Razorpay.
+        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items })
+        setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
+        setStep('success')
+        clearCart()
+        return
+      }
+
+      // Online — Razorpay flow.
+      const draft = await api.post('/api/checkout/create-order', { customer, address, items })
+
       const rzp = await openRazorpayCheckout({
         keyId: draft.keyId,
         orderId: draft.razorpayOrderId,
@@ -96,15 +106,14 @@ export default function CartDrawer() {
         prefill: { name: form.name, email: form.email, contact: form.phone },
       })
 
-      // 3. Verify the signature on the server
-      const verify = await api.post('/api/checkout/verify-payment', {
+      await api.post('/api/checkout/verify-payment', {
         razorpayOrderId: rzp.orderId,
         razorpayPaymentId: rzp.paymentId,
         razorpaySignature: rzp.signature,
         internalOrderId: draft.internalOrderId,
       })
 
-      setConfirmedOrder({ orderNumber: draft.orderNumber, paymentId: rzp.paymentId, total: draft.amount / 100 })
+      setConfirmedOrder({ orderNumber: draft.orderNumber, paymentId: rzp.paymentId, total: draft.amount / 100, method: 'online' })
       setStep('success')
       clearCart()
     } catch (err) {
@@ -161,11 +170,15 @@ export default function CartDrawer() {
             <div className="w-16 h-16 rounded-full bg-amber/20 border border-amber flex items-center justify-center mb-5">
               <svg className="w-8 h-8 text-amber" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
             </div>
-            <div className="font-display font-bold text-2xl mb-1">Payment received</div>
+            <div className="font-display font-bold text-2xl mb-1">
+              {confirmedOrder?.method === 'cod' ? 'Order placed' : 'Payment received'}
+            </div>
             <div className="font-stencil text-amber mb-3">₹{confirmedOrder?.total.toLocaleString('en-IN')}</div>
             <p className="text-bone/60 text-sm max-w-xs mb-6">
               Order <span className="font-mono text-bone/80">{confirmedOrder?.orderNumber}</span> is confirmed.
-              You'll get an email shortly. Shipping update follows when it's dispatched.
+              {confirmedOrder?.method === 'cod'
+                ? ' Pay on delivery in cash. You\'ll get an email and tracking link shortly.'
+                : ' You\'ll get an email shortly. Shipping update follows when it\'s dispatched.'}
             </p>
             <button onClick={closeCart} className="btn-primary text-sm">Done</button>
           </div>
@@ -200,6 +213,37 @@ export default function CartDrawer() {
               </div>
             )}
             <footer className="border-t border-bone/10 pt-5 mt-2 space-y-3">
+              <div>
+                <label className="text-[11px] uppercase tracking-widest text-bone/55 block mb-2">Payment method</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('online')}
+                    disabled={submitting}
+                    className={`text-left px-3 py-2.5 rounded-lg border text-sm transition ${
+                      paymentMethod === 'online'
+                        ? 'border-amber bg-amber/10 text-bone'
+                        : 'border-bone/15 text-bone/70 hover:border-bone/30'
+                    }`}
+                  >
+                    <div className="font-semibold">Pay online</div>
+                    <div className="text-[11px] text-bone/50">UPI · Card · Netbanking</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('cod')}
+                    disabled={submitting}
+                    className={`text-left px-3 py-2.5 rounded-lg border text-sm transition ${
+                      paymentMethod === 'cod'
+                        ? 'border-amber bg-amber/10 text-bone'
+                        : 'border-bone/15 text-bone/70 hover:border-bone/30'
+                    }`}
+                  >
+                    <div className="font-semibold">Cash on Delivery</div>
+                    <div className="text-[11px] text-bone/50">Pay when it arrives</div>
+                  </button>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <span className="text-bone/55 text-sm">Total</span>
                 <span className="font-display font-bold text-2xl">₹{subtotal.toLocaleString('en-IN')}</span>
@@ -209,7 +253,11 @@ export default function CartDrawer() {
                 disabled={submitting}
                 className="btn-primary w-full text-base disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Processing…' : `Pay ₹${subtotal.toLocaleString('en-IN')}`}
+                {submitting
+                  ? 'Processing…'
+                  : paymentMethod === 'cod'
+                    ? `Place COD order · ₹${subtotal.toLocaleString('en-IN')}`
+                    : `Pay ₹${subtotal.toLocaleString('en-IN')}`}
                 {!submitting && (
                   <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
                 )}

@@ -26,7 +26,6 @@ import ProductDetail from './components/ProductDetail.jsx'
 import StacksPage from './components/StacksPage.jsx'
 import DealerPage from './components/DealerPage.jsx'
 import ShilajitGuide from './components/ShilajitGuide.jsx'
-import ThemeToggle from './components/ThemeToggle.jsx'
 
 function HomePage() {
   return (
@@ -99,7 +98,6 @@ function AppShell() {
       <StickyCTA />
       <CartDrawer />
       <Toast />
-      <ThemeToggle />
     </div>
   )
 }

@@ -8,11 +8,8 @@ export default function ProductDeepDive() {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* Visual — real T-Rex bottle floating with chip overlays */}
           <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="relative aspect-[4/5] rounded-3xl bg-gradient-to-br from-ink-700 via-ink-800 to-ink overflow-hidden border border-bone/10">
-              {/* Soft brand glow behind bottle */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 rounded-full bg-amber/10 blur-[100px] pointer-events-none" />
-
-              {/* Floating T-Rex bottle — raw image, no padding, no filter, no crop */}
+            <div className="relative aspect-[4/5]">
+              {/* Floating T-Rex bottle — raw image, no bg, no gradient, no filter, no crop */}
               <div className="absolute inset-0 flex items-center justify-center animate-float">
                 <img
                   src="/products/trex-liquid-02.png"
