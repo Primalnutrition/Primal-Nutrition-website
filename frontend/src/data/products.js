@@ -22,8 +22,9 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-liquid',
-    image: '/products/trex-liquid.png',
+    image: '/products/trex-liquid-box.jpg',
     gallery: [
+      '/products/trex-liquid-box.jpg',
       '/products/trex-liquid-01.png',
       '/products/trex-liquid-02.png',
       '/products/trex-liquid-03.png',
@@ -92,7 +93,7 @@ export const products = [
         'Want a natural path before pharmaceuticals',
       ],
       whoNotFor: [
-        'Under 21',
+        'Under 16',
         'Currently on TRT',
         'On blood thinners or BP medication without doctor consultation',
         'Pregnancy (obvious)',

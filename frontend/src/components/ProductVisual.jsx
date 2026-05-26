@@ -1,5 +1,5 @@
 /* Product visual — renders the real product photo.
-   Uses black background to match the dark backgrounds of product photos.
+   No background, no filters, no overlays — images render exactly as uploaded.
    Falls back to a CSS bottle mock if no image set. */
 export default function ProductVisual({ product }) {
   if (product.image) return <ImageVisual product={product} />
@@ -8,14 +8,14 @@ export default function ProductVisual({ product }) {
 
 function ImageVisual({ product }) {
   return (
-    <div className="relative w-full aspect-square rounded-2xl bg-black overflow-hidden">
-      {/* Full image, no overlays, no filters — object-contain shows entire image */}
+    <div className="relative w-full rounded-2xl overflow-hidden">
+      {/* Raw image — no bg, no filters, no overlays, natural proportions */}
       <img
         src={product.image}
         alt={product.name}
         loading="lazy"
         decoding="async"
-        className="absolute inset-0 w-full h-full object-contain"
+        className="w-full h-auto block"
       />
 
       {/* Category chip */}

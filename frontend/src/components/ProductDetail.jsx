@@ -187,13 +187,78 @@ export default function ProductDetail({ productId }) {
               </h2>
             </div>
             <div data-reveal-stagger className="grid md:grid-cols-3 gap-5">
-              {pdp.mechanism.steps.map((s, i) => (
-                <div key={s.h} className="card-lift p-7 rounded-2xl border border-bone/10 bg-ink-800/40">
-                  <div className="font-display font-black text-amber/40 text-2xl mb-3">0{i + 1}</div>
-                  <h3 className="font-display font-semibold text-xl mb-3">{s.h}</h3>
-                  <p className="text-bone/65 leading-relaxed text-[15px]">{s.b}</p>
-                </div>
-              ))}
+              {pdp.mechanism.steps.map((s, i) => {
+                /* Per-step icon SVGs — amber/gold toned */
+                const icons = [
+                  /* 01 — Liquid drop */
+                  <svg viewBox="0 0 40 40" fill="none" className="w-9 h-9" aria-hidden>
+                    <path d="M20 5C20 5 9 17 9 24.5C9 30.85 13.93 36 20 36C26.07 36 31 30.85 31 24.5C31 17 20 5 20 5Z"
+                          fill="rgba(245,176,55,0.18)" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinejoin="round"/>
+                    <path d="M14 26C14 26 14 30 20 30" stroke="rgb(245,176,55)" strokeWidth="1.4"
+                          strokeLinecap="round" strokeOpacity="0.5"/>
+                  </svg>,
+                  /* 02 — Mortar & pestle */
+                  <svg viewBox="0 0 40 40" fill="none" className="w-9 h-9" aria-hidden>
+                    <ellipse cx="20" cy="28" rx="11" ry="4.5" fill="rgba(245,176,55,0.12)" stroke="rgb(245,176,55)" strokeWidth="1.5"/>
+                    <path d="M9 28V22C9 16.48 14.37 12 20 12C25.63 12 31 16.48 31 22V28"
+                          fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.5"/>
+                    <path d="M25 12L30 6" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="31.5" cy="5" r="2" fill="rgb(245,176,55)" fillOpacity="0.7"/>
+                  </svg>,
+                  /* 03 — Herb cluster */
+                  <svg viewBox="0 0 40 40" fill="none" className="w-9 h-9" aria-hidden>
+                    <path d="M20 36V22" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M20 26C20 26 14 21 7 22C7 22 7 29 13 31.5L20 34"
+                          fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                    <path d="M20 24C20 24 26 19 33 20C33 20 33 27 27 29.5L20 32"
+                          fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                    <path d="M20 22C20 22 18 14 13 10C13 10 17 18 20 22Z"
+                          fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                    <path d="M20 20C20 20 23 12 28 9C28 9 24 17 20 20Z"
+                          fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                  </svg>,
+                ]
+
+                return (
+                  <div key={s.h} className="relative card-lift rounded-2xl border border-amber/20 bg-ink-800/50 overflow-hidden flex flex-col">
+                    {/* Amber top stripe */}
+                    <div className="h-[2px] bg-gradient-to-r from-amber via-amber/40 to-transparent flex-shrink-0" />
+
+                    <div className="p-7 flex flex-col gap-6 flex-1">
+
+                      {/* ── Icon circle ── */}
+                      <div className="relative w-[68px] h-[68px] flex-shrink-0">
+                        {/* Dashed amber ring */}
+                        <svg viewBox="0 0 68 68" className="absolute inset-0 w-full h-full" aria-hidden>
+                          <circle cx="34" cy="34" r="32"
+                            stroke="rgb(245,176,55)" strokeOpacity="0.35"
+                            strokeWidth="1.5" strokeDasharray="4 5"
+                            fill="none"/>
+                        </svg>
+                        {/* Solid inner circle */}
+                        <div className="absolute inset-[10px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
+                          {icons[i]}
+                        </div>
+                      </div>
+
+                      {/* ── Number · divider · heading ── */}
+                      <div className="flex items-center gap-3">
+                        <span className="font-display font-black text-[2rem] leading-none text-amber tracking-tighter flex-shrink-0">
+                          0{i + 1}<span className="text-amber/50">.</span>
+                        </span>
+                        {/* Vertical divider */}
+                        <div className="w-px h-8 bg-amber/40 flex-shrink-0" />
+                        <h3 className="font-display font-bold text-[0.95rem] uppercase tracking-widest text-bone leading-snug">
+                          {s.h}
+                        </h3>
+                      </div>
+
+                      {/* ── Body ── */}
+                      <p className="text-bone/60 leading-relaxed text-[14px]">{s.b}</p>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -237,12 +302,91 @@ export default function ProductDetail({ productId }) {
               <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
                 When, how, with what.
               </h3>
-              <dl className="space-y-5">
-                <Row label="When" value={pdp.protocol.when} />
-                <Row label="How" value={pdp.protocol.how} />
-                <Row label="With" value={pdp.protocol.withWhat} />
-                <Row label="Cycle" value={pdp.protocol.cycle} />
-              </dl>
+              <div className="space-y-4">
+                {[
+                  {
+                    label: 'When', value: pdp.protocol.when,
+                    icon: (
+                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                        {/* Sunrise */}
+                        <path d="M9 27C9 21.48 13.03 17 18 17C22.97 17 27 21.48 27 27" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M5 27H31" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M18 13V10" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M9.5 16.5L7.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M26.5 16.5L28.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M5.5 20.5H8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M28 20.5H30.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: 'How', value: pdp.protocol.how,
+                    icon: (
+                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                        {/* Dropper / sublingual */}
+                        <path d="M22 4L26 8L14 20L10 16L22 4Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                        <path d="M10 16L8 24L16 22L10 16Z" fill="rgba(245,176,55,0.1)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                        <circle cx="21" cy="29" r="2.5" fill="rgba(245,176,55,0.25)" stroke="rgb(245,176,55)" strokeWidth="1.3"/>
+                        <path d="M21 25V26.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round"/>
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: 'With', value: pdp.protocol.withWhat,
+                    icon: (
+                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                        {/* Shaker bottle with motion lines */}
+                        <path d="M14 7H22V11H14V7Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                        <path d="M12 11H24L26 29C26 29.55 25.55 30 25 30H11C10.45 30 10 29.55 10 29L12 11Z" fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                        <path d="M5 18H8.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                        <path d="M4 22H7" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+                        <path d="M27.5 18H31" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                        <path d="M29 22H32" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: 'Cycle', value: pdp.protocol.cycle,
+                    icon: (
+                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                        {/* Circular refresh arrows */}
+                        <path d="M28 18C28 23.52 23.52 28 18 28C12.48 28 8 23.52 8 18C8 12.48 12.48 8 18 8C21.5 8 24.6 9.74 26.5 12.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                        <path d="M24 8L27 12.5L22 13" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ),
+                  },
+                ].map(({ label, value, icon }, i) => (
+                  <div key={label} className="flex items-center gap-3 md:gap-4 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 py-4 md:px-5">
+                    {/* Dashed-ring icon */}
+                    <div className="relative flex-shrink-0 w-[58px] h-[58px]">
+                      <svg viewBox="0 0 58 58" className="absolute inset-0 w-full h-full" aria-hidden>
+                        <circle cx="29" cy="29" r="27" stroke="rgb(245,176,55)" strokeOpacity="0.35"
+                                strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
+                      </svg>
+                      <div className="absolute inset-[8px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
+                        {icon}
+                      </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+                    {/* Step number */}
+                    <span className="font-display font-black text-[1.85rem] leading-none text-amber flex-shrink-0 tracking-tighter">
+                      0{i + 1}<span className="text-amber/45">.</span>
+                    </span>
+
+                    {/* Divider */}
+                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+                    {/* Label + value */}
+                    <div className="min-w-0">
+                      <div className="font-display font-bold text-[0.8rem] uppercase tracking-widest text-bone mb-1">{label}</div>
+                      <div className="text-bone/60 text-[13px] leading-relaxed">{value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -287,13 +431,68 @@ export default function ProductDetail({ productId }) {
                 What changes when.
               </h2>
             </div>
-            <div className="grid md:grid-cols-4 gap-4">
-              {pdp.timeline.map((t) => (
-                <div key={t.week} className="p-6 rounded-2xl border border-bone/10 bg-ink-800/40 card-lift">
-                  <div className="eyebrow text-amber mb-3">{t.week}</div>
-                  <p className="text-bone/70 text-[14px] leading-relaxed">{t.what}</p>
-                </div>
-              ))}
+            <div className="space-y-4 max-w-3xl">
+              {pdp.timeline.map((t, i) => {
+                const num = t.week.split(' ')[1].padStart(2, '0')
+                const icons = [
+                  /* Week 1 — Crescent moon (sleep) */
+                  <svg key="moon" viewBox="0 0 36 36" fill="none" className="w-8 h-8" aria-hidden>
+                    <path d="M21 7C15 7 10 12 10 18C10 24 15 29 21 29C24.5 29 27.7 27.3 29.6 24.6C27.5 25.1 25.1 25 23 23.8C18.3 21.2 16.2 15.5 18 10.2C18.9 7.9 19.8 7.2 21 7Z"
+                          fill="rgba(245,176,55,0.18)" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinejoin="round"/>
+                    <circle cx="27.5" cy="9.5" r="1.5" fill="rgb(245,176,55)" fillOpacity="0.65"/>
+                    <circle cx="30.5" cy="13.5" r="1" fill="rgb(245,176,55)" fillOpacity="0.45"/>
+                    <circle cx="28.5" cy="6.5" r="0.8" fill="rgb(245,176,55)" fillOpacity="0.35"/>
+                  </svg>,
+                  /* Week 4 — Flexed arm (strength) */
+                  <svg key="arm" viewBox="0 0 36 36" fill="none" className="w-8 h-8" aria-hidden>
+                    <path d="M8 26C8 26 7 20 10 17C12 15 14 15 15 13C16.2 10.8 16 8.5 18.5 7.5C21.5 6.5 24.5 9 25 12C25.4 14.2 24.5 16 23 17.5L26 20.5C28 22.5 28 26 26 27C24.2 27.8 22 27 21 25L19 22C18 23 16.5 24 14.5 24C11.5 24 9.5 25.5 8.5 27L8 26Z"
+                          fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                  </svg>,
+                  /* Week 8 — Male symbol (testosterone) */
+                  <svg key="male" viewBox="0 0 36 36" fill="none" className="w-8 h-8" aria-hidden>
+                    <circle cx="15.5" cy="22" r="8.5" fill="rgba(245,176,55,0.12)" stroke="rgb(245,176,55)" strokeWidth="1.5"/>
+                    <path d="M22 16L29.5 8.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M24.5 8.5H29.5V13.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>,
+                  /* Week 12 — Mountain with flag (new baseline) */
+                  <svg key="mountain" viewBox="0 0 36 36" fill="none" className="w-8 h-8" aria-hidden>
+                    <path d="M3 30L13 13L18.5 21.5L23 15L33 30H3Z"
+                          fill="rgba(245,176,55,0.12)" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinejoin="round"/>
+                    <path d="M23 15V8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M23 8L28.5 10.8L23 13.5" fill="rgba(245,176,55,0.3)" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinejoin="round"/>
+                  </svg>,
+                ]
+
+                return (
+                  <div key={t.week} className="flex items-center gap-4 md:gap-5 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 md:px-6 py-4 card-lift">
+                    {/* Dashed-ring icon */}
+                    <div className="relative flex-shrink-0 w-[64px] h-[64px]">
+                      <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full" aria-hidden>
+                        <circle cx="32" cy="32" r="30" stroke="rgb(245,176,55)" strokeOpacity="0.35"
+                                strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
+                      </svg>
+                      <div className="absolute inset-[9px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
+                        {icons[i]}
+                      </div>
+                    </div>
+
+                    {/* Vertical bar */}
+                    <div className="w-px h-12 bg-amber/35 flex-shrink-0" />
+
+                    {/* WEEK + large number */}
+                    <div className="flex-shrink-0 w-[4.5rem]">
+                      <div className="font-display text-[0.6rem] uppercase tracking-[0.22em] text-bone/45 mb-0.5">Week</div>
+                      <div className="font-display font-black text-[2.6rem] leading-none text-amber tracking-tighter">{num}</div>
+                    </div>
+
+                    {/* Vertical bar */}
+                    <div className="w-px h-12 bg-amber/35 flex-shrink-0" />
+
+                    {/* Description */}
+                    <p className="text-bone/65 text-[14px] leading-relaxed">{t.what}</p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>
