@@ -5,6 +5,7 @@ import { buildWelcomeHtml, buildWelcomeText } from '../templates/emails/welcome.
 import { buildOrderConfirmationHtml, buildOrderConfirmationText } from '../templates/emails/orderConfirmation.js'
 import { buildDay14CheckinHtml, buildDay14CheckinText } from '../templates/emails/day14Checkin.js'
 import { buildReorder30dHtml, buildReorder30dText } from '../templates/emails/reorder30d.js'
+import { buildSubscribeWelcomeHtml, buildSubscribeWelcomeText } from '../templates/emails/subscribeWelcome.js'
 
 let _client = null
 function getClient() {
@@ -69,6 +70,15 @@ export async function sendReorderReminderEmail({ to, customerName, favoriteProdu
     subject: "Your Stack Is Running Low. Your Edge Shouldn't Be.",
     html: buildReorder30dHtml({ customerName, favoriteProduct }),
     text: buildReorder30dText({ customerName, favoriteProduct }),
+  })
+}
+
+export async function sendSubscribeWelcomeEmail({ to }) {
+  return send({
+    to,
+    subject: "You're In. Welcome To The Inner Circle.",
+    html: buildSubscribeWelcomeHtml({ email: to }),
+    text: buildSubscribeWelcomeText({ email: to }),
   })
 }
 

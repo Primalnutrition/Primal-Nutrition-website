@@ -41,7 +41,7 @@ const schema = z.object({
   ALLOWED_ORIGINS: z
     .string()
     .default(
-      'https://primal-revamp-v2.netlify.app,https://primal-admin.netlify.app,http://localhost:5002,http://localhost:5173'
+      'https://primalnutrition.in,https://www.primalnutrition.in,https://primal-revamp-v2.netlify.app,https://primal-admin.netlify.app,http://localhost:5002,http://localhost:5173'
     ),
 })
 

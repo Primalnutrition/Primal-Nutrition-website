@@ -340,3 +340,21 @@ CREATE UNIQUE INDEX IF NOT EXISTS uniq_email_per_order_type
 CREATE INDEX IF NOT EXISTS idx_order_emails_order ON order_emails (order_id);
 CREATE INDEX IF NOT EXISTS idx_order_emails_customer ON order_emails (customer_id);
 CREATE INDEX IF NOT EXISTS idx_order_emails_type_sent ON order_emails (email_type, sent_at DESC);
+
+-- =============================================================================
+-- subscribers — newsletter list. Independent of customers; deduped by email.
+-- See api/supabase/migrations/2026-05-29_subscribers.sql for the migration.
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS subscribers (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email             TEXT NOT NULL UNIQUE,
+  source            TEXT NOT NULL DEFAULT 'footer',
+  subscribed_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  welcome_sent_at   TIMESTAMPTZ,
+  welcome_resend_id TEXT,
+  unsubscribed_at   TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email           ON subscribers (email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_subscribed_at   ON subscribers (subscribed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_subscribers_pending_welcome ON subscribers (subscribed_at)
+  WHERE welcome_sent_at IS NULL AND unsubscribed_at IS NULL;

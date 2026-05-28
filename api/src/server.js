@@ -19,6 +19,7 @@ import checkoutRouter from './routes/checkout.js'
 import webhooksRouter from './routes/webhooks.js'
 import authRouter from './routes/auth.js'
 import cronRouter from './routes/cron.js'
+import subscribeRouter from './routes/subscribe.js'
 import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
@@ -92,6 +93,7 @@ app.get('/health', (_req, res) => {
 app.use('/api/products', productsRouter)
 app.use('/api/checkout', checkoutRouter)
 app.use('/api/webhooks', webhooksRouter)
+app.use('/api/subscribe', subscribeRouter)
 
 // ─── Admin OTP login (public — issues session tokens) ─────────────────────────
 app.use('/auth', authRouter)
