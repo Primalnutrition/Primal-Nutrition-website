@@ -37,6 +37,8 @@ services:
         sync: false
       - key: SHIPROCKET_PICKUP_LOCATION
         value: Primary
+      - key: CRON_SECRET
+        sync: false
       - key: RESEND_API_KEY
         sync: false
       - key: RESEND_FROM_EMAIL

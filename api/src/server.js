@@ -18,6 +18,7 @@ import productsRouter from './routes/products.js'
 import checkoutRouter from './routes/checkout.js'
 import webhooksRouter from './routes/webhooks.js'
 import authRouter from './routes/auth.js'
+import cronRouter from './routes/cron.js'
 import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
@@ -94,6 +95,9 @@ app.use('/api/webhooks', webhooksRouter)
 
 // ─── Admin OTP login (public — issues session tokens) ─────────────────────────
 app.use('/auth', authRouter)
+
+// ─── Daily followup-email cron (Bearer ${CRON_SECRET}) ────────────────────────
+app.use('/cron', cronRouter)
 
 // ─── Admin routes — all require Bearer auth (OTP JWT or Supabase) ─────────────
 app.use('/api/admin', adminAuth)

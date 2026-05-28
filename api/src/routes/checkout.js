@@ -26,6 +26,17 @@ import {
   applyShipmentDetails,
   getOrderForShipment,
 } from '../services/orderService.js'
+import { fireWelcomeEmail, fireOrderConfirmationEmail } from '../services/emailHooks.js'
+
+function mapItemsForEmail(items) {
+  return (items ?? []).map((it) => ({
+    product_name: it.product_name_snapshot ?? it.product_name ?? '',
+    variant_label: it.variant_label_snapshot ?? it.variant_label ?? '',
+    qty: it.qty,
+    unit_price: it.unit_price,
+    line_total: it.line_total,
+  }))
+}
 
 const router = Router()
 
@@ -155,7 +166,7 @@ router.post('/create-order', async (req, res, next) => {
       'Draft order + Razorpay order created'
     )
 
-    return res.status(201).json({
+    res.status(201).json({
       internalOrderId: draft.internalOrderId,
       orderNumber: draft.orderNumber,
       razorpayOrderId: rzpOrder.id,
@@ -168,6 +179,13 @@ router.post('/create-order', async (req, res, next) => {
         phone: draft.customer.phone,
       },
     })
+
+    void fireWelcomeEmail({
+      customerId: draft.customer.id,
+      name: draft.customer.name,
+      email: draft.customer.email,
+    }).catch((err) => logger.warn({ err }, 'welcome email hook failed'))
+    return
   } catch (err) {
     logger.error({ err: err.message }, 'create-order failed')
     return next(err)
@@ -204,7 +222,7 @@ router.post('/verify-payment', async (req, res, next) => {
       )
     }
 
-    return res.json({
+    res.json({
       success: true,
       alreadyPaid,
       order: {
@@ -214,6 +232,29 @@ router.post('/verify-payment', async (req, res, next) => {
         paidAt: order.paid_at,
       },
     })
+
+    if (!alreadyPaid) {
+      void (async () => {
+        try {
+          const full = await getOrderForShipment(internalOrderId)
+          if (full?.customer?.email) {
+            await fireOrderConfirmationEmail({
+              orderId: full.id,
+              customerId: full.customer.id,
+              name: full.customer.name,
+              email: full.customer.email,
+              orderNumber: full.order_number,
+              totalInr: Number(full.total),
+              items: mapItemsForEmail(full.order_items),
+              placedAt: order.paid_at ?? new Date().toISOString(),
+            })
+          }
+        } catch (err) {
+          logger.warn({ err, internalOrderId }, 'verify-payment confirmation email failed')
+        }
+      })()
+    }
+    return
   } catch (err) {
     logger.error({ err: err.message }, 'verify-payment failed')
     return next(err)
@@ -258,12 +299,31 @@ router.post('/create-cod-order', async (req, res, next) => {
       })
     }
 
-    return res.status(201).json({
+    res.status(201).json({
       internalOrderId: draft.internalOrderId,
       orderNumber: draft.orderNumber,
       total: draft.totalRupees,
       paymentMethod: 'cod',
     })
+
+    void Promise.all([
+      fireWelcomeEmail({
+        customerId: draft.customer.id,
+        name: draft.customer.name,
+        email: draft.customer.email,
+      }),
+      fireOrderConfirmationEmail({
+        orderId: draft.internalOrderId,
+        customerId: draft.customer.id,
+        name: draft.customer.name,
+        email: draft.customer.email,
+        orderNumber: draft.orderNumber,
+        totalInr: draft.totalRupees,
+        items: mapItemsForEmail(draft.items),
+        placedAt: new Date().toISOString(),
+      }),
+    ]).catch((err) => logger.warn({ err, internalOrderId: draft.internalOrderId }, 'COD post-response email hooks failed'))
+    return
   } catch (err) {
     logger.error({ err: err.message }, 'create-cod-order failed')
     return next(err)

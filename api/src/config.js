@@ -23,6 +23,9 @@ const schema = z.object({
   // Admin OTP/JWT
   ADMIN_JWT_SECRET: z.string().optional().default(''),
 
+  // Cron (daily followup emails)
+  CRON_SECRET: z.string().optional().default(''),
+
   // Razorpay (Phase C)
   RAZORPAY_KEY_ID: z.string().optional().default(''),
   RAZORPAY_KEY_SECRET: z.string().optional().default(''),
@@ -73,6 +76,8 @@ export const config = {
   },
 
   adminJwtSecret: parsed.data.ADMIN_JWT_SECRET,
+
+  cronSecret: parsed.data.CRON_SECRET,
 
   razorpay: {
     keyId: parsed.data.RAZORPAY_KEY_ID,

@@ -16,7 +16,9 @@ import {
   findOrderByShipmentRef,
   markOrderPaid,
   applyShipmentDetails,
+  getOrderForShipment,
 } from '../services/orderService.js'
+import { fireOrderConfirmationEmail } from '../services/emailHooks.js'
 
 const router = Router()
 
@@ -52,6 +54,32 @@ router.post('/razorpay', async (req, res) => {
           break
         }
         await markOrderPaid({ internalOrderId: order.id, razorpayPaymentId: payment.id })
+        // Fire-and-forget confirmation email; idempotent via unique index
+        void (async () => {
+          try {
+            const full = await getOrderForShipment(order.id)
+            if (full?.customer?.email) {
+              await fireOrderConfirmationEmail({
+                orderId: full.id,
+                customerId: full.customer.id,
+                name: full.customer.name,
+                email: full.customer.email,
+                orderNumber: full.order_number,
+                totalInr: Number(full.total),
+                items: (full.order_items ?? []).map((it) => ({
+                  product_name: it.product_name_snapshot,
+                  variant_label: it.variant_label_snapshot,
+                  qty: it.qty,
+                  unit_price: it.unit_price,
+                  line_total: it.line_total,
+                })),
+                placedAt: new Date().toISOString(),
+              })
+            }
+          } catch (err) {
+            logger.warn({ err, orderId: order.id }, 'razorpay-webhook confirmation email failed')
+          }
+        })()
         break
       }
       case 'payment.failed': {
