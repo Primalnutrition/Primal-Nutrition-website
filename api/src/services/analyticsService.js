@@ -1,9 +1,5 @@
 import { getAdminClient } from '../lib/supabase.js'
 
-/**
- * Parse a range string like '7d', '30d', '90d', 'all' into a Date.
- * Returns null for 'all'.
- */
 function rangeToDate(range) {
   if (!range || range === 'all') return null
   const match = range.match(/^(\d+)d$/)
@@ -14,14 +10,25 @@ function rangeToDate(range) {
   return d
 }
 
+function notConfigured() {
+  return Object.assign(new Error('Supabase not configured'), {
+    statusCode: 503,
+    code: 'SUPABASE_NOT_CONFIGURED',
+  })
+}
+
 /**
- * Get KPI overview cards.
- * Returns revenue totals for today/7d/30d/all, order counts, AOV,
- * active customer count, dormant customer count.
+ * KPI overview consumed by the admin Dashboard.
+ *
+ * Shape mirrors the keys the dashboard reads directly:
+ *   revenue: { today, week, month, all }
+ *   orders:  { today, week, month, all }
+ *   aov:     { month, all }
+ *   customers: { active, dormant, churned, total }
  */
 export async function getOverview() {
   const supabase = getAdminClient()
-  if (!supabase) throw Object.assign(new Error('Supabase not configured'), { statusCode: 503, code: 'SUPABASE_NOT_CONFIGURED' })
+  if (!supabase) throw notConfigured()
 
   const now = new Date()
   const startOf = (days) => {
@@ -30,78 +37,70 @@ export async function getOverview() {
     return d.toISOString()
   }
 
-  // Run queries in parallel
-  const [allOrders, dormant] = await Promise.all([
+  const [ordersRes, customersRes] = await Promise.all([
     supabase
       .from('orders')
       .select('total, status, placed_at, customer_id')
       .neq('status', 'cancelled'),
-
     supabase
-      .from('dormant_customers')
-      .select('customer_id', { count: 'exact', head: true }),
+      .from('customer_summary')
+      .select('status'),
   ])
 
-  if (allOrders.error) throw allOrders.error
+  if (ordersRes.error) throw ordersRes.error
+  if (customersRes.error) throw customersRes.error
 
-  const orders = allOrders.data ?? []
+  const orders = ordersRes.data ?? []
+  const customers = customersRes.data ?? []
 
-  const filter = (days) => orders.filter((o) => {
-    if (!days) return true
-    return new Date(o.placed_at) >= new Date(startOf(days))
-  })
+  const inLast = (days) => orders.filter((o) =>
+    days == null ? true : new Date(o.placed_at) >= new Date(startOf(days))
+  )
+  const sum = (rows) => rows.reduce((s, o) => s + Number(o.total ?? 0), 0)
+  const avg = (rows) => (rows.length ? Math.round(sum(rows) / rows.length) : 0)
 
-  const revenue = (rows) => rows.reduce((s, o) => s + Number(o.total ?? 0), 0)
+  const today = inLast(1)
+  const week = inLast(7)
+  const month = inLast(30)
+  const all = inLast(null)
 
-  const today = filter(1)
-  const week = filter(7)
-  const month = filter(30)
-  const all = filter(null)
-
-  const uniqueCustomers = (rows) => new Set(rows.map((o) => o.customer_id)).size
-
-  // Active customers: ordered in last 60 days
-  const activeOrders = orders.filter((o) => new Date(o.placed_at) >= new Date(startOf(60)))
-  const activeCustomers = new Set(activeOrders.map((o) => o.customer_id)).size
-
-  const calcAov = (rows) => rows.length > 0 ? revenue(rows) / rows.length : 0
+  const byStatus = (s) => customers.filter((c) => c.status === s).length
 
   return {
     revenue: {
-      today: revenue(today),
-      sevenDay: revenue(week),
-      thirtyDay: revenue(month),
-      allTime: revenue(all),
+      today: sum(today),
+      week: sum(week),
+      month: sum(month),
+      all: sum(all),
     },
     orders: {
       today: today.length,
-      sevenDay: week.length,
-      thirtyDay: month.length,
-      allTime: all.length,
+      week: week.length,
+      month: month.length,
+      all: all.length,
     },
     aov: {
-      thirtyDay: calcAov(month),
-      allTime: calcAov(all),
+      month: avg(month),
+      all: avg(all),
     },
     customers: {
-      active: activeCustomers,
-      dormant: dormant.count ?? 0,
-      totalWithOrders: uniqueCustomers(all),
+      active: byStatus('active'),
+      dormant: byStatus('dormant'),
+      churned: byStatus('churned'),
+      total: customers.length,
     },
   }
 }
 
 /**
- * Get daily revenue timeseries.
- *
- * @param {{ range?: string, metric?: string }} opts
+ * Daily revenue timeseries for the dashboard chart.
+ * Returns { data: [{ date, value, orders_count }] }.
  */
 export async function getTimeseries({ range = '30d', metric = 'revenue' } = {}) {
   const supabase = getAdminClient()
-  if (!supabase) throw Object.assign(new Error('Supabase not configured'), { statusCode: 503, code: 'SUPABASE_NOT_CONFIGURED' })
+  if (!supabase) throw notConfigured()
 
   const from = rangeToDate(range)
-
   let query = supabase
     .from('daily_revenue')
     .select('date, orders_count, revenue, new_customers, returning_customers')
@@ -114,25 +113,59 @@ export async function getTimeseries({ range = '30d', metric = 'revenue' } = {}) 
   const { data, error } = await query
   if (error) throw error
 
-  return data ?? []
+  const rows = (data ?? []).map((r) => ({
+    date: r.date,
+    value: Number(metric === 'orders' ? r.orders_count : r.revenue) || 0,
+    orders_count: r.orders_count,
+    revenue: r.revenue,
+    new_customers: r.new_customers,
+    returning_customers: r.returning_customers,
+  }))
+
+  return { data: rows }
 }
 
 /**
- * Get top N products by revenue.
- *
- * @param {{ limit?: number }} opts
+ * Ranked product performance for Dashboard + Products page.
+ * Returns { data: [{ product_id, name, revenue, qty, customers, image }] }.
  */
 export async function getTopProducts({ limit = 10 } = {}) {
   const supabase = getAdminClient()
-  if (!supabase) throw Object.assign(new Error('Supabase not configured'), { statusCode: 503, code: 'SUPABASE_NOT_CONFIGURED' })
+  if (!supabase) throw notConfigured()
 
+  const lim = Math.min(limit, 50)
   const { data, error } = await supabase
     .from('product_performance')
     .select('product_id, name, total_orders, total_revenue, total_qty_sold, unique_customers, revenue_rank')
     .order('revenue_rank', { ascending: true })
-    .limit(Math.min(limit, 50))
+    .limit(lim)
 
   if (error) throw error
 
-  return data ?? []
+  const rows = data ?? []
+  const ids = rows.map((r) => r.product_id).filter(Boolean)
+
+  let imagesById = {}
+  if (ids.length) {
+    const imgRes = await supabase
+      .from('products')
+      .select('id, image')
+      .in('id', ids)
+    if (!imgRes.error && imgRes.data) {
+      imagesById = Object.fromEntries(imgRes.data.map((p) => [p.id, p.image]))
+    }
+  }
+
+  return {
+    data: rows.map((r) => ({
+      product_id: r.product_id,
+      name: r.name,
+      revenue: Number(r.total_revenue) || 0,
+      qty: Number(r.total_qty_sold) || 0,
+      customers: Number(r.unique_customers) || 0,
+      total_orders: r.total_orders,
+      revenue_rank: r.revenue_rank,
+      image: imagesById[r.product_id] || null,
+    })),
+  }
 }

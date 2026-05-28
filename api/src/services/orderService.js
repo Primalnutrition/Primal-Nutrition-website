@@ -270,9 +270,20 @@ export async function getOrderForShipment(internalOrderId) {
  *
  * @param {{ page?: number, limit?: number, status?: string, customerId?: string, from?: string, to?: string }} opts
  */
-export async function listOrders({ page = 1, limit = 25, status, customerId, from, to } = {}) {
+export async function listOrders({ page = 1, limit = 25, status, customerId, from, to, range } = {}) {
   const supabase = requireSupabase()
-  const offset = (page - 1) * Math.min(limit, 100)
+  const safeLimit = Math.min(limit, 100)
+  const offset = (page - 1) * safeLimit
+
+  // Resolve relative range param ("7d" | "30d" | "90d") into a "from" cutoff
+  if (!from && range) {
+    const m = String(range).match(/^(\d+)d$/)
+    if (m) {
+      const d = new Date()
+      d.setDate(d.getDate() - parseInt(m[1], 10))
+      from = d.toISOString()
+    }
+  }
 
   let query = supabase
     .from('orders')
@@ -281,12 +292,13 @@ export async function listOrders({ page = 1, limit = 25, status, customerId, fro
       id, order_number, status, subtotal, discount, shipping_fee, tax, total,
       payment_method, placed_at, paid_at, shipped_at, delivered_at, cancelled_at,
       awb_code, courier_name,
-      customer:customers (id, name, email, phone)
+      customer:customers (id, name, email, phone),
+      order_items (id)
     `,
       { count: 'exact' }
     )
     .order('placed_at', { ascending: false })
-    .range(offset, offset + Math.min(limit, 100) - 1)
+    .range(offset, offset + safeLimit - 1)
 
   if (status) query = query.eq('status', status)
   if (customerId) query = query.eq('customer_id', customerId)
@@ -296,14 +308,35 @@ export async function listOrders({ page = 1, limit = 25, status, customerId, fro
   const { data, error, count } = await query
   if (error) throw error
 
+  const rows = (data ?? []).map((o) => ({
+    id: o.id,
+    order_number: o.order_number,
+    status: o.status,
+    subtotal: o.subtotal,
+    discount: o.discount,
+    shipping_fee: o.shipping_fee,
+    tax: o.tax,
+    total: o.total,
+    payment_method: o.payment_method,
+    placed_at: o.placed_at,
+    paid_at: o.paid_at,
+    shipped_at: o.shipped_at,
+    delivered_at: o.delivered_at,
+    cancelled_at: o.cancelled_at,
+    awb_code: o.awb_code,
+    courier_name: o.courier_name,
+    customer_id: o.customer?.id ?? null,
+    customer_name: o.customer?.name ?? null,
+    customer_email: o.customer?.email ?? null,
+    item_count: Array.isArray(o.order_items) ? o.order_items.length : 0,
+  }))
+
+  const total = count ?? 0
+  const pages = Math.ceil(total / safeLimit) || 1
+
   return {
-    data: data ?? [],
-    pagination: {
-      page,
-      limit,
-      total: count ?? 0,
-      totalPages: Math.ceil((count ?? 0) / limit),
-    },
+    data: rows,
+    meta: { page, limit: safeLimit, total, pages },
   }
 }
 
@@ -345,5 +378,44 @@ export async function getOrderById(id) {
     throw error
   }
 
-  return data
+  const order = {
+    id: data.id,
+    order_number: data.order_number,
+    status: data.status,
+    subtotal: data.subtotal,
+    discount: data.discount,
+    shipping_fee: data.shipping_fee,
+    tax: data.tax,
+    total: data.total,
+    payment_method: data.payment_method,
+    razorpay_order_id: data.razorpay_order_id,
+    razorpay_payment_id: data.razorpay_payment_id,
+    shiprocket_order_id: data.shiprocket_order_id,
+    awb_code: data.awb_code,
+    courier_name: data.courier_name,
+    placed_at: data.placed_at,
+    paid_at: data.paid_at,
+    shipped_at: data.shipped_at,
+    delivered_at: data.delivered_at,
+    cancelled_at: data.cancelled_at,
+  }
+
+  const items = (data.order_items ?? []).map((it) => ({
+    id: it.id,
+    product_id: it.product?.id ?? null,
+    product_name: it.product_name_snapshot ?? it.product?.name ?? null,
+    product_image: it.product?.image ?? null,
+    variant_id: it.variant?.id ?? null,
+    variant_label: it.variant_label_snapshot ?? it.variant?.label ?? null,
+    qty: it.qty,
+    unit_price: it.unit_price,
+    line_total: it.line_total,
+  }))
+
+  return {
+    order,
+    items,
+    customer: data.customer ?? null,
+    address: data.shipping_address ?? null,
+  }
 }
