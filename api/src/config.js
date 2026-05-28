@@ -23,6 +23,9 @@ const schema = z.object({
   // Admin OTP/JWT
   ADMIN_JWT_SECRET: z.string().optional().default(''),
 
+  // Cron (daily followup emails)
+  CRON_SECRET: z.string().optional().default(''),
+
   // Razorpay (Phase C)
   RAZORPAY_KEY_ID: z.string().optional().default(''),
   RAZORPAY_KEY_SECRET: z.string().optional().default(''),
@@ -38,7 +41,7 @@ const schema = z.object({
   ALLOWED_ORIGINS: z
     .string()
     .default(
-      'https://primal-revamp-v2.netlify.app,https://primal-admin.netlify.app,http://localhost:5002,http://localhost:5173'
+      'https://primalnutrition.in,https://www.primalnutrition.in,https://primal-revamp-v2.netlify.app,https://primal-admin.netlify.app,http://localhost:5002,http://localhost:5173'
     ),
 })
 
@@ -73,6 +76,8 @@ export const config = {
   },
 
   adminJwtSecret: parsed.data.ADMIN_JWT_SECRET,
+
+  cronSecret: parsed.data.CRON_SECRET,
 
   razorpay: {
     keyId: parsed.data.RAZORPAY_KEY_ID,
