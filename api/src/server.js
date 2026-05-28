@@ -10,13 +10,14 @@ import { dirname, join } from 'path'
 import { config } from './config.js'
 import { logger } from './utils/logger.js'
 import { general as generalRateLimit } from './middleware/ratelimit.js'
-import { requireAuth } from './middleware/auth.js'
+import { adminAuth } from './middleware/adminAuth.js'
 import { errorHandler, notFoundHandler } from './middleware/error.js'
 
 // Routes
 import productsRouter from './routes/products.js'
 import checkoutRouter from './routes/checkout.js'
 import webhooksRouter from './routes/webhooks.js'
+import authRouter from './routes/auth.js'
 import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
@@ -91,8 +92,11 @@ app.use('/api/products', productsRouter)
 app.use('/api/checkout', checkoutRouter)
 app.use('/api/webhooks', webhooksRouter)
 
-// ─── Admin routes — all require Bearer auth ────────────────────────────────────
-app.use('/api/admin', requireAuth)
+// ─── Admin OTP login (public — issues session tokens) ─────────────────────────
+app.use('/auth', authRouter)
+
+// ─── Admin routes — all require Bearer auth (OTP JWT or Supabase) ─────────────
+app.use('/api/admin', adminAuth)
 app.use('/api/admin/customers', adminCustomersRouter)
 app.use('/api/admin/orders', adminOrdersRouter)
 app.use('/api/admin/analytics', adminAnalyticsRouter)

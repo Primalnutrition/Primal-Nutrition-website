@@ -16,6 +16,13 @@ const schema = z.object({
   // Groq
   GROQ_API_KEY: z.string().optional().default(''),
 
+  // Resend (transactional email)
+  RESEND_API_KEY: z.string().optional().default(''),
+  RESEND_FROM_EMAIL: z.string().optional().default(''),
+
+  // Admin OTP/JWT
+  ADMIN_JWT_SECRET: z.string().optional().default(''),
+
   // Razorpay (Phase C)
   RAZORPAY_KEY_ID: z.string().optional().default(''),
   RAZORPAY_KEY_SECRET: z.string().optional().default(''),
@@ -58,6 +65,14 @@ export const config = {
 
   databaseUrl: parsed.data.DATABASE_URL,
   groqApiKey: parsed.data.GROQ_API_KEY,
+
+  resend: {
+    apiKey: parsed.data.RESEND_API_KEY,
+    fromEmail: parsed.data.RESEND_FROM_EMAIL,
+    configured: Boolean(parsed.data.RESEND_API_KEY && parsed.data.RESEND_FROM_EMAIL),
+  },
+
+  adminJwtSecret: parsed.data.ADMIN_JWT_SECRET,
 
   razorpay: {
     keyId: parsed.data.RAZORPAY_KEY_ID,
