@@ -71,8 +71,8 @@ export default function FAQ() {
             <a href="https://wa.me/917838026415" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light font-medium text-sm">
               WhatsApp +91-7838026415 →
             </a>
-            <a href="mailto:saleshead@primalnutrition.in" className="block mt-2 text-amber hover:text-amber-light font-medium text-sm">
-              saleshead@primalnutrition.in →
+            <a href="mailto:salesmanager@primalnutrition.in" className="block mt-2 text-amber hover:text-amber-light font-medium text-sm">
+              salesmanager@primalnutrition.in →
             </a>
           </div>
 

@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import PrimalLogo from './PrimalLogo.jsx'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
 
 export default function Footer() {
   return (
@@ -16,10 +19,7 @@ export default function Footer() {
             <p className="text-bone/45 text-sm italic mb-6">
               "The answer always lies in nature, in the food we eat and the places we train."
             </p>
-            <form className="flex gap-2 max-w-md" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="your@email.com" className="flex-1 bg-ink-800 border border-bone/10 rounded-full px-4 py-3 text-sm placeholder:text-bone/30 focus:outline-none focus:border-amber" />
-              <button className="bg-amber text-bone font-semibold px-5 py-3 rounded-full text-sm hover:bg-amber-light transition">Subscribe</button>
-            </form>
+            <SubscribeForm />
             <p className="text-[11px] text-bone/35 mt-3">Get the protocol guide free. Unsubscribe anytime.</p>
           </div>
 
@@ -39,7 +39,7 @@ export default function Footer() {
             </Col>
             <Col title="Support">
               <a href="https://wa.me/917838026415">WhatsApp +91-7838026415</a>
-              <a href="mailto:saleshead@primalnutrition.in">saleshead@primalnutrition.in</a>
+              <a href="mailto:salesmanager@primalnutrition.in">salesmanager@primalnutrition.in</a>
               <a href="#/dealer">Become a Dealer</a>
             </Col>
             <Col title="Company">
@@ -127,3 +127,66 @@ function Col({ title, children }) {
 }
 
 function Dot() { return <span className="w-1 h-1 rounded-full bg-bone/20" /> }
+
+function SubscribeForm() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!email.trim() || status === 'sending') return
+    setStatus('sending')
+    setMessage('')
+    try {
+      const res = await fetch(`${API_URL}/api/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), source: 'footer' }),
+      })
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setStatus('error')
+        setMessage(body.message || 'Could not subscribe. Try again.')
+        return
+      }
+      setStatus('success')
+      setMessage(body.alreadySubscribed
+        ? "You're already in. Check your inbox for the protocol guide."
+        : "You're in. Check your inbox for the welcome drop.")
+      setEmail('')
+    } catch (err) {
+      setStatus('error')
+      setMessage('Network error. Please try again.')
+    }
+  }
+
+  return (
+    <div>
+      <form className="flex gap-2 max-w-md" onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+          disabled={status === 'sending'}
+          placeholder="your@email.com"
+          className="flex-1 bg-ink-800 border border-bone/10 rounded-full px-4 py-3 text-sm placeholder:text-bone/30 focus:outline-none focus:border-amber disabled:opacity-50"
+        />
+        <button
+          type="submit"
+          disabled={status === 'sending' || !email.trim()}
+          className="bg-amber text-bone font-semibold px-5 py-3 rounded-full text-sm hover:bg-amber-light transition disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {status === 'sending' ? 'Sending…' : 'Subscribe'}
+        </button>
+      </form>
+      {message && (
+        <p className={`text-[12px] mt-2 ${status === 'success' ? 'text-amber' : 'text-red-400'}`}>
+          {message}
+        </p>
+      )}
+    </div>
+  )
+}
