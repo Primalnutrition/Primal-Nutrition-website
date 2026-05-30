@@ -21,6 +21,7 @@ const NO_AVIF = new Set([
   '/products/trex-tongkat.png',
   '/products/vita-peak.png',
 ])
+// Note: /products/trex-liquid.png does have an AVIF — it's rendered without alpha.
 
 export default function Picture({ src, ...imgProps }) {
   if (!src || !/\.(png|jpe?g)$/i.test(src)) {
