@@ -1,15 +1,30 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { categories, products } from '../data/products.js'
 import ProductCard from './ProductCard.jsx'
 import Footer from './Footer.jsx'
 
 export default function ShopPage() {
   const [active, setActive] = useState('all')
+  const gridRef = useRef(null)
 
   const filtered = useMemo(
     () => (active === 'all' ? products : products.filter((p) => p.category === active)),
     [active]
   )
+
+  // The page-level IntersectionObserver in App.jsx runs before this lazy
+  // component mounts, so it never observes our grid. Without `data-revealed`,
+  // the [data-reveal-stagger] > * rule in index.css keeps every card at
+  // opacity:0 and the grid looks blank. Mark revealed on mount + on filter
+  // changes so newly-rendered cards inherit the stagger animation cleanly.
+  useEffect(() => {
+    const el = gridRef.current
+    if (!el) return
+    // Tiny delay so the stagger transition actually plays instead of
+    // applying instantly with no perceived animation.
+    const t = setTimeout(() => el.setAttribute('data-revealed', ''), 20)
+    return () => clearTimeout(t)
+  }, [filtered])
 
   return (
     <>
@@ -70,7 +85,7 @@ export default function ShopPage() {
           </div>
 
           {/* Grid */}
-          <div data-reveal-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div ref={gridRef} data-reveal-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
