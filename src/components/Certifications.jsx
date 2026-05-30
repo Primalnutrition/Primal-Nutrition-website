@@ -1,3 +1,5 @@
+import Picture from './Picture.jsx'
+
 /* Real certifications carousel — sources are the actual PDFs converted
    to PNG, sitting in /brand/certifications/. */
 const certs = [
@@ -27,7 +29,7 @@ export default function Certifications() {
           {certs.map((c) => (
             <article key={c.id} className="card-lift group p-3 rounded-2xl border border-bone/10 bg-ink-800/50 flex flex-col">
               <div className="aspect-[3/4] rounded-lg overflow-hidden bg-bone/95 mb-3 flex items-center justify-center">
-                <img src={c.src} alt={c.label} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
+                <Picture src={c.src} alt={c.label} loading="lazy" decoding="async" className="w-full h-full object-cover object-top" />
               </div>
               <div className="px-2 pb-2">
                 <div className="font-display text-lg uppercase tracking-tight leading-tight">{c.label}</div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Picture from './Picture.jsx'
 
 /* PDP gallery — main image + thumbnail strip.
    No background, no filters, no overlays — images render exactly as uploaded. */
@@ -15,7 +16,7 @@ export default function ProductGallery({ product }) {
     <div>
       {/* Main image — fills full width, natural height, zero background / filter / overlay */}
       <div className="relative w-full rounded-2xl overflow-hidden">
-        <img
+        <Picture
           src={images[active]}
           alt={`${product.name} · view ${active + 1}`}
           loading="eager"
@@ -50,7 +51,7 @@ export default function ProductGallery({ product }) {
                   : 'border-bone/10 hover:border-bone/30 opacity-60 hover:opacity-100'
               }`}
             >
-              <img
+              <Picture
                 src={src}
                 alt=""
                 aria-hidden

@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext.jsx'
+import Picture from './Picture.jsx'
 
 export default function ProductDeepDive() {
   const { addToCart } = useCart()
@@ -11,7 +12,7 @@ export default function ProductDeepDive() {
             <div className="relative aspect-[4/5]">
               {/* Floating T-Rex bottle — raw image, no bg, no gradient, no filter, no crop */}
               <div className="absolute inset-0 flex items-center justify-center animate-float">
-                <img
+                <Picture
                   src="/products/trex-liquid-02.png"
                   alt="T-Rex 500ml bottle"
                   loading="lazy"

@@ -1,3 +1,5 @@
+import Picture from './Picture.jsx'
+
 /* Product visual — renders the real product photo.
    No background, no filters, no overlays — images render exactly as uploaded.
    Falls back to a CSS bottle mock if no image set. */
@@ -10,7 +12,7 @@ function ImageVisual({ product }) {
   return (
     <div className="relative w-full rounded-2xl overflow-hidden">
       {/* Raw image — no bg, no filters, no overlays, natural proportions */}
-      <img
+      <Picture
         src={product.image}
         alt={product.name}
         loading="lazy"

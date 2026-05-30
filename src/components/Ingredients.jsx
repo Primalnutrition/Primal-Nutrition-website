@@ -1,3 +1,5 @@
+import Picture from './Picture.jsx'
+
 /* The actual 7 ingredients in T-Rex (per 5ml) — pulled verbatim from
    the Primal Nutrition T-REX LABEL.pdf composition statement.
    Each herb now carries an icon from the official brand assets. */
@@ -85,7 +87,7 @@ export default function Ingredients() {
   return (
     <section id="ingredients" className="py-28 relative overflow-hidden">
       {/* Decorative dotted gradient circle, brand asset */}
-      <img src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -top-32 -right-40 w-[600px] opacity-10 mix-blend-lighten pointer-events-none" />
+      <Picture src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -top-32 -right-40 w-[600px] opacity-10 mix-blend-lighten pointer-events-none" />
 
       <div className="container-x relative">
         <div className="max-w-3xl mb-16">
@@ -112,7 +114,7 @@ export default function Ingredients() {
 
               {/* Icon */}
               <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-ink/40 border border-bone/10 flex items-center justify-center p-1.5 group-hover:border-amber/30 transition">
-                <img src={h.icon} alt="" aria-hidden loading="lazy" decoding="async" className="w-full h-full object-contain opacity-90" style={{ mixBlendMode: 'lighten' }} />
+                <Picture src={h.icon} alt="" aria-hidden loading="lazy" decoding="async" className="w-full h-full object-contain opacity-90" style={{ mixBlendMode: 'lighten' }} />
               </div>
 
               <div className="flex items-baseline gap-2 mb-1 pr-12">

@@ -1,3 +1,5 @@
+import Picture from './Picture.jsx'
+
 export default function Founder() {
   return (
     <section id="founder" className="py-28 relative">
@@ -6,7 +8,7 @@ export default function Founder() {
           {/* Founder portrait — real photograph */}
           <div className="lg:col-span-5">
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-ink-800 border border-bone/10">
-              <img
+              <Picture
                 src="/brand/founder.jpg"
                 alt="Founder of Primal Nutrition"
                 className="absolute inset-0 w-full h-full object-cover"

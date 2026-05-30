@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import CountUp from './CountUp.jsx'
+import Picture from './Picture.jsx'
 
 const SLIDE_COUNT = 2
 
@@ -265,7 +266,7 @@ function Bottle3D() {
       className="relative w-full max-w-[520px]"
     >
       {/* Bottle — natural dimensions, no animations, just a soft drop shadow */}
-      <img
+      <Picture
         src="/products/trex-liquid-01.png"
         alt="T-Rex 500ml"
         className="w-full h-auto block select-none drop-shadow-[0_30px_40px_rgba(0,0,0,0.4)]"

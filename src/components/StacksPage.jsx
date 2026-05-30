@@ -3,6 +3,7 @@ import { usePage } from '../context/RouterContext.jsx'
 import { stacks, pricingFor } from '../data/stacks.js'
 import { productById } from '../data/products.js'
 import Footer from './Footer.jsx'
+import Picture from './Picture.jsx'
 
 export default function StacksPage() {
   const { navigate } = usePage()
@@ -18,7 +19,7 @@ export default function StacksPage() {
       {/* Hero strip */}
       <section className="relative pt-28 pb-14 gradient-amber grain border-b border-bone/10 overflow-hidden">
         <div className="absolute -top-32 right-0 w-[500px] h-[500px] rounded-full bg-amber/10 blur-[140px] pointer-events-none" />
-        <img src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -bottom-32 -left-32 w-[600px] opacity-10 mix-blend-lighten pointer-events-none" />
+        <Picture src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -bottom-32 -left-32 w-[600px] opacity-10 mix-blend-lighten pointer-events-none" />
         <div className="container-x relative">
           <nav className="mb-8 text-xs uppercase tracking-widest text-bone/45 flex items-center gap-2 font-brand">
             <button onClick={() => navigate('home')} className="hover:text-amber transition">Home</button>
@@ -56,7 +57,7 @@ export default function StacksPage() {
                       {stack.items.map((it, i) => {
                         const p = productById(it.productId)
                         return (
-                          <img
+                          <Picture
                             key={i}
                             src={p?.image}
                             alt={p?.name}

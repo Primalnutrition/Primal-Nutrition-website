@@ -1,6 +1,7 @@
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import Footer from './Footer.jsx'
+import Picture from './Picture.jsx'
 
 export default function ShilajitGuide() {
   const { navigate } = usePage()
@@ -10,7 +11,7 @@ export default function ShilajitGuide() {
     <>
       <section className="relative pt-28 pb-20 gradient-amber grain border-b border-bone/10 overflow-hidden">
         <div className="absolute -top-32 right-0 w-[600px] h-[600px] rounded-full bg-amber/10 blur-[140px] pointer-events-none" />
-        <img src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -bottom-20 right-10 w-[420px] opacity-15 mix-blend-lighten pointer-events-none" />
+        <Picture src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -bottom-20 right-10 w-[420px] opacity-15 mix-blend-lighten pointer-events-none" />
 
         <div className="container-x relative">
           <nav className="mb-8 text-xs uppercase tracking-widest text-bone/45 flex items-center gap-2 font-brand">
@@ -98,7 +99,7 @@ export default function ShilajitGuide() {
           <div className="relative">
             <div className="absolute -inset-8 bg-amber/10 blur-3xl rounded-full" />
             <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-ink-700 via-ink-800 to-ink border border-bone/10 overflow-hidden flex items-center justify-center">
-              <img src="/products/trex-liquid.png" alt="T-Rex Liquid" loading="lazy" decoding="async" className="w-3/4 h-3/4 object-contain" style={{ filter: 'drop-shadow(0 30px 30px rgba(0,0,0,0.6))' }} />
+              <Picture src="/products/trex-liquid.png" alt="T-Rex Liquid" loading="lazy" decoding="async" className="w-3/4 h-3/4 object-contain" style={{ filter: 'drop-shadow(0 30px 30px rgba(0,0,0,0.6))' }} />
             </div>
           </div>
         </div>
