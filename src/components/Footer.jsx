@@ -24,7 +24,7 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8">
+          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-x-12 gap-y-10">
             <Col title="Shop">
               <a href="#/shop">All Products</a>
               <a href="#/product/trex-liquid">T-Rex Liquid</a>
@@ -113,11 +113,19 @@ export default function Footer() {
 function Col({ title, children }) {
   const items = Array.isArray(children) ? children : [children]
   return (
-    <div>
+    // min-w-0 lets this grid track actually shrink to its allotted width
+    // instead of being pushed by long unbreakable content (email, URLs).
+    <div className="min-w-0">
       <div className="text-[11px] uppercase tracking-widest text-amber mb-4">{title}</div>
       <div className="flex flex-col gap-2.5 text-[14px] text-bone/60">
         {items.map((c, i) => (
-          <a key={i} href={c.props.href} className="hover:text-amber transition">
+          // break-words wraps long unbreakable strings (email, WhatsApp #)
+          // inside the column instead of overflowing into the next one.
+          <a
+            key={i}
+            href={c.props.href}
+            className="hover:text-amber transition break-words"
+          >
             {c.props.children}
           </a>
         ))}
