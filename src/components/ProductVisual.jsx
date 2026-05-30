@@ -42,8 +42,12 @@ function ImageVisual({ product }) {
         </div>
       </div>
 
-      {/* Image — object-contain so non-square product shots aren't cropped;
-          fades in once decoded. */}
+      {/* Image — absolute-positioned so <picture>'s default inline display
+          can't collapse the layout. No opacity gating on the image: DOM
+          order puts it on top of the skeleton naturally; if it renders,
+          it covers the placeholder; if it 404s, the skeleton stays
+          visible as the fallback (better failure mode than a black
+          square with no signal). */}
       <Picture
         ref={imgRef}
         src={product.image}
@@ -51,9 +55,7 @@ function ImageVisual({ product }) {
         loading="lazy"
         decoding="async"
         onLoad={() => setLoaded(true)}
-        className={`relative w-full h-full block object-contain transition-opacity duration-500 ease-out ${
-          loaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        className="absolute inset-0 w-full h-full object-contain"
       />
 
       {/* Category chip */}
