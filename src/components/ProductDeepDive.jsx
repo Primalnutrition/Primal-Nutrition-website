@@ -14,6 +14,8 @@ export default function ProductDeepDive() {
                 <img
                   src="/products/trex-liquid-02.png"
                   alt="T-Rex 500ml bottle"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain"
                 />
               </div>

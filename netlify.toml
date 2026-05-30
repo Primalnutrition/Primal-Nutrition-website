@@ -18,6 +18,17 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Cache product + brand images for a year — file names are stable
+[[headers]]
+  for = "/products/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
 # Security headers
 [[headers]]
   for = "/*"

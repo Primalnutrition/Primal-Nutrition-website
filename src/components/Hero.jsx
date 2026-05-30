@@ -270,6 +270,8 @@ function Bottle3D() {
         alt="T-Rex 500ml"
         className="w-full h-auto block select-none drop-shadow-[0_30px_40px_rgba(0,0,0,0.4)]"
         loading="eager"
+        fetchpriority="high"
+        decoding="async"
         draggable={false}
       />
 

@@ -54,6 +54,8 @@ export default function ProductGallery({ product }) {
                 src={src}
                 alt=""
                 aria-hidden
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </button>

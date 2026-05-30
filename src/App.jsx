@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { CartProvider } from './context/CartContext.jsx'
 import { RouterProvider, usePage } from './context/RouterContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
@@ -21,11 +21,12 @@ import ScrollProgress from './components/ScrollProgress.jsx'
 import CursorOrb from './components/CursorOrb.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import Toast from './components/Toast.jsx'
-import ShopPage from './components/ShopPage.jsx'
-import ProductDetail from './components/ProductDetail.jsx'
-import StacksPage from './components/StacksPage.jsx'
-import DealerPage from './components/DealerPage.jsx'
-import ShilajitGuide from './components/ShilajitGuide.jsx'
+
+const ShopPage = lazy(() => import('./components/ShopPage.jsx'))
+const ProductDetail = lazy(() => import('./components/ProductDetail.jsx'))
+const StacksPage = lazy(() => import('./components/StacksPage.jsx'))
+const DealerPage = lazy(() => import('./components/DealerPage.jsx'))
+const ShilajitGuide = lazy(() => import('./components/ShilajitGuide.jsx'))
 
 function HomePage() {
   return (
@@ -80,11 +81,12 @@ function PageBody() {
     return () => obs.disconnect()
   }, [page, productId])
 
-  if (page === 'product') return <ProductDetail productId={productId} />
-  if (page === 'shop') return <ShopPage />
-  if (page === 'stacks') return <StacksPage />
-  if (page === 'dealer') return <DealerPage />
-  if (page === 'shilajit-guide') return <ShilajitGuide />
+  const fallback = <div className="min-h-screen" />
+  if (page === 'product') return <Suspense fallback={fallback}><ProductDetail productId={productId} /></Suspense>
+  if (page === 'shop') return <Suspense fallback={fallback}><ShopPage /></Suspense>
+  if (page === 'stacks') return <Suspense fallback={fallback}><StacksPage /></Suspense>
+  if (page === 'dealer') return <Suspense fallback={fallback}><DealerPage /></Suspense>
+  if (page === 'shilajit-guide') return <Suspense fallback={fallback}><ShilajitGuide /></Suspense>
   return <HomePage />
 }
 
