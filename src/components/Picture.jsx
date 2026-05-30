@@ -23,9 +23,11 @@ const NO_AVIF = new Set([
 ])
 // Note: /products/trex-liquid.png does have an AVIF — it's rendered without alpha.
 
-export default function Picture({ src, ...imgProps }) {
+import { forwardRef } from 'react'
+
+const Picture = forwardRef(function Picture({ src, ...imgProps }, ref) {
   if (!src || !/\.(png|jpe?g)$/i.test(src)) {
-    return <img src={src} {...imgProps} />
+    return <img ref={ref} src={src} {...imgProps} />
   }
   const base = src.replace(/\.(png|jpe?g)$/i, '')
   const webp = `${base}.webp`
@@ -35,7 +37,9 @@ export default function Picture({ src, ...imgProps }) {
     <picture>
       {useAvif && <source type="image/avif" srcSet={avif} />}
       <source type="image/webp" srcSet={webp} />
-      <img src={src} {...imgProps} />
+      <img ref={ref} src={src} {...imgProps} />
     </picture>
   )
-}
+})
+
+export default Picture

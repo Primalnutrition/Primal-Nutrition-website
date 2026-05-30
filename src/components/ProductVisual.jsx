@@ -1,23 +1,59 @@
+import { useEffect, useRef, useState } from 'react'
 import Picture from './Picture.jsx'
 
 /* Product visual — renders the real product photo.
-   No background, no filters, no overlays — images render exactly as uploaded.
-   Falls back to a CSS bottle mock if no image set. */
+   Loader strategy: aspect-square wrapper reserves space (no CLS), a
+   brand-tinted pulse skeleton sits underneath, and the image fades in
+   on decode complete. Falls back to a CSS bottle mock if no image set. */
 export default function ProductVisual({ product }) {
   if (product.image) return <ImageVisual product={product} />
   return <FallbackVisual product={product} />
 }
 
 function ImageVisual({ product }) {
+  const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef(null)
+
+  // If the image is already in cache, `onLoad` may fire before our ref is
+  // wired up — check `complete` once after mount so cached images don't
+  // get stuck behind the skeleton.
+  useEffect(() => {
+    const el = imgRef.current
+    if (el && el.complete && el.naturalWidth > 0) setLoaded(true)
+  }, [])
+
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden">
-      {/* Raw image — no bg, no filters, no overlays, natural proportions */}
+    <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-ink-800/40">
+      {/* Skeleton — slow amber pulse on dark base. Visible until the image
+          decodes, fades out in 400ms. aria-hidden because it's purely
+          decorative; screen readers go straight to the <img> alt. */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 transition-opacity duration-400 ease-out ${
+          loaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-ink-800 via-ink-700/70 to-ink-800 animate-pulse" />
+        <div className="absolute inset-0 grain opacity-25" />
+        {/* Subtle centered amber dot — same affordance as the route loader,
+            so the brand language stays consistent across loading surfaces. */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="w-2 h-2 rounded-full bg-amber/70 animate-pulse" />
+        </div>
+      </div>
+
+      {/* Image — object-contain so non-square product shots aren't cropped;
+          fades in once decoded. */}
       <Picture
+        ref={imgRef}
         src={product.image}
         alt={product.name}
         loading="lazy"
         decoding="async"
-        className="w-full h-auto block"
+        onLoad={() => setLoaded(true)}
+        className={`relative w-full h-full block object-contain transition-opacity duration-500 ease-out ${
+          loaded ? 'opacity-100' : 'opacity-0'
+        }`}
       />
 
       {/* Category chip */}
