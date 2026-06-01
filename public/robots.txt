@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://primalnutrition.in/sitemap.xml

@@ -91,6 +91,10 @@ export default function CartDrawer() {
         setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
         setStep('success')
         clearCart()
+        // Meta Pixel — Purchase event
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Purchase', { value: cod.total, currency: 'INR', content_type: 'product' })
+        }
         return
       }
 
@@ -116,6 +120,10 @@ export default function CartDrawer() {
       setConfirmedOrder({ orderNumber: draft.orderNumber, paymentId: rzp.paymentId, total: draft.amount / 100, method: 'online' })
       setStep('success')
       clearCart()
+      // Meta Pixel — Purchase event
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Purchase', { value: draft.amount / 100, currency: 'INR', content_type: 'product' })
+      }
     } catch (err) {
       setSubmitError(err.message || 'Something went wrong. Please try again.')
     } finally {
@@ -327,7 +335,15 @@ export default function CartDrawer() {
                 <svg className="w-3 h-3 text-forest" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
                 Free shipping over ₹1000 · 3rd party tested
               </div>
-              <button onClick={() => setStep('form')} className="btn-primary w-full text-base">
+              <button
+                onClick={() => {
+                  setStep('form')
+                  if (typeof window.fbq === 'function') {
+                    window.fbq('track', 'InitiateCheckout', { value: subtotal, currency: 'INR', num_items: count })
+                  }
+                }}
+                className="btn-primary w-full text-base"
+              >
                 Checkout — ₹{subtotal.toLocaleString('en-IN')}
                 <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
               </button>
