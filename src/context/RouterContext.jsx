@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { track } from '../lib/metaPixel.js'
 
 const RouterContext = createContext(null)
 
@@ -22,12 +23,20 @@ function buildHash(route) {
 
 export function RouterProvider({ children }) {
   const [route, setRoute] = useState(readRoute)
+  // Initial PageView is fired by the inline pixel snippet in index.html.
+  // Skip the first effect run so we don't double-count.
+  const firstRun = useRef(true)
 
   useEffect(() => {
     const onHash = () => setRoute(readRoute())
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
+
+  useEffect(() => {
+    if (firstRun.current) { firstRun.current = false; return }
+    track('PageView')
+  }, [route])
 
   const navigate = useCallback((next, params = {}, { scroll = true } = {}) => {
     let route

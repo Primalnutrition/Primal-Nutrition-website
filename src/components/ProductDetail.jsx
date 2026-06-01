@@ -6,6 +6,7 @@ import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
+import { track } from '../lib/metaPixel.js'
 
 export default function ProductDetail({ productId }) {
   const product = productById(productId)
@@ -18,6 +19,18 @@ export default function ProductDetail({ productId }) {
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' })
     if (product) setVariantId(product.variants[0].id)
+  }, [productId])
+
+  useEffect(() => {
+    if (!product) return
+    const entryVariant = product.variants[0]
+    track('ViewContent', {
+      content_ids: [entryVariant?.id || product.id],
+      content_name: product.name,
+      content_type: 'product',
+      value: entryVariant?.price,
+      currency: 'INR',
+    })
   }, [productId])
 
   if (!product) {

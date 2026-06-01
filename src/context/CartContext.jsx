@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react'
 import { products } from '../data/products.js'
+import { track } from '../lib/metaPixel.js'
 
 const CartContext = createContext(null)
 const STORAGE_KEY = 'primal-cart-v1'
@@ -78,6 +79,16 @@ export function CartProvider({ children }) {
       const variant = product?.variants.find((v) => v.id === variantId)
       showToast(`${product?.name || 'Item'}${variant ? ' — ' + variant.label : ''} added`)
       if (openDrawer) setOpen(true)
+      if (product && variant) {
+        track('AddToCart', {
+          content_ids: [variantId || productId],
+          content_name: product.name,
+          content_type: 'product',
+          value: variant.price * qty,
+          currency: 'INR',
+          num_items: qty,
+        })
+      }
     },
     [showToast]
   )
