@@ -2,9 +2,10 @@ node_modules/
 .env
 .env.local
 .env.production
+*.log
+nohup.out
 dist/
 .DS_Store
-*.log
 .netlify/
 
 # Source design assets in root only — production assets in /public/ are kept
@@ -22,3 +23,25 @@ dist/
 /_founder.txt
 /_changes.txt
 /color-probe/
+
+# Same patterns relative to /frontend/ when this repo is checked out as the monorepo
+/frontend/*.mp4
+/frontend/*.zip
+/frontend/*.docx
+/frontend/*.pdf
+/frontend/*.jpeg
+/frontend/*.jpg
+/frontend/_brand/
+/frontend/_frames/
+/frontend/_originals_backup/
+/frontend/_founder.txt
+/frontend/_changes.txt
+/frontend/color-probe/
+/.image-backups-cropped/
+
+# frontend/ is a local symlink to ~/primal-revamp (deployed via Netlify CLI).
+# Don't track its contents in this repo — primal-revamp is the source of truth.
+/frontend
+/frontend.local-backup
+
+api/graphify-out/
