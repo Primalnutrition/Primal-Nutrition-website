@@ -203,7 +203,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-ginseng',
-    image: '/products/trex-ginseng.png',
+    image: '/products/trex-ginseng-01.png',
+    gallery: [
+      '/products/trex-ginseng-01.png',
+      '/products/trex-ginseng-02.png',
+      '/products/trex-ginseng-03.png',
+      '/products/trex-ginseng-04.png',
+      '/products/trex-ginseng-05.png',
+      '/products/trex-ginseng-06.png',
+    ],
     name: 'Korean Panax Ginseng',
     subtitle: 'Energy · Cognition · Vitality',
     tagline: 'Standardized ginsenoside extract',
@@ -350,7 +358,16 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-tongkat',
-    image: '/products/trex-tongkat.png',
+    image: '/products/trex-tongkat-01.jpeg',
+    gallery: [
+      '/products/trex-tongkat-01.jpeg',
+      '/products/trex-tongkat-02.jpeg',
+      '/products/trex-tongkat-03.jpeg',
+      '/products/trex-tongkat-04.jpeg',
+      '/products/trex-tongkat-05.jpeg',
+      '/products/trex-tongkat-06.jpeg',
+      '/products/trex-tongkat-07.jpeg',
+    ],
     name: 'Tongkat Ali',
     subtitle: 'Testosterone · Strength',
     tagline: '2% eurycomanone standardized',
@@ -423,7 +440,16 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-royal-jelly',
-    image: '/products/trex-royal-jelly.png',
+    image: '/products/trex-royal-jelly-01.jpeg',
+    gallery: [
+      '/products/trex-royal-jelly-01.jpeg',
+      '/products/trex-royal-jelly-02.jpeg',
+      '/products/trex-royal-jelly-03.jpeg',
+      '/products/trex-royal-jelly-04.jpeg',
+      '/products/trex-royal-jelly-05.jpeg',
+      '/products/trex-royal-jelly-06.jpeg',
+      '/products/trex-royal-jelly-07.jpeg',
+    ],
     name: 'Royal Jelly',
     subtitle: 'Myogenesis · Vigour',
     tagline: 'Bee-derived androgenic support',
@@ -495,7 +521,16 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-maca',
-    image: '/products/trex-maca.png',
+    image: '/products/trex-maca-01.jpeg',
+    gallery: [
+      '/products/trex-maca-01.jpeg',
+      '/products/trex-maca-02.jpeg',
+      '/products/trex-maca-03.jpeg',
+      '/products/trex-maca-04.jpeg',
+      '/products/trex-maca-05.jpeg',
+      '/products/trex-maca-06.jpeg',
+      '/products/trex-maca-07.jpeg',
+    ],
     name: 'Black Maca',
     subtitle: 'Strength · Recovery · Stamina',
     tagline: 'Peruvian black maca root',
@@ -567,7 +602,16 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-liver',
-    image: '/products/trex-liver.png',
+    image: '/products/trex-liver-01.jpeg',
+    gallery: [
+      '/products/trex-liver-01.jpeg',
+      '/products/trex-liver-02.jpeg',
+      '/products/trex-liver-03.jpeg',
+      '/products/trex-liver-04.jpeg',
+      '/products/trex-liver-05.jpeg',
+      '/products/trex-liver-06.jpeg',
+      '/products/trex-liver-07.jpeg',
+    ],
     name: 'Liver Detox',
     subtitle: 'Cleanse · Repair',
     tagline: 'Milk thistle + glutathione precursors',
