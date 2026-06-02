@@ -22,19 +22,6 @@ export default function Header() {
         scrolled ? 'bg-ink/85 backdrop-blur-xl border-b border-bone/5' : 'bg-transparent'
       }`}
     >
-      {/* Marquee ticker — same spec as Bold Care / Mars: free shipping + trust at a glance. */}
-      <div className="bg-amber text-ink text-[10px] sm:text-[11px] uppercase tracking-[0.22em] font-brand font-semibold">
-        <div className="container-x flex items-center justify-center gap-x-6 gap-y-1 py-1.5 flex-wrap">
-          <span>✓ Free Shipping</span>
-          <span className="opacity-40">•</span>
-          <span>✓ COD Available</span>
-          <span className="opacity-40">•</span>
-          <span>✓ 7-Day Money-Back</span>
-          <span className="opacity-40 hidden sm:inline">•</span>
-          <span className="hidden sm:inline">✓ NABL Lab-Tested</span>
-        </div>
-      </div>
-
       <div className="container-x flex items-center justify-between h-16 lg:h-20">
         <button onClick={() => go('home')} className="flex items-center group" aria-label="Primal Nutrition home">
           <PrimalLogo className="h-12 w-auto" />

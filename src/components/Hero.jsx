@@ -57,60 +57,20 @@ export default function Hero() {
           <div className="container-x relative grid lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
             {/* Left: copy */}
             <div className="lg:col-span-7 z-10">
-              <div className="eyebrow mb-4 animate-fade-up font-brand tracking-[0.28em]">
+              <div className="eyebrow mb-6 animate-fade-up font-brand tracking-[0.28em]">
                 <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
                 India's First 7-in-1 Natural Performance Liquid
               </div>
 
-              {/* Founder micro-credit — humanizes the brand at first glance, AG1-style */}
-              <div className="flex items-center gap-3 mb-6 animate-fade-up">
-                <span className="relative inline-flex w-9 h-9 rounded-full overflow-hidden border border-amber/40 ring-2 ring-amber/10">
-                  <img src="/brand/founder.webp" alt="" aria-hidden className="w-full h-full object-cover" loading="eager" />
-                </span>
-                <div className="text-[12px] sm:text-[13px] text-bone/70 leading-tight">
-                  <span className="text-bone">Built by Shourya Tomar</span>
-                  <span className="text-bone/45"> · 3rd-gen Ayurveda · Pro Powerlifter</span>
-                </div>
-              </div>
-
-              <h1 className="font-display text-6xl sm:text-7xl lg:text-[7.5rem] leading-[0.9] tracking-tight mb-4 animate-fade-up uppercase">
-                ONE LIQUID.<br />
-                SEVEN HERBS.<br />
-                <span className="text-shimmer">STRENGTH ON TAP.</span>
+              <h1 className="font-display text-6xl sm:text-7xl lg:text-[8rem] leading-[0.88] tracking-tight mb-6 animate-fade-up uppercase">
+                BUILT FOR THE<br />
+                MEN INDIA<br />
+                <span className="text-shimmer">FORGOT TO MAKE.</span>
               </h1>
 
-              {/* Brand stamp — keeps the original line as a signature, not the lead */}
-              <div className="mb-6 font-brand text-[11px] uppercase tracking-[0.32em] text-bone/45 animate-fade-up">
-                Built for the men India forgot to make.
-              </div>
-
-              {/* Social proof — promoted into the hero, large and visible */}
-              <div className="flex items-center gap-3 mb-6 animate-fade-up">
-                <span className="text-amber text-lg tracking-tight" aria-hidden>★★★★★</span>
-                <span className="text-bone font-display text-xl tracking-tight">4.8</span>
-                <span className="text-bone/55 text-sm">
-                  from <CountUp end={12400} duration={2200} />+ verified buyers
-                </span>
-              </div>
-
-              <p className="text-lg lg:text-xl text-bone/70 max-w-xl mb-6 leading-relaxed animate-fade-up">
+              <p className="text-lg lg:text-xl text-bone/70 max-w-xl mb-8 leading-relaxed animate-fade-up">
                 <span className="text-bone">Himalayan Shilajit + 6 Ayurvedic herbs</span> in liquid form. The way our ancestors made it. Built for the man who walks the rough road — and refuses chemicals, stimulants, or shortcuts.
               </p>
-
-              {/* Certification strip — closes trust gap vs Kapiva/Upakarma */}
-              <div className="flex flex-wrap items-center gap-2 mb-7 animate-fade-up">
-                {['FSSAI Licensed', 'AYUSH Certified', 'NABL Lab-Tested', 'Dope-Free'].map((c) => (
-                  <span
-                    key={c}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-bone/15 bg-ink/40 backdrop-blur-sm text-[11px] uppercase tracking-[0.16em] font-brand text-bone/75"
-                  >
-                    <svg className="w-3 h-3 text-amber" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-                      <path d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.4 7.4a1 1 0 0 1-1.4 0L3.3 9.5a1 1 0 1 1 1.4-1.4l3.9 3.9 6.7-6.7a1 1 0 0 1 1.4 0z"/>
-                    </svg>
-                    {c}
-                  </span>
-                ))}
-              </div>
 
               {/* CTA cluster */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6 animate-fade-up">
@@ -118,11 +78,11 @@ export default function Hero() {
                   Buy T-Rex — ₹1,999
                   <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
                 </a>
-                <a href="#reviews" className="btn-ghost text-base">Read 12,400+ reviews</a>
+                <a href="#science" className="btn-ghost text-base">See the science</a>
               </div>
 
               {/* Price anchor strip */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-4 text-[12px] uppercase tracking-widest text-bone/55 font-brand animate-fade-up">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-10 text-[12px] uppercase tracking-widest text-bone/55 font-brand animate-fade-up">
                 <span className="text-bone/85">₹1,999 <span className="line-through text-bone/35 ml-1">₹2,200</span></span>
                 <span className="w-1 h-1 rounded-full bg-bone/20" />
                 <span>Hazelnut · 500ml</span>
@@ -132,19 +92,12 @@ export default function Hero() {
                 <span>Free shipping</span>
               </div>
 
-              {/* Comparison line — undercuts capsule competitors (Kapiva, Upakarma) */}
-              <div className="inline-flex items-center gap-2 mb-8 text-[12px] text-bone/60 animate-fade-up">
-                <span className="text-amber font-semibold">1 daily dose</span>
-                <span className="text-bone/30">vs</span>
-                <span className="line-through text-bone/40">90+ capsules / month</span>
-              </div>
-
-              {/* Trust micro-stats — slimmed since star strip now carries buyer count */}
+              {/* Trust micro-stats */}
               <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-bone/60 animate-fade-up pb-6">
+                <Stat label="Verified buyers" valueNode={<><CountUp end={12400} duration={2200} />+</>} />
+                <Stat label="Avg. rating" valueNode={<><CountUp end={4.8} decimals={1} duration={1600} /> ★</>} />
                 <Stat label="Lab-tested" value="3rd Party" />
                 <Stat label="Made in" value="India" />
-                <Stat label="Servings" value="50 / bottle" />
-                <Stat label="Liquid format" value="Higher absorption" />
               </div>
             </div>
 
