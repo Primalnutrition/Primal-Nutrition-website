@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { api } from '../lib/api.js'
 import { openRazorpayCheckout } from '../lib/razorpayCheckout.js'
+import { track, identify } from '../lib/metaPixel.js'
 
 const INDIAN_STATES = [
   'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana',
@@ -96,6 +97,17 @@ export default function CartDrawer() {
       city: form.city, state: form.state, pincode: form.pincode, country: 'India',
     }
     const items = lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty }))
+    const contentIds = items.map((i) => i.variantId || i.productId)
+    const numItems = items.reduce((n, i) => n + i.qty, 0)
+
+    // Advanced Matching — attach the customer's details (hashed client-side by
+    // the Pixel SDK) so Purchase/InitiateCheckout match to real Meta accounts.
+    const [firstName, ...lastParts] = form.name.trim().split(/\s+/)
+    identify({
+      email: form.email, phone: form.phone,
+      firstName, lastName: lastParts.join(' '),
+      city: form.city, state: form.state, zip: form.pincode,
+    })
 
     try {
       if (paymentMethod === 'cod') {
@@ -106,9 +118,7 @@ export default function CartDrawer() {
         setStep('success')
         clearCart()
         // Meta Pixel — Purchase event
-        if (typeof window.fbq === 'function') {
-          window.fbq('track', 'Purchase', { value: cod.total, currency: 'INR', content_type: 'product' })
-        }
+        track('Purchase', { value: cod.total, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems })
         return
       }
 
@@ -160,9 +170,7 @@ export default function CartDrawer() {
       setStep('success')
       clearCart()
       // Meta Pixel — Purchase event (payment was captured either way)
-      if (typeof window.fbq === 'function') {
-        window.fbq('track', 'Purchase', { value: draft.amount / 100, currency: 'INR', content_type: 'product' })
-      }
+      track('Purchase', { value: draft.amount / 100, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems })
     } catch (err) {
       setSubmitError(friendlyError(err))
     } finally {
@@ -401,9 +409,7 @@ export default function CartDrawer() {
               <button
                 onClick={() => {
                   setStep('form')
-                  if (typeof window.fbq === 'function') {
-                    window.fbq('track', 'InitiateCheckout', { value: subtotal, currency: 'INR', num_items: count })
-                  }
+                  track('InitiateCheckout', { value: subtotal, currency: 'INR', num_items: count })
                 }}
                 className="btn-primary w-full text-base"
               >
