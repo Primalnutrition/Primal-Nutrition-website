@@ -32,6 +32,11 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-
 // ─── App bootstrap ─────────────────────────────────────────────────────────────
 const app = express()
 
+// Render serves the app behind a single proxy. Trust it so req.ip and
+// express-rate-limit resolve the real client IP from X-Forwarded-For
+// (otherwise express-rate-limit throws ERR_ERL_UNEXPECTED_X_FORWARDED_FOR).
+app.set('trust proxy', 1)
+
 // Security headers
 app.use(helmet())
 

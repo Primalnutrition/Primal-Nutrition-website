@@ -252,6 +252,7 @@ export async function getOrderForShipment(internalOrderId) {
     .from('orders')
     .select(`
       id, order_number, total, subtotal, shipping_fee, discount,
+      payment_method, shiprocket_order_id, awb_code,
       customer:customers (id, name, email, phone),
       shipping_address:addresses (line1, line2, city, state, pincode, country),
       order_items (
