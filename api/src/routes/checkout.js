@@ -216,12 +216,12 @@ router.post('/verify-payment', async (req, res, next) => {
   try {
     const { alreadyPaid, order } = await markOrderPaid({ internalOrderId, razorpayPaymentId })
 
-    // Kick off shipment in the background — don't block the payment response
-    if (!alreadyPaid) {
-      void createShipmentForOrder(internalOrderId).catch((err) =>
-        logger.error({ err: err.message, internalOrderId }, 'Shiprocket shipment creation failed (will retry via cron)')
-      )
-    }
+    // Kick off shipment in the background — don't block the payment response.
+    // Always attempt it (even if alreadyPaid): the call is idempotent, and the
+    // Razorpay webhook may have marked the order paid first without shipping it.
+    void createShipmentForOrder(internalOrderId).catch((err) =>
+      logger.error({ err: err.message, internalOrderId }, 'Shiprocket shipment creation failed (will retry via cron)')
+    )
 
     res.json({
       success: true,
@@ -345,7 +345,7 @@ router.post('/create-cod-order', async (req, res, next) => {
  * @param {string} internalOrderId
  * @param {{ paymentMethod?: 'Prepaid' | 'COD', deferAwb?: boolean }} opts
  */
-async function createShipmentForOrder(internalOrderId, { paymentMethod = 'Prepaid', deferAwb = false } = {}) {
+export async function createShipmentForOrder(internalOrderId, { paymentMethod = 'Prepaid', deferAwb = false } = {}) {
   if (!config.shiprocket.email || !config.shiprocket.password) {
     logger.warn('Shiprocket not configured — skipping shipment creation')
     return
@@ -354,6 +354,18 @@ async function createShipmentForOrder(internalOrderId, { paymentMethod = 'Prepai
   const order = await getOrderForShipment(internalOrderId)
   if (!order?.shipping_address) {
     throw new Error(`Order ${internalOrderId} has no shipping address`)
+  }
+
+  // Idempotency guard: both verify-payment (browser) and the Razorpay webhook
+  // can call this for the same order. Whichever runs first creates the
+  // shipment; later calls see the existing shiprocket_order_id and no-op,
+  // preventing duplicate shipments in the Shiprocket dashboard.
+  if (order.shiprocket_order_id) {
+    logger.info(
+      { internalOrderId, shiprocketOrderId: order.shiprocket_order_id },
+      'Shipment already exists for this order — skipping duplicate creation'
+    )
+    return
   }
 
   const addr = order.shipping_address

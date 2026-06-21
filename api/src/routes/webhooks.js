@@ -19,6 +19,7 @@ import {
   getOrderForShipment,
 } from '../services/orderService.js'
 import { fireOrderConfirmationEmail } from '../services/emailHooks.js'
+import { createShipmentForOrder } from './checkout.js'
 
 const router = Router()
 
@@ -54,6 +55,12 @@ router.post('/razorpay', async (req, res) => {
           break
         }
         await markOrderPaid({ internalOrderId: order.id, razorpayPaymentId: payment.id })
+        // Create the Shiprocket shipment. This is the safety net for when the
+        // browser never calls verify-payment (tab closed, network drop, or a
+        // webhook that beat it). Idempotent — won't duplicate if already created.
+        void createShipmentForOrder(order.id).catch((err) =>
+          logger.error({ err: err.message, orderId: order.id }, 'Shiprocket shipment creation failed from webhook (will retry via cron)')
+        )
         // Fire-and-forget confirmation email; idempotent via unique index
         void (async () => {
           try {
