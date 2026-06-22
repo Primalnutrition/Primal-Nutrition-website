@@ -4,6 +4,7 @@ import { usePage } from '../context/RouterContext.jsx'
 import { api } from '../lib/api.js'
 import { openRazorpayCheckout } from '../lib/razorpayCheckout.js'
 import { track, identify } from '../lib/metaPixel.js'
+import { getAttributionForOrder } from '../lib/attribution.js'
 
 const INDIAN_STATES = [
   'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana',
@@ -99,6 +100,8 @@ export default function CartDrawer() {
     const items = lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty }))
     const contentIds = items.map((i) => i.variantId || i.productId)
     const numItems = items.reduce((n, i) => n + i.qty, 0)
+    // Marketing attribution — how this visitor found us (first + last touch).
+    const attribution = getAttributionForOrder()
 
     // Advanced Matching — attach the customer's details (hashed client-side by
     // the Pixel SDK) so Purchase/InitiateCheckout match to real Meta accounts.
@@ -113,7 +116,7 @@ export default function CartDrawer() {
       if (paymentMethod === 'cod') {
         // COD — server creates order + Shiprocket shipment (several courier API
         // calls) in one request, so allow more time before aborting.
-        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items }, { timeout: 45000 })
+        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution }, { timeout: 45000 })
         setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
         setStep('success')
         clearCart()
@@ -123,7 +126,7 @@ export default function CartDrawer() {
       }
 
       // Online — Razorpay flow.
-      const draft = await api.post('/api/checkout/create-order', { customer, address, items })
+      const draft = await api.post('/api/checkout/create-order', { customer, address, items, attribution })
 
       let rzp
       try {
