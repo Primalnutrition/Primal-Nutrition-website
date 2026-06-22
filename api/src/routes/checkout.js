@@ -65,6 +65,35 @@ const ServiceabilitySchema = z.object({
   items: z.array(CartItemSchema).min(1),
 })
 
+// Marketing attribution — client-supplied, so we keep it permissive (any
+// missing piece is fine) but bound string lengths to avoid abuse.
+const TouchSchema = z
+  .object({
+    source: z.string().max(200).nullish(),
+    medium: z.string().max(200).nullish(),
+    campaign: z.string().max(200).nullish(),
+    content: z.string().max(200).nullish(),
+    term: z.string().max(200).nullish(),
+    channel: z.string().max(50).nullish(),
+    referrer: z.string().max(600).nullish(),
+    landingPage: z.string().max(600).nullish(),
+    gclid: z.string().max(255).nullish(),
+    fbclid: z.string().max(255).nullish(),
+    at: z.string().max(40).nullish(),
+  })
+  .partial()
+  .passthrough()
+
+const AttributionSchema = z
+  .object({
+    firstTouch: TouchSchema.nullish(),
+    lastTouch: TouchSchema.nullish(),
+    device: z.string().max(20).nullish(),
+    daysToPurchase: z.number().int().nonnegative().max(100000).nullish(),
+  })
+  .partial()
+  .passthrough()
+
 const CreateOrderSchema = z.object({
   customer: z.object({
     name: z.string().min(2).max(100),
@@ -74,6 +103,7 @@ const CreateOrderSchema = z.object({
   address: AddressSchema,
   items: z.array(CartItemSchema).min(1).max(50),
   couponCode: z.string().max(30).optional(),
+  attribution: AttributionSchema.optional(),
 })
 
 const CreateCodOrderSchema = CreateOrderSchema

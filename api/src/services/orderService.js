@@ -18,6 +18,24 @@ function generateOrderNumber() {
 }
 
 /**
+ * Flatten a storefront attribution object into the flat columns we store on an
+ * order (for filtering/sorting) alongside the full JSONB snapshot. The flat
+ * headline uses last-touch (falling back to first-touch). Defensive — any piece
+ * may be missing.
+ */
+function attributionColumns(attribution) {
+  const last = attribution?.lastTouch ?? attribution?.firstTouch ?? null
+  return {
+    attribution: attribution ?? null,
+    utm_source: last?.source ?? null,
+    utm_medium: last?.medium ?? null,
+    utm_campaign: last?.campaign ?? null,
+    attribution_channel: last?.channel ?? null,
+    landing_page: last?.landingPage ?? null,
+  }
+}
+
+/**
  * Create a draft order (status = pending) before payment.
  *
  * - Upserts customer by email
@@ -36,7 +54,7 @@ function generateOrderNumber() {
  *   paymentMethod?: 'razorpay' | 'cod'
  * }} input
  */
-export async function createDraftOrder({ customer, address, items, paymentMethod = 'razorpay' }) {
+export async function createDraftOrder({ customer, address, items, paymentMethod = 'razorpay', attribution = null }) {
   const supabase = requireSupabase()
 
   // 1. Resolve every variant from DB to get authoritative pricing
@@ -81,7 +99,14 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
   if (!customerId) {
     const { data: newCustomer, error: cErr } = await supabase
       .from('customers')
-      .insert({ email: customer.email, name: customer.name, phone: customer.phone })
+      .insert({
+        email: customer.email,
+        name: customer.name,
+        phone: customer.phone,
+        // First touch is the customer's acquisition source — set once, here.
+        first_touch: attribution?.firstTouch ?? null,
+        acquisition_channel: attribution?.firstTouch?.channel ?? null,
+      })
       .select('id')
       .single()
     if (cErr) throw cErr
@@ -121,6 +146,7 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
       total,
       status: 'pending',
       payment_method: paymentMethod,
+      ...attributionColumns(attribution),
     })
     .select('id, order_number, total')
     .single()
@@ -292,7 +318,7 @@ export async function listOrders({ page = 1, limit = 25, status, customerId, fro
       `
       id, order_number, status, subtotal, discount, shipping_fee, tax, total,
       payment_method, placed_at, paid_at, shipped_at, delivered_at, cancelled_at,
-      awb_code, courier_name,
+      awb_code, courier_name, attribution_channel,
       customer:customers (id, name, email, phone),
       order_items (id)
     `,
@@ -326,6 +352,7 @@ export async function listOrders({ page = 1, limit = 25, status, customerId, fro
     cancelled_at: o.cancelled_at,
     awb_code: o.awb_code,
     courier_name: o.courier_name,
+    attribution_channel: o.attribution_channel ?? null,
     customer_id: o.customer?.id ?? null,
     customer_name: o.customer?.name ?? null,
     customer_email: o.customer?.email ?? null,
@@ -381,8 +408,9 @@ export async function getOrderById(id) {
       id, order_number, status, subtotal, discount, shipping_fee, tax, total,
       payment_method, razorpay_order_id, razorpay_payment_id,
       shiprocket_order_id, awb_code, courier_name,
+      attribution, utm_source, utm_medium, utm_campaign, attribution_channel, landing_page,
       placed_at, paid_at, shipped_at, delivered_at, cancelled_at,
-      customer:customers (id, name, email, phone),
+      customer:customers (id, name, email, phone, first_touch, acquisition_channel),
       shipping_address:addresses (line1, line2, city, state, pincode, country),
       order_items (
         id, product_name_snapshot, variant_label_snapshot, qty, unit_price, line_total,
@@ -419,6 +447,12 @@ export async function getOrderById(id) {
     shiprocket_order_id: data.shiprocket_order_id,
     awb_code: data.awb_code,
     courier_name: data.courier_name,
+    attribution: data.attribution ?? null,
+    attribution_channel: data.attribution_channel ?? null,
+    utm_source: data.utm_source ?? null,
+    utm_medium: data.utm_medium ?? null,
+    utm_campaign: data.utm_campaign ?? null,
+    landing_page: data.landing_page ?? null,
     placed_at: data.placed_at,
     paid_at: data.paid_at,
     shipped_at: data.shipped_at,
