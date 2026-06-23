@@ -74,11 +74,19 @@ function PageBody() {
       { threshold: 0.08, rootMargin: '0px 0px -80px 0px' }
     )
 
-    document
-      .querySelectorAll('[data-reveal], [data-reveal-stagger]')
-      .forEach((el) => obs.observe(el))
+    const observeAll = () =>
+      document
+        .querySelectorAll('[data-reveal], [data-reveal-stagger]')
+        .forEach((el) => obs.observe(el))
 
-    return () => obs.disconnect()
+    // Immediate pass — catches synchronously-rendered content
+    observeAll()
+
+    // Delayed pass — catches content rendered after lazy-import resolves
+    const t1 = setTimeout(observeAll, 150)
+    const t2 = setTimeout(observeAll, 600)
+
+    return () => { obs.disconnect(); clearTimeout(t1); clearTimeout(t2) }
   }, [page, productId])
 
   // Visible fallback — bare divs hide both normal lazy-load delays AND the

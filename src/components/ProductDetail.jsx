@@ -21,6 +21,28 @@ export default function ProductDetail({ productId }) {
     if (product) setVariantId(product.variants[0].id)
   }, [productId])
 
+  // Scroll-reveal for product page sections — runs AFTER this component renders,
+  // so elements are guaranteed in the DOM (lazy import resolved).
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      document.querySelectorAll('[data-reveal-stagger], [data-reveal]').forEach(el => el.setAttribute('data-revealed', ''))
+      return
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.setAttribute('data-revealed', '')
+            obs.unobserve(e.target)
+          }
+        })
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -40px 0px' }
+    )
+    document.querySelectorAll('[data-reveal-stagger]:not([data-revealed]), [data-reveal]:not([data-revealed])').forEach(el => obs.observe(el))
+    return () => obs.disconnect()
+  }, [productId])
+
   useEffect(() => {
     if (!product) return
     const entryVariant = product.variants[0]
