@@ -686,9 +686,13 @@ export const products = [
     image: '/products/hydra-muscle.png',
     gallery: [
       '/products/hydra-muscle-01.png',
-      '/products/hydra-muscle-02.png',
-      '/products/hydra-muscle-03.png',
-      '/products/hydra-muscle-04.png',
+      '/products/hydra-muscle-02.jpg',
+      '/products/hydra-muscle-03.jpg',
+      '/products/hydra-muscle-04.jpg',
+      '/products/hydra-muscle-05.jpg',
+      '/products/hydra-muscle-06.jpg',
+      '/products/hydra-muscle-07.jpg',
+      '/products/hydra-muscle-08.jpg',
     ],
     name: 'Hydra Muscle',
     subtitle: 'Creatine + Electrolytes',
@@ -699,7 +703,7 @@ export const products = [
     accent: 'from-amber-light to-amber',
     bottleType: 'tub',
     badge: 'New',
-    description: '5g creatine monohydrate + electrolyte blend. Strawberry.',
+    description: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes. Strawberry.',
     variants: [{ id: 'hydra-1', label: '150g', sub: '30 servings · strawberry', price: 1200 }],
     mckinsey: {
       who: 'Active training days',
@@ -709,21 +713,21 @@ export const products = [
       partner: 'Cordyceps + Vita Peak',
     },
     pdp: {
-      heroClaim: '5g creatine monohydrate, full electrolyte panel, no artificial sweeteners. Built for Indian summer training — the only category where you sweat 1.5L per hour.',
+      heroClaim: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes, no artificial sweeteners. Built for Indian summer training — the only category where you sweat 1.5L per hour.',
       metrics: [
-        { label: 'Creatine', value: '5g per serving' },
-        { label: 'Electrolytes', value: 'Na, K, Mg, Cl' },
+        { label: 'Creatine', value: '3g per serving' },
+        { label: 'Electrolytes', value: '1500mg blend' },
         { label: 'Servings', value: '30' },
         { label: 'Flavor', value: 'Strawberry' },
       ],
       problem: {
         title: 'Indian gyms are hotter than your AC tells you.',
-        body: 'Most Indian lifters are chronically under-hydrated and under-electrolyted. Adding pure creatine to plain water gives you strength gains but no hydration support. Hydra Muscle is the first Indian formulation pairing 5g creatine monohydrate with a complete electrolyte panel.',
+        body: 'Most Indian lifters are chronically under-hydrated and under-electrolyted. Adding pure creatine to plain water gives you strength gains but no hydration support. Hydra Muscle is the first Indian formulation pairing 3g creatine monohydrate with himalayan pink salt, coconut water powder & 1500mg electrolytes.',
       },
       mechanism: {
         title: 'Why creatine + electrolytes together',
         steps: [
-          { h: 'Creatine = strength', b: '5g daily monohydrate is the most validated dose in sports science. 4-6 weeks for full saturation.' },
+          { h: 'Creatine = strength', b: '3g daily monohydrate — clean, effective dose backed by sports science. 4-6 weeks for full saturation.' },
           { h: 'Electrolytes = hydration', b: 'Sodium, potassium, magnesium, chloride — replace what Indian summer sessions burn.' },
           { h: 'Together', b: 'Creatine pulls water into muscle cells. Electrolytes ensure that water actually exists in your system.' },
         ],
@@ -733,7 +737,7 @@ export const products = [
       ],
       protocol: {
         when: 'Pre or intra-workout.',
-        how: '1 scoop (5g) in 300–500ml water.',
+        how: '1 scoop in 300–500ml water.',
         withWhat: 'Sip across the session. On rest days, take in the morning.',
         cycle: 'Daily, indefinitely.',
       },
@@ -748,8 +752,8 @@ export const products = [
       ],
       stackWith: ['trex-cordyceps', 'vita-peak', 'trex-liquid'],
       faq: [
-        { q: 'Do I need a loading phase?', a: 'No. 5g daily for 28 days saturates muscle creatine — same end state as loading, no GI distress.' },
-        { q: 'Is creatine safe?', a: 'Most-studied supplement in sports science. Safe at 5g/day for healthy adults indefinitely. Consult doctor if kidney issues.' },
+        { q: 'Do I need a loading phase?', a: 'No. Taking daily for 28 days saturates muscle creatine — same end state as loading, no GI distress.' },
+        { q: 'Is creatine safe?', a: 'Most-studied supplement in sports science. Safe for healthy adults at this dose, indefinitely. Consult doctor if kidney issues.' },
       ],
       reviews: [
         { ...sharedReviewSeed[2], title: 'Finally an Indian creatine that hydrates', body: 'I used to mix creatine with electrolyte tablets separately. This is one scoop, better taste, same result. Done.', time: '1 month ago' },
