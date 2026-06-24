@@ -440,6 +440,21 @@ export async function createShipmentForOrder(internalOrderId, { paymentMethod = 
   const shiprocketOrderId = String(result.order_id ?? result.shiprocket_order_id ?? '')
   const shipmentId = result.shipment_id ?? result.shipment?.shipment_id
 
+  // Shiprocket can return HTTP 200 with an error body (e.g. "Wrong Pickup
+  // location passed") and NO order id — meaning nothing was actually created.
+  // Treat a missing order id as a hard failure so it surfaces (COD → 502 with
+  // the real reason, online → logged + retried by the cron) instead of being
+  // logged as a phantom success.
+  if (!shiprocketOrderId) {
+    logger.error(
+      { internalOrderId, shiprocketResponse: result },
+      'Shiprocket returned no order id — shipment was NOT created'
+    )
+    throw new Error(
+      `Shiprocket did not create the order: ${result.message ?? result.error ?? JSON.stringify(result).slice(0, 300)}`
+    )
+  }
+
   await applyShipmentDetails(internalOrderId, {
     shiprocketOrderId,
     awbCode: result.awb_code ?? null,
