@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { api } from '../lib/api.js'
 import { openRazorpayCheckout } from '../lib/razorpayCheckout.js'
-import { track, identify } from '../lib/metaPixel.js'
+import { track, identify, getCookie } from '../lib/metaPixel.js'
 import { getAttributionForOrder } from '../lib/attribution.js'
 
 const INDIAN_STATES = [
@@ -102,6 +102,10 @@ export default function CartDrawer() {
     const numItems = items.reduce((n, i) => n + i.qty, 0)
     // Marketing attribution — how this visitor found us (first + last touch).
     const attribution = getAttributionForOrder()
+    // Meta click cookies — forwarded to the server so the Conversions API
+    // Purchase matches the same browser as the pixel.
+    const fbp = getCookie('_fbp')
+    const fbc = getCookie('_fbc')
 
     // Advanced Matching — attach the customer's details (hashed client-side by
     // the Pixel SDK) so Purchase/InitiateCheckout match to real Meta accounts.
@@ -116,12 +120,17 @@ export default function CartDrawer() {
       if (paymentMethod === 'cod') {
         // COD — server creates order + Shiprocket shipment (several courier API
         // calls) in one request, so allow more time before aborting.
-        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution }, { timeout: 45000 })
+        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution, fbp, fbc }, { timeout: 45000 })
         setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
         setStep('success')
         clearCart()
-        // Meta Pixel — Purchase event
-        track('Purchase', { value: cod.total, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems })
+        // Meta Pixel — Purchase event. eventID is shared with the server-side
+        // Conversions API event so Meta dedupes the two.
+        track(
+          'Purchase',
+          { value: cod.total, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
+          { eventID: `purchase_${cod.internalOrderId}` }
+        )
         return
       }
 
@@ -156,6 +165,8 @@ export default function CartDrawer() {
           razorpayPaymentId: rzp.paymentId,
           razorpaySignature: rzp.signature,
           internalOrderId: draft.internalOrderId,
+          fbp,
+          fbc,
         })
         setConfirmedOrder({ orderNumber: draft.orderNumber, paymentId: rzp.paymentId, total: draft.amount / 100, method: 'online' })
       } catch (verifyErr) {
@@ -172,8 +183,13 @@ export default function CartDrawer() {
 
       setStep('success')
       clearCart()
-      // Meta Pixel — Purchase event (payment was captured either way)
-      track('Purchase', { value: draft.amount / 100, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems })
+      // Meta Pixel — Purchase event (payment was captured either way). eventID is
+      // shared with the server-side Conversions API event so Meta dedupes them.
+      track(
+        'Purchase',
+        { value: draft.amount / 100, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
+        { eventID: `purchase_${draft.internalOrderId}` }
+      )
     } catch (err) {
       setSubmitError(friendlyError(err))
     } finally {

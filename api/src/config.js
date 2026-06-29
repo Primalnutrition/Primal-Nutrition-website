@@ -20,6 +20,12 @@ const schema = z.object({
   RESEND_API_KEY: z.string().optional().default(''),
   RESEND_FROM_EMAIL: z.string().optional().default(''),
 
+  // Meta Conversions API (server-side Purchase events)
+  META_PIXEL_ID: z.string().optional().default('991258953663271'),
+  META_CAPI_ACCESS_TOKEN: z.string().optional().default(''),
+  META_CAPI_TEST_EVENT_CODE: z.string().optional().default(''),
+  META_CAPI_API_VERSION: z.string().optional().default('v21.0'),
+
   // Admin OTP/JWT
   ADMIN_JWT_SECRET: z.string().optional().default(''),
 
@@ -73,6 +79,14 @@ export const config = {
     apiKey: parsed.data.RESEND_API_KEY,
     fromEmail: parsed.data.RESEND_FROM_EMAIL,
     configured: Boolean(parsed.data.RESEND_API_KEY && parsed.data.RESEND_FROM_EMAIL),
+  },
+
+  meta: {
+    pixelId: parsed.data.META_PIXEL_ID,
+    accessToken: parsed.data.META_CAPI_ACCESS_TOKEN,
+    testEventCode: parsed.data.META_CAPI_TEST_EVENT_CODE,
+    apiVersion: parsed.data.META_CAPI_API_VERSION,
+    configured: Boolean(parsed.data.META_CAPI_ACCESS_TOKEN && parsed.data.META_PIXEL_ID),
   },
 
   adminJwtSecret: parsed.data.ADMIN_JWT_SECRET,

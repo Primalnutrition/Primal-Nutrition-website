@@ -198,6 +198,45 @@ export default function ProductDetail({ productId }) {
         </div>
       </section>
 
+      {/* ── Forged-in-fire band (volcano) ─────────────────── */}
+      {product.id === 'trex-liquid' && (
+        <section className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
+          {/* Background lava footage */}
+          <video
+            src="/brand/volcano-forge.mp4"
+            poster="/brand/volcano-forge-poster.webp"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Primal gradient stack — ink edges, amber heat, grain */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
+          <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
+          <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+
+          {/* Copy */}
+          <div className="container-x relative h-full flex items-center">
+            <div className="max-w-xl">
+              <div className="eyebrow mb-5 text-amber">
+                <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
+                Forged, not formulated
+              </div>
+              <h2 className="font-display font-black text-4xl lg:text-6xl tracking-tightest leading-[0.95] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
+                Built in the heat.<br />
+                <span className="text-shimmer">Made for the grind.</span>
+              </h2>
+              <p className="text-lg text-bone/80 leading-relaxed max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                Himalayan Shilajit is pressure-born — squeezed from rock over centuries. {product.name} carries that same raw intensity into every serving.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Problem ───────────────────────────────────────── */}
       {pdp?.problem && (
         <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">

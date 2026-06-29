@@ -4,6 +4,12 @@ import Picture from './Picture.jsx'
 
 const SLIDE_COUNT = 2
 
+// Cinematic film behind the hero copy — the primal athlete montage
+// (volcano → ski → swim → lift → climb), graded to the brand palette.
+// Set HERO_BG_VIDEO to null to fall back to the static amber gradient.
+const HERO_BG_VIDEO = '/brand/primal-montage.mp4'
+const HERO_BG_POSTER = '/brand/primal-montage-poster.webp'
+
 export default function Hero() {
   const [slide, setSlide] = useState(0)
   const [muted, setMuted] = useState(true)
@@ -42,6 +48,27 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen pt-28 pb-20 overflow-hidden gradient-amber grain">
+      {/* Cinematic background film + primal gradient (slide 1 only) */}
+      {HERO_BG_VIDEO && slide === 0 && (
+        <>
+          <video
+            src={HERO_BG_VIDEO}
+            poster={HERO_BG_POSTER}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover opacity-90"
+          />
+          {/* Primal gradient stack — keeps copy legible, ties to brand heat */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-transparent" />
+          <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/25 via-transparent to-rust/20" />
+        </>
+      )}
+
       {/* Ambient glow */}
       <div className="absolute top-1/3 right-0 w-[600px] h-[600px] rounded-full bg-amber/10 blur-[140px] pointer-events-none" />
       <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-rust/10 blur-[120px] pointer-events-none" />
