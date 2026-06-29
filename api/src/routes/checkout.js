@@ -28,6 +28,21 @@ import {
   listOrdersAwaitingFulfillment,
 } from '../services/orderService.js'
 import { fireWelcomeEmail, fireOrderConfirmationEmail } from '../services/emailHooks.js'
+import { sendPurchaseEvent } from '../lib/metaCapi.js'
+
+// Pull the Meta browser-pixel cookies + request context for Conversions API
+// match quality. fbp/fbc come from the client (forwarded in the request body);
+// IP + user-agent come from the request itself (trust proxy is set, so req.ip
+// is the real client IP behind Render's proxy).
+function capiRequestContext(req, body) {
+  return {
+    eventSourceUrl: req.get('referer') || undefined,
+    clientIpAddress: req.ip,
+    clientUserAgent: req.get('user-agent') || undefined,
+    fbp: body?.fbp || undefined,
+    fbc: body?.fbc || undefined,
+  }
+}
 
 function mapItemsForEmail(items) {
   return (items ?? []).map((it) => ({
@@ -104,6 +119,9 @@ const CreateOrderSchema = z.object({
   items: z.array(CartItemSchema).min(1).max(50),
   couponCode: z.string().max(30).optional(),
   attribution: AttributionSchema.optional(),
+  // Meta browser cookies for Conversions API matching (optional).
+  fbp: z.string().max(255).optional(),
+  fbc: z.string().max(255).optional(),
 })
 
 const CreateCodOrderSchema = CreateOrderSchema
@@ -113,6 +131,9 @@ const VerifyPaymentSchema = z.object({
   razorpayPaymentId: z.string().min(1),
   razorpaySignature: z.string().min(1),
   internalOrderId: z.string().uuid(),
+  // Meta browser cookies for Conversions API matching (optional).
+  fbp: z.string().max(255).optional(),
+  fbc: z.string().max(255).optional(),
 })
 
 // ─── Routes ───────────────────────────────────────────────────────────────
@@ -265,6 +286,7 @@ router.post('/verify-payment', async (req, res, next) => {
     })
 
     if (!alreadyPaid) {
+      const capiCtx = capiRequestContext(req, result.data)
       void (async () => {
         try {
           const full = await getOrderForShipment(internalOrderId)
@@ -280,8 +302,21 @@ router.post('/verify-payment', async (req, res, next) => {
               placedAt: order.paid_at ?? new Date().toISOString(),
             })
           }
+          // Server-side Purchase (Conversions API) — deduped with the browser
+          // pixel via event_id. Recovers conversions blocked by ad blockers/ITP.
+          if (full?.customer) {
+            await sendPurchaseEvent({
+              internalOrderId: full.id,
+              orderNumber: full.order_number,
+              value: Number(full.total),
+              customer: full.customer,
+              address: full.shipping_address,
+              items: full.order_items,
+              ...capiCtx,
+            })
+          }
         } catch (err) {
-          logger.warn({ err, internalOrderId }, 'verify-payment confirmation email failed')
+          logger.warn({ err, internalOrderId }, 'verify-payment post-confirmation hooks failed')
         }
       })()
     }
@@ -337,6 +372,7 @@ router.post('/create-cod-order', async (req, res, next) => {
       paymentMethod: 'cod',
     })
 
+    const capiCtx = capiRequestContext(req, result.data)
     void Promise.all([
       fireWelcomeEmail({
         customerId: draft.customer.id,
@@ -353,7 +389,18 @@ router.post('/create-cod-order', async (req, res, next) => {
         items: mapItemsForEmail(draft.items),
         placedAt: new Date().toISOString(),
       }),
-    ]).catch((err) => logger.warn({ err, internalOrderId: draft.internalOrderId }, 'COD post-response email hooks failed'))
+      // Server-side Purchase (Conversions API) — deduped with the browser pixel
+      // via event_id. COD confirms at creation, so fire it here.
+      sendPurchaseEvent({
+        internalOrderId: draft.internalOrderId,
+        orderNumber: draft.orderNumber,
+        value: draft.totalRupees,
+        customer: draft.customer,
+        address: result.data.address,
+        items: draft.items,
+        ...capiCtx,
+      }),
+    ]).catch((err) => logger.warn({ err, internalOrderId: draft.internalOrderId }, 'COD post-response hooks failed'))
     return
   } catch (err) {
     logger.error({ err: err.message }, 'create-cod-order failed')

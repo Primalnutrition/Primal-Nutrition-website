@@ -3,11 +3,22 @@
 // so callers don't need to guard every site.
 const PIXEL_ID = '991258953663271'
 
-export function track(event, params) {
+// `options.eventID` lets the browser pixel and the server-side Conversions API
+// share one id so Meta dedupes the two into a single event (no double-counting).
+export function track(event, params, options) {
   if (typeof window === 'undefined') return
   if (typeof window.fbq !== 'function') return
-  if (params) window.fbq('track', event, params)
+  if (params && options) window.fbq('track', event, params, options)
+  else if (params) window.fbq('track', event, params)
   else window.fbq('track', event)
+}
+
+// Read a cookie value (used for Meta's _fbp / _fbc click cookies, which we
+// forward to the server so the Conversions API can match the same browser).
+export function getCookie(name) {
+  if (typeof document === 'undefined') return undefined
+  const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'))
+  return m ? decodeURIComponent(m[1]) : undefined
 }
 
 // Advanced Matching: feed known customer info so Meta can match conversions to

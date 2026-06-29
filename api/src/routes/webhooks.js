@@ -19,6 +19,7 @@ import {
   getOrderForShipment,
 } from '../services/orderService.js'
 import { fireOrderConfirmationEmail } from '../services/emailHooks.js'
+import { sendPurchaseEvent } from '../lib/metaCapi.js'
 import { createShipmentForOrder } from './checkout.js'
 
 const router = Router()
@@ -54,7 +55,7 @@ router.post('/razorpay', async (req, res) => {
           logger.warn({ razorpayOrderId: payment.order_id }, 'Webhook for unknown order')
           break
         }
-        await markOrderPaid({ internalOrderId: order.id, razorpayPaymentId: payment.id })
+        const { alreadyPaid } = await markOrderPaid({ internalOrderId: order.id, razorpayPaymentId: payment.id })
         // Create the Shiprocket shipment. This is the safety net for when the
         // browser never calls verify-payment (tab closed, network drop, or a
         // webhook that beat it). Idempotent — won't duplicate if already created.
@@ -83,8 +84,22 @@ router.post('/razorpay', async (req, res) => {
                 placedAt: new Date().toISOString(),
               })
             }
+            // Server-side Purchase fallback — only when this webhook is the FIRST
+            // to mark the order paid (browser never called verify-payment). No
+            // browser context here, but hashed email/phone/address still match.
+            // Deduped against the browser pixel via event_id.
+            if (!alreadyPaid && full?.customer) {
+              await sendPurchaseEvent({
+                internalOrderId: full.id,
+                orderNumber: full.order_number,
+                value: Number(full.total),
+                customer: full.customer,
+                address: full.shipping_address,
+                items: full.order_items,
+              })
+            }
           } catch (err) {
-            logger.warn({ err, orderId: order.id }, 'razorpay-webhook confirmation email failed')
+            logger.warn({ err, orderId: order.id }, 'razorpay-webhook post-confirmation hooks failed')
           }
         })()
         break
