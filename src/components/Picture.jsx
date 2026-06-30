@@ -66,6 +66,13 @@ const NO_AVIF = new Set([
   '/products/forge/trex-royal-jelly.jpg',
   '/products/forge/trex-tongkat.jpg',
   '/brand/shop-hero.jpg',
+  '/products/ingredients/shilajit.jpg',
+  '/products/ingredients/ashwagandha.jpg',
+  '/products/ingredients/arjun.jpg',
+  '/products/ingredients/gokhru.jpg',
+  '/products/ingredients/draksha.jpg',
+  '/products/ingredients/safed-musli.jpg',
+  '/products/ingredients/kath-badam.jpg',
 ])
 // Note: /products/trex-liquid.png does have an AVIF — it's rendered without alpha.
 
