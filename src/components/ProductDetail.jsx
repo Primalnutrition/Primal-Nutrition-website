@@ -4,6 +4,7 @@ import { usePage } from '../context/RouterContext.jsx'
 import { productById, products, tiers } from '../data/products.js'
 import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
+import Picture from './Picture.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import { track } from '../lib/metaPixel.js'
@@ -198,44 +199,8 @@ export default function ProductDetail({ productId }) {
         </div>
       </section>
 
-      {/* ── Forged-in-fire band (volcano) ─────────────────── */}
-      {product.id === 'trex-liquid' && (
-        <section className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
-          {/* Background lava footage */}
-          <video
-            src="/brand/volcano-forge.mp4"
-            poster="/brand/volcano-forge-poster.webp"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* Primal gradient stack — ink edges, amber heat, grain */}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
-          <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
-          <div className="absolute inset-0 grain pointer-events-none opacity-60" />
-
-          {/* Copy */}
-          <div className="container-x relative h-full flex items-center">
-            <div className="max-w-xl">
-              <div className="eyebrow mb-5 text-amber">
-                <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
-                Forged, not formulated
-              </div>
-              <h2 className="font-display font-black text-4xl lg:text-6xl tracking-tightest leading-[0.95] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
-                Built in the heat.<br />
-                <span className="text-shimmer">Made for the grind.</span>
-              </h2>
-              <p className="text-lg text-bone/80 leading-relaxed max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                Himalayan Shilajit is pressure-born — squeezed from rock over centuries. {product.name} carries that same raw intensity into every serving.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
+      <ForgeBand product={product} />
 
       {/* ── Problem ───────────────────────────────────────── */}
       {pdp?.problem && (
@@ -707,6 +672,107 @@ export default function ProductDetail({ productId }) {
       <Footer />
       <StickyProductCTA product={product} variant={variant} />
     </>
+  )
+}
+
+/* Full-bleed cinematic band per product — the volcano video on the flagship,
+   a brand-tinted ingredient photo on the rest. Same gradient stack across all
+   so the treatment reads as one system (ink edges + brand-red/rust heat + grain). */
+const FORGE_BANDS = {
+  'trex-liquid': {
+    video: '/brand/volcano-forge.mp4',
+    poster: '/brand/volcano-forge-poster.webp',
+    eyebrow: 'Forged, not formulated',
+    title: (<>Built in the heat.<br /><span className="text-shimmer">Made for the grind.</span></>),
+    body: 'Himalayan Shilajit is pressure-born — squeezed from rock over centuries. T-Rex carries that same raw intensity into every serving.',
+  },
+  'trex-maca': {
+    image: '/products/forge/trex-maca.jpg',
+    eyebrow: 'Andean fire',
+    title: (<>Rooted in altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
+    body: 'Black maca grows where the air thins and the cold bites — high in the Andes. That adversity is exactly what makes it potent.',
+  },
+  'trex-cordyceps': {
+    image: '/products/forge/trex-cordyceps.jpg',
+    eyebrow: 'Born in thin air',
+    title: (<>Thrives where<br /><span className="text-shimmer">oxygen runs low.</span></>),
+    body: 'Cordyceps evolved on the high Himalayan plateau to wring energy from scarce air — and it trains your body to do the same.',
+  },
+  'hydra-muscle': {
+    image: '/products/forge/hydra-muscle.jpg',
+    eyebrow: 'Pure as the source',
+    title: (<>Hydration,<br /><span className="text-shimmer">stripped to essentials.</span></>),
+    body: 'Real output starts with water and electrolytes and nothing artificial in the way. Clean in, full performance out.',
+  },
+  'trex-ginseng': {
+    image: '/products/forge/trex-ginseng.jpg',
+    eyebrow: 'Forest-forged',
+    title: (<>Slow-grown.<br /><span className="text-shimmer">Deeply rooted.</span></>),
+    body: 'Korean red ginseng takes years in mountain-forest soil to mature. That patience is what powers clean, lasting energy.',
+  },
+  'trex-liver': {
+    image: '/products/forge/trex-liver.jpg',
+    eyebrow: 'Cellular clean',
+    title: (<>Cleared at the<br /><span className="text-shimmer">cellular level.</span></>),
+    body: 'Your liver filters everything you put your body through. This is the support that keeps that engine running clean.',
+  },
+  'trex-royal-jelly': {
+    image: '/products/forge/trex-royal-jelly.jpg',
+    eyebrow: 'Liquid gold',
+    title: (<>The hive’s<br /><span className="text-shimmer">rawest fuel.</span></>),
+    body: 'Royal jelly is what turns an ordinary bee into a queen — concentrated vitality, straight from the comb.',
+  },
+}
+
+function ForgeBand({ product }) {
+  const band = FORGE_BANDS[product.id]
+  if (!band) return null
+  return (
+    <section className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
+      {/* Background media */}
+      {band.video ? (
+        <video
+          src={band.video}
+          poster={band.poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <Picture
+          src={band.image}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
+
+      {/* Primal gradient stack — ink edges, brand-red/rust heat, grain */}
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
+      <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
+      <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+
+      {/* Copy */}
+      <div className="container-x relative h-full flex items-center">
+        <div className="max-w-xl">
+          <div className="eyebrow mb-5 text-amber">
+            <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
+            {band.eyebrow}
+          </div>
+          <h2 className="font-display font-black text-4xl lg:text-6xl tracking-tightest leading-[0.95] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)]">
+            {band.title}
+          </h2>
+          <p className="text-lg text-bone/80 leading-relaxed max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+            {band.body}
+          </p>
+        </div>
+      </div>
+    </section>
   )
 }
 
