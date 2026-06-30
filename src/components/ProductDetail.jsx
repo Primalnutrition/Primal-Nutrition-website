@@ -5,6 +5,7 @@ import { productById, products, tiers } from '../data/products.js'
 import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
 import Picture from './Picture.jsx'
+import IngredientShowcase from './IngredientShowcase.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import { track } from '../lib/metaPixel.js'
@@ -302,6 +303,9 @@ export default function ProductDetail({ productId }) {
           </div>
         </section>
       )}
+
+      {/* ── What's inside (ingredients showcase) ──────────── */}
+      <IngredientShowcase product={product} />
 
       {/* ── Evidence ──────────────────────────────────────── */}
       {pdp?.evidence?.length > 0 && (
