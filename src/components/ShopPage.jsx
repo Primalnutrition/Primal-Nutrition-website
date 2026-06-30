@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { categories, products } from '../data/products.js'
 import ProductCard from './ProductCard.jsx'
+import Picture from './Picture.jsx'
 import Footer from './Footer.jsx'
 
 export default function ShopPage() {
@@ -30,6 +31,11 @@ export default function ShopPage() {
     <>
       {/* Page hero */}
       <section className="relative pt-28 pb-14 gradient-amber grain border-b border-bone/10 overflow-hidden">
+        {/* Surfer hero backdrop + primal gradient (keeps copy legible) */}
+        <Picture src="/brand/shop-hero.jpg" alt="" aria-hidden loading="eager" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/25 to-rust/20" />
         <div className="absolute -top-32 right-0 w-[500px] h-[500px] rounded-full bg-amber/10 blur-[140px] pointer-events-none" />
         <div className="container-x relative">
           <div className="eyebrow mb-5">

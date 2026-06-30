@@ -722,6 +722,12 @@ const FORGE_BANDS = {
     title: (<>The hive’s<br /><span className="text-shimmer">rawest fuel.</span></>),
     body: 'Royal jelly is what turns an ordinary bee into a queen — concentrated vitality, straight from the comb.',
   },
+  'trex-tongkat': {
+    image: '/products/forge/trex-tongkat.jpg',
+    eyebrow: 'Root of fire',
+    title: (<>Forged under<br /><span className="text-shimmer">pressure & heat.</span></>),
+    body: 'Tongkat Ali earns its potency the hard way — a deep-jungle root that takes years to mature. Raw, unforgiving conditions, concentrated into clean drive.',
+  },
 }
 
 function ForgeBand({ product }) {
