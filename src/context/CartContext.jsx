@@ -82,7 +82,6 @@ export function CartProvider({ children }) {
       if (product && variant) {
         track('AddToCart', {
           content_ids: [variantId || productId],
-          content_name: product.name,
           content_type: 'product',
           value: variant.price * qty,
           currency: 'INR',

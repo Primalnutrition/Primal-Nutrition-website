@@ -50,7 +50,6 @@ export default function ProductDetail({ productId }) {
     const entryVariant = product.variants[0]
     track('ViewContent', {
       content_ids: [entryVariant?.id || product.id],
-      content_name: product.name,
       content_type: 'product',
       value: entryVariant?.price,
       currency: 'INR',
