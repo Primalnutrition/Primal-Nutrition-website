@@ -45,5 +45,15 @@ services:
         sync: false
       - key: ADMIN_JWT_SECRET
         sync: false
+      # Meta Conversions API (server-side Purchase). Token value is set in the
+      # Render dashboard, never committed. Pixel id / version have code defaults.
+      - key: META_PIXEL_ID
+        value: '991258953663271'
+      - key: META_CAPI_ACCESS_TOKEN
+        sync: false
+      - key: META_CAPI_API_VERSION
+        value: v21.0
+      - key: META_CAPI_TEST_EVENT_CODE
+        sync: false
       - key: ALLOWED_ORIGINS
         value: https://primalnutrition.in,https://www.primalnutrition.in,https://primal-revamp-v2.netlify.app,https://primal-admin.netlify.app,http://localhost:5002,http://localhost:5173
