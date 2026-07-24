@@ -369,6 +369,54 @@ export async function listOrders({ page = 1, limit = 25, status, customerId, fro
 }
 
 /**
+ * Update an order's status with transition validation.
+ * Allowed: pending→cancelled, paid→shipped|cancelled, shipped→delivered|cancelled
+ *
+ * @param {{ orderId: string, status: string }} params
+ */
+export async function updateOrderStatus({ orderId, status }) {
+  const supabase = requireSupabase()
+
+  const ALLOWED = {
+    pending:  ['shipped', 'cancelled'],
+    paid:     ['shipped', 'cancelled'],
+    shipped:  ['delivered', 'cancelled'],
+  }
+
+  const { data: existing, error: gErr } = await supabase
+    .from('orders')
+    .select('id, order_number, status')
+    .eq('id', orderId)
+    .single()
+  if (gErr) throw gErr
+  if (!existing) throw httpError('Order not found', 404, 'NOT_FOUND')
+
+  const allowed = ALLOWED[existing.status] ?? []
+  if (!allowed.includes(status)) {
+    throw httpError(
+      `Cannot transition from '${existing.status}' to '${status}'`,
+      422,
+      'INVALID_TRANSITION',
+    )
+  }
+
+  const now = new Date().toISOString()
+  const patch = { status }
+  if (status === 'shipped')   { patch.shipped_at   = now }
+  if (status === 'delivered') { patch.delivered_at = now }
+  if (status === 'cancelled') { patch.cancelled_at = now }
+
+  const { data, error } = await supabase
+    .from('orders')
+    .update(patch)
+    .eq('id', orderId)
+    .select('id, order_number, status, shipped_at, delivered_at, cancelled_at')
+    .single()
+  if (error) throw error
+  return data
+}
+
+/**
  * List orders that should have shipped but have no AWB yet — used by the
  * shipment-reconciliation cron to recover from background shipment failures.
  *

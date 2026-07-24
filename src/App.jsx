@@ -28,6 +28,7 @@ const StacksPage = lazy(() => import('./components/StacksPage.jsx'))
 const DealerPage = lazy(() => import('./components/DealerPage.jsx'))
 const ShilajitGuide = lazy(() => import('./components/ShilajitGuide.jsx'))
 const LabelPage = lazy(() => import('./components/LabelPage.jsx'))
+const ProductInfoPage = lazy(() => import('./components/ProductInfoPage.jsx'))
 
 function HomePage() {
   return (
@@ -111,6 +112,7 @@ function PageBody() {
   if (page === 'dealer') return guarded(<DealerPage />)
   if (page === 'shilajit-guide') return guarded(<ShilajitGuide />)
   if (page === 'label') return guarded(<LabelPage productId={productId} />)
+  if (page === 'product-info') return guarded(<ProductInfoPage productId={productId} />)
   return <HomePage />
 }
 
@@ -160,7 +162,7 @@ class ChunkLoadBoundary extends React.Component {
 
 function AppShell() {
   const { page } = usePage()
-  const isLabel = page === 'label'
+  const isLabel = page === 'label' || page === 'product-info'
 
   if (isLabel) {
     return (

@@ -3,7 +3,7 @@ import { track } from '../lib/metaPixel.js'
 
 const RouterContext = createContext(null)
 
-const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label'])
+const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info'])
 
 function readRoute() {
   if (typeof window === 'undefined') return { page: 'home' }
@@ -11,6 +11,7 @@ function readRoute() {
   const [head, sub] = segments
   if (head === 'product' && sub) return { page: 'product', productId: sub }
   if (head === 'label') return { page: 'label', productId: sub || 'trex-liquid' }
+  if (head === 'product-info') return { page: 'product-info', productId: sub || null }
   if (PAGES.has(head)) return { page: head }
   return { page: 'home' }
 }
