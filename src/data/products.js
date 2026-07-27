@@ -288,7 +288,7 @@ export const products = [
     image: '/products/trex-cordyceps.png',
     name: 'Cordyceps',
     subtitle: 'VO₂ Max · Stamina',
-    tagline: 'Cordyceps militaris extract',
+    tagline: 'Cordyceps sinensis 10:1 extract',
     category: 'adaptogen',
     categoryLabel: 'Adaptogen',
     tier: 'SPECIALIST',
@@ -304,9 +304,9 @@ export const products = [
       partner: 'Hydra Muscle',
     },
     pdp: {
-      heroClaim: 'The mushroom that climbs Everest. Cordyceps militaris extract — standardized for cordycepin and adenosine, the molecules behind ATP production.',
+      heroClaim: 'The mushroom that climbs Everest. Cordyceps sinensis 10:1 extract — standardized for adenosine, the direct building block of ATP and cellular energy.',
       metrics: [
-        { label: 'Cordycepin std.', value: '0.3%' },
+        { label: 'Extract ratio', value: '10:1' },
         { label: 'VO₂ max lift (literature)', value: '+7%' },
         { label: 'Best for', value: 'Endurance' },
         { label: 'Time to effect', value: '14 days' },
@@ -318,7 +318,7 @@ export const products = [
       mechanism: {
         title: 'Why Sherpas have used this for centuries',
         steps: [
-          { h: 'Adenosine triphosphate', b: 'Cordycepin is a structural analogue of adenosine — supports ATP production at the mitochondrial level.' },
+          { h: 'Adenosine pathway', b: 'Cordyceps sinensis contains adenosine — a direct building block of ATP — supporting mitochondrial energy production at the cellular level.' },
           { h: 'Oxygen efficiency', b: 'Improves VO₂ max and oxygen uptake, particularly noticeable at sustained intensity.' },
           { h: 'No stim crash', b: 'Cordyceps is non-stimulant — no jitters, no crash, no tolerance build.' },
         ],
@@ -344,7 +344,7 @@ export const products = [
       ],
       stackWith: ['hydra-muscle', 'trex-ginseng', 'vita-peak'],
       faq: [
-        { q: 'Is this the "zombie" Cordyceps from The Last of Us?', a: 'Same genus (Cordyceps), different species. Ours is militaris — the cultivated, food-grade one. Not the wildtype.' },
+        { q: 'Is this the "zombie" Cordyceps from The Last of Us?', a: 'Different genus entirely. The game\'s fungus is Ophiocordyceps unilateralis — an insect parasite. Ours is Cordyceps sinensis — the rare Himalayan species Sherpas have used for centuries.' },
         { q: 'Will it stimulate me like caffeine?', a: 'No. Cordyceps is non-stimulant. You feel it as expanded ceiling, not a buzz.' },
       ],
       reviews: [
