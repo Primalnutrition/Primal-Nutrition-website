@@ -8,7 +8,18 @@ import Picture from './Picture.jsx'
 import IngredientShowcase from './IngredientShowcase.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
+import LabTested from './LabTested.jsx'
+import Certifications from './Certifications.jsx'
 import { track } from '../lib/metaPixel.js'
+
+// "50 servings" / "30 days" → per-day price string, e.g. "₹40/day"
+function perDay(variant) {
+  const m = /(\d+)\s*(servings|days)/i.exec(variant?.sub || '')
+  if (!m) return null
+  const days = Number(m[1])
+  if (!days) return null
+  return `₹${Math.round(variant.price / days).toLocaleString('en-IN')}/day`
+}
 
 export default function ProductDetail({ productId }) {
   const product = productById(productId)
@@ -124,7 +135,24 @@ export default function ProductDetail({ productId }) {
               <h1 className="font-display font-black text-5xl lg:text-6xl leading-[0.95] tracking-tightest mb-3">
                 {product.name}
               </h1>
-              <p className="font-display italic text-2xl text-amber-light mb-6">{product.subtitle}</p>
+              <p className="font-display italic text-2xl text-amber-light mb-4">{product.subtitle}</p>
+
+              {pdp?.reviews?.length > 0 && (
+                <button
+                  onClick={() => document.getElementById('pdp-reviews')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="flex items-center gap-2 mb-5 group"
+                >
+                  <span className="text-amber text-sm tracking-tight">
+                    {'★'.repeat(5)}
+                  </span>
+                  <span className="text-sm font-semibold text-bone">
+                    {(pdp.reviews.reduce((s, r) => s + r.rating, 0) / pdp.reviews.length).toFixed(1)}
+                  </span>
+                  <span className="text-[11px] uppercase tracking-widest text-bone/50 group-hover:text-amber transition underline underline-offset-4 decoration-bone/25">
+                    {pdp.reviews.length} verified review{pdp.reviews.length > 1 ? 's' : ''}
+                  </span>
+                </button>
+              )}
 
               <p className="text-lg text-bone/75 leading-relaxed mb-8">{pdp?.heroClaim || product.description}</p>
 
@@ -145,13 +173,21 @@ export default function ProductDetail({ productId }) {
                         }`}
                       >
                         <div>
-                          <div className="font-semibold text-bone">{v.label}</div>
+                          <div className="font-semibold text-bone flex items-center gap-2">
+                            {v.label}
+                            {v.popular && (
+                              <span className="text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-amber text-ink">Most popular</span>
+                            )}
+                          </div>
                           <div className="text-[11px] uppercase tracking-widest text-bone/45">{v.sub}</div>
                         </div>
                         <div className="text-right">
                           <div className="font-display font-bold text-bone">₹{v.price.toLocaleString('en-IN')}</div>
                           {v.compareAt && (
                             <div className="text-[10px] text-bone/40 line-through">₹{v.compareAt.toLocaleString('en-IN')}</div>
+                          )}
+                          {perDay(v) && (
+                            <div className="text-[10px] text-amber-light/80">{perDay(v)}</div>
                           )}
                         </div>
                       </button>
@@ -165,6 +201,9 @@ export default function ProductDetail({ productId }) {
                     <span className="font-display font-bold text-4xl text-bone">₹{variant.price.toLocaleString('en-IN')}</span>
                     {variant.compareAt && (
                       <span className="text-bone/40 line-through text-lg">₹{variant.compareAt.toLocaleString('en-IN')}</span>
+                    )}
+                    {perDay(variant) && (
+                      <span className="text-sm text-amber-light/90 font-semibold">{perDay(variant)}</span>
                     )}
                   </div>
                 </div>
@@ -189,11 +228,24 @@ export default function ProductDetail({ productId }) {
                   <div className="text-amber font-bold mb-1">COD</div>
                   Available nationwide
                 </div>
-                <div className="p-3 border border-bone/10 rounded-xl">
+                <button
+                  onClick={() => navigate('label', { id: product.id })}
+                  className="p-3 border border-amber/30 rounded-xl hover:bg-amber/10 transition cursor-pointer"
+                >
                   <div className="text-amber font-bold mb-1">3rd Party</div>
-                  Lab tested
-                </div>
+                  Lab tested ↗
+                </button>
               </div>
+
+              <button
+                onClick={() => navigate('label', { id: product.id })}
+                className="w-full mt-3 py-3 rounded-xl border border-bone/15 text-[11px] uppercase tracking-widest text-bone/70 hover:border-amber hover:text-amber transition font-brand"
+              >
+                View full label, ingredients &amp; lab report →
+              </button>
+              <p className="mt-3 text-center text-[10px] uppercase tracking-widest text-bone/40 font-brand">
+                FSSAI Licensed · AYUSH Certified · Mfg. Lic. AL946M · Ayurvedic Proprietary Medicine
+              </p>
             </div>
           </div>
         </div>
@@ -201,6 +253,9 @@ export default function ProductDetail({ productId }) {
 
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
+
+      {/* ── Proof: full COA breakdown (T-Rex has its own report component) ── */}
+      {product.id === 'trex-liquid' && <LabTested />}
 
       {/* ── Problem ───────────────────────────────────────── */}
       {pdp?.problem && (
@@ -580,7 +635,7 @@ export default function ProductDetail({ productId }) {
 
       {/* ── Reviews ──────────────────────────────────────── */}
       {pdp?.reviews?.length > 0 && (
-        <section className="py-24 bg-gradient-to-b from-ink-800/30 to-ink">
+        <section id="pdp-reviews" className="py-24 bg-gradient-to-b from-ink-800/30 to-ink">
           <div className="container-x">
             <div className="max-w-2xl mb-10">
               <div className="eyebrow mb-5">Verified buyers</div>
@@ -617,6 +672,9 @@ export default function ProductDetail({ productId }) {
           </div>
         </section>
       )}
+
+      {/* ── Certifications: real govt/trade cert images ──── */}
+      <Certifications />
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       {pdp?.faq?.length > 0 && (

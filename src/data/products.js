@@ -45,7 +45,7 @@ export const products = [
     description: 'Our flagship liquid sublingual T-booster. 3× faster absorption than capsules.',
     variants: [
       { id: 'trex-1', label: 'Pack of 1 · 500ml', sub: '50 servings', price: 1999, compareAt: 2200 },
-      { id: 'trex-2', label: 'Pack of 2 · 1L', sub: '100 servings', price: 3999, compareAt: 4400, save: 'Save ₹401' },
+      { id: 'trex-2', label: 'Pack of 2 · 1L', sub: '100 servings', price: 3999, compareAt: 4400, save: 'Save ₹401', popular: true },
       { id: 'trex-3', label: 'Pack of 3 · 1.5L', sub: '150 servings', price: 5999, compareAt: 6600, save: 'Best value' },
     ],
     mckinsey: {
@@ -60,8 +60,8 @@ export const products = [
       metrics: [
         { label: '7-in-1 Natural Formula', value: '7 Herbs' },
         { label: 'Bottle size', value: '500 ml' },
-        { label: 'Servings (at 10ml)', value: '50' },
-        { label: 'Label dose', value: '15ml ×2' },
+        { label: 'Daily dose · sublingual', value: '10 ml' },
+        { label: 'Cost per day (50 servings)', value: '₹40' },
       ],
       problem: {
         title: 'Chemical supplements broke a generation of Indian men.',
@@ -107,7 +107,7 @@ export const products = [
       ],
       faq: [
         { q: 'Is this a steroid or stimulant?', a: 'No. T-Rex is an Ayurvedic Proprietary Medicine. Zero hormones, stimulants, or banned substances. Mfg. Lic. AL946M.' },
-        { q: 'Dosage?', a: 'Label dose: 15ml twice daily with milk or other beverages, as directed by physician. Daily wellness: 10ml in the morning. Shake well before use.' },
+        { q: 'Dosage?', a: 'Daily wellness dose: 10ml sublingual in the morning — one bottle lasts 50 days (≈₹40/day). Intensive phase, as printed on the label: 15ml twice daily with milk for short cycles, as directed by physician. Shake well before use.' },
         { q: 'Why liquid?', a: 'Shilajit is fully absorbed only in liquid form. The ancestral process we use takes longer and costs more — and it is the only method that delivers full bioavailability.' },
       ],
       reviews: [
