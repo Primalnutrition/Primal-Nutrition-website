@@ -18,6 +18,7 @@ function readRoute() {
 
 function buildHash(route) {
   if (route.page === 'product' && route.productId) return `#/product/${route.productId}`
+  if ((route.page === 'label' || route.page === 'product-info') && route.productId) return `#/${route.page}/${route.productId}`
   if (route.page === 'home') return ''
   if (PAGES.has(route.page)) return `#/${route.page}`
   return ''
@@ -44,6 +45,8 @@ export function RouterProvider({ children }) {
     let route
     if (next === 'product' && params.id) {
       route = { page: 'product', productId: params.id }
+    } else if ((next === 'label' || next === 'product-info') && params.id) {
+      route = { page: next, productId: params.id }
     } else if (PAGES.has(next)) {
       route = { page: next }
     } else {
