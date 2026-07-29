@@ -203,8 +203,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-ginseng',
-    image: '/products/trex-ginseng-01.png',
+    image: '/products/trex-ginseng-new-01.png',
     gallery: [
+      '/products/trex-ginseng-new-01.png',
+      '/products/trex-ginseng-new-02.png',
+      '/products/trex-ginseng-new-03.png',
+      '/products/trex-ginseng-new-04.jpeg',
+      '/products/trex-ginseng-new-05.jpeg',
+      '/products/trex-ginseng-new-06.jpeg',
+      '/products/trex-ginseng-new-07.jpeg',
       '/products/trex-ginseng-01.png',
       '/products/trex-ginseng-02.png',
       '/products/trex-ginseng-03.png',
@@ -285,7 +292,14 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-cordyceps',
-    image: '/products/trex-cordyceps.png',
+    image: '/products/trex-cordyceps-new-01.png',
+    gallery: [
+      '/products/trex-cordyceps-new-01.png',
+      '/products/trex-cordyceps-new-02.png',
+      '/products/trex-cordyceps-new-03.png',
+      '/products/trex-cordyceps-new-04.png',
+      '/products/trex-cordyceps.png',
+    ],
     name: 'Cordyceps',
     subtitle: 'VO₂ Max · Stamina',
     tagline: 'Cordyceps sinensis 10:1 extract',
@@ -358,8 +372,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-tongkat',
-    image: '/products/trex-tongkat-01.jpeg',
+    image: '/products/trex-tongkat-new-01.png',
     gallery: [
+      '/products/trex-tongkat-new-01.png',
+      '/products/trex-tongkat-new-02.png',
+      '/products/trex-tongkat-new-03.png',
+      '/products/trex-tongkat-new-04.jpeg',
+      '/products/trex-tongkat-new-05.jpeg',
+      '/products/trex-tongkat-new-06.jpeg',
+      '/products/trex-tongkat-new-07.jpeg',
       '/products/trex-tongkat-01.jpeg',
       '/products/trex-tongkat-02.jpeg',
       '/products/trex-tongkat-03.jpeg',
@@ -440,8 +461,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-royal-jelly',
-    image: '/products/trex-royal-jelly-01.jpeg',
+    image: '/products/trex-royal-jelly-new-01.png',
     gallery: [
+      '/products/trex-royal-jelly-new-01.png',
+      '/products/trex-royal-jelly-new-02.png',
+      '/products/trex-royal-jelly-new-03.png',
+      '/products/trex-royal-jelly-new-04.jpeg',
+      '/products/trex-royal-jelly-new-05.jpeg',
+      '/products/trex-royal-jelly-new-06.jpeg',
+      '/products/trex-royal-jelly-new-07.jpeg',
       '/products/trex-royal-jelly-01.jpeg',
       '/products/trex-royal-jelly-02.jpeg',
       '/products/trex-royal-jelly-03.jpeg',
@@ -521,8 +549,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-maca',
-    image: '/products/trex-maca-01.jpeg',
+    image: '/products/trex-maca-new-01.png',
     gallery: [
+      '/products/trex-maca-new-01.png',
+      '/products/trex-maca-new-02.png',
+      '/products/trex-maca-new-03.png',
+      '/products/trex-maca-new-04.jpeg',
+      '/products/trex-maca-new-05.jpeg',
+      '/products/trex-maca-new-06.jpeg',
+      '/products/trex-maca-new-07.jpeg',
       '/products/trex-maca-01.jpeg',
       '/products/trex-maca-02.jpeg',
       '/products/trex-maca-03.jpeg',
@@ -602,8 +637,16 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-liver',
-    image: '/products/trex-liver-01.jpeg',
+    image: '/products/trex-liver-new-01.png',
     gallery: [
+      '/products/trex-liver-new-01.png',
+      '/products/trex-liver-new-02.png',
+      '/products/trex-liver-new-03.png',
+      '/products/trex-liver-new-04.png',
+      '/products/trex-liver-new-05.jpeg',
+      '/products/trex-liver-new-06.jpeg',
+      '/products/trex-liver-new-07.jpeg',
+      '/products/trex-liver-new-08.jpeg',
       '/products/trex-liver-01.jpeg',
       '/products/trex-liver-02.jpeg',
       '/products/trex-liver-03.jpeg',
