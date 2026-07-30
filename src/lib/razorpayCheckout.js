@@ -39,6 +39,7 @@ export async function openRazorpayCheckout({
   description = 'T-Rex liquid + supplements',
   prefill = {},
   theme = { color: '#d6a85a' },
+  onEvent = () => {},   // observability hook: ('payment_failed' | 'dismissed', detail)
 }) {
   await loadScript()
 
@@ -56,6 +57,7 @@ export async function openRazorpayCheckout({
         ondismiss: () => {
           // User closed the modal (e.g. to switch card → UPI). Not a failure —
           // flag it so the UI shows a calm "ready when you are" prompt, not a red error.
+          onEvent('dismissed', {})
           const err = new Error('Payment cancelled')
           err.cancelled = true
           reject(err)
@@ -69,8 +71,17 @@ export async function openRazorpayCheckout({
         })
       },
     })
+    // A failed attempt (wrong UPI PIN, declined card) keeps the Razorpay modal
+    // open for retry — it must NOT settle this promise. Rejecting here meant a
+    // fail-then-succeed retry resolved into a dead promise: the customer was
+    // charged while our UI showed an error and verify-payment never ran.
     rzp.on('payment.failed', (err) => {
-      reject(new Error(err?.error?.description || 'Payment failed'))
+      onEvent('payment_failed', {
+        code: err?.error?.code,
+        description: err?.error?.description,
+        reason: err?.error?.reason,
+        step: err?.error?.step,
+      })
     })
     rzp.open()
   })

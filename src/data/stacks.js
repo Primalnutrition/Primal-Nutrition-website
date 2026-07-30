@@ -98,6 +98,46 @@ export function pricingFor(stack) {
     const v = p?.variants.find((x) => x.id === it.variantId)
     return sum + (v?.price || 0)
   }, 0)
-  const bundlePrice = Math.round(totalFull * (1 - stack.discount))
-  return { mrp: totalFull, price: bundlePrice, save: totalFull - bundlePrice }
+  const save = stackSave(stack)
+  return { mrp: totalFull, price: totalFull - save, save }
+}
+
+function variantPrice(variantId) {
+  for (const p of products) {
+    const v = p.variants.find((x) => x.id === variantId)
+    if (v) return v.price
+  }
+  return 0
+}
+
+function stackSave(stack) {
+  const setPrice = stack.items.reduce((s, it) => s + variantPrice(it.variantId), 0)
+  return Math.round(setPrice * stack.discount)
+}
+
+/**
+ * Cart-level bundle discount — MUST stay in lockstep with the server's
+ * api/src/data/stacks.js (same greedy highest-discount-first matcher, same
+ * rounding), since the server version is what actually prices the order.
+ *
+ * @param {Array<{ variantId: string, qty: number }>} cartItems
+ * @returns {{ discount: number, applied: Array<{ id: string, name: string, sets: number, amount: number }> }}
+ */
+export function computeStackDiscount(cartItems) {
+  const avail = new Map()
+  for (const it of cartItems) avail.set(it.variantId, (avail.get(it.variantId) || 0) + it.qty)
+
+  let discount = 0
+  const applied = []
+  const ordered = [...stacks].sort((a, b) => b.discount - a.discount)
+  for (const stack of ordered) {
+    const sets = Math.min(...stack.items.map((it) => avail.get(it.variantId) || 0))
+    if (!sets) continue
+    const amount = stackSave(stack) * sets
+    if (amount <= 0) continue
+    discount += amount
+    applied.push({ id: stack.id, name: stack.name, sets, amount })
+    stack.items.forEach((it) => avail.set(it.variantId, avail.get(it.variantId) - sets))
+  }
+  return { discount, applied }
 }

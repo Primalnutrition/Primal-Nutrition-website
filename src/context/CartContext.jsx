@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useReducer, useState } from 'react'
 import { products } from '../data/products.js'
+import { computeStackDiscount } from '../data/stacks.js'
 import { track } from '../lib/metaPixel.js'
 
 const CartContext = createContext(null)
@@ -107,11 +108,18 @@ export function CartProvider({ children }) {
     0
   )
   const count = lineItems.reduce((s, l) => s + l.qty, 0)
+  // Bundle pricing — mirrors the server's stack matcher so the number shown
+  // here is the number Razorpay charges.
+  const { discount: stackDiscount, applied: stacksApplied } = computeStackDiscount(lineItems)
+  const payable = subtotal - stackDiscount
 
   const value = {
     lineItems,
     subtotal,
     compareSubtotal,
+    stackDiscount,
+    stacksApplied,
+    payable,
     count,
     isOpen,
     openCart: () => setOpen(true),

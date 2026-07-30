@@ -199,9 +199,13 @@ router.post('/create-order', async (req, res, next) => {
     return res.status(422).json({ error: 'VALIDATION_ERROR', issues: result.error.issues })
   }
 
+  // Per-step timings — lets us tell a Render cold start / slow DB apart from a
+  // slow Razorpay call when a customer reports checkout hanging.
+  const t0 = Date.now()
   try {
     // 1. Build the draft order in our DB
     const draft = await createDraftOrder(result.data)
+    const dbMs = Date.now() - t0
 
     // 2. Ask Razorpay for an order id
     const rzpOrder = await createRazorpayOrder({
@@ -209,12 +213,20 @@ router.post('/create-order', async (req, res, next) => {
       currency: 'INR',
       receipt: draft.orderNumber,
     })
+    const rzpMs = Date.now() - t0 - dbMs
 
     // 3. Save the Razorpay order id on our row
     await attachRazorpayOrder(draft.internalOrderId, rzpOrder.id)
 
     logger.info(
-      { internalOrderId: draft.internalOrderId, razorpayOrderId: rzpOrder.id, total: draft.totalRupees },
+      {
+        internalOrderId: draft.internalOrderId,
+        razorpayOrderId: rzpOrder.id,
+        total: draft.totalRupees,
+        discount: draft.discount,
+        stacksApplied: draft.stacksApplied,
+        timings: { dbMs, rzpMs, totalMs: Date.now() - t0 },
+      },
       'Draft order + Razorpay order created'
     )
 
@@ -239,9 +251,34 @@ router.post('/create-order', async (req, res, next) => {
     }).catch((err) => logger.warn({ err }, 'welcome email hook failed'))
     return
   } catch (err) {
-    logger.error({ err: err.message }, 'create-order failed')
+    logger.error({ err: err.message, elapsedMs: Date.now() - t0 }, 'create-order failed')
     return next(err)
   }
+})
+
+/**
+ * POST /api/checkout/client-log
+ *
+ * Fire-and-forget beacon from the storefront: Razorpay Checkout callbacks
+ * (payment.failed, modal dismiss), create-order round-trip times, and frontend
+ * timeouts. Without this, a customer-side "Please try again" leaves no server
+ * trace to correlate against.
+ */
+const ClientLogSchema = z.object({
+  event: z.string().min(1).max(64),
+  data: z.record(z.any()).optional(),
+})
+
+router.post('/client-log', (req, res) => {
+  const result = ClientLogSchema.safeParse(req.body)
+  if (!result.success) return res.status(204).end()   // never make the client care
+  const { event, data } = result.data
+  const raw = JSON.stringify(data ?? {})
+  logger.info(
+    { clientEvent: event, data: raw.length <= 2000 ? data ?? {} : { truncated: raw.slice(0, 2000) }, ua: req.get('user-agent') },
+    'checkout client event'
+  )
+  return res.status(204).end()
 })
 
 /**
