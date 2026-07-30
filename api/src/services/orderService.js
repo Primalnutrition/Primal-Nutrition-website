@@ -1,4 +1,5 @@
 import { getAdminClient } from '../lib/supabase.js'
+import { computeStackDiscount } from '../data/stacks.js'
 
 function requireSupabase() {
   const client = getAdminClient()
@@ -84,7 +85,9 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
 
   const subtotal = lineItems.reduce((sum, li) => sum + li.line_total, 0)
   const shippingFee = subtotal >= 1000 ? 0 : 50
-  const discount = 0
+  // Bundle pricing — carts containing a complete stack get the advertised
+  // stack discount, computed against the DB prices resolved above.
+  const { discount, applied: stacksApplied } = computeStackDiscount(lineItems)
   const tax = 0
   const total = subtotal + shippingFee + tax - discount
 
@@ -162,6 +165,8 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
     orderNumber: order.order_number,
     totalRupees: Number(order.total),
     totalPaise: Math.round(Number(order.total) * 100),
+    discount,
+    stacksApplied,
     customer: { id: customerId, name: customer.name, email: customer.email, phone: customer.phone },
     address: { ...address, id: addr.id },
     items: lineItems,

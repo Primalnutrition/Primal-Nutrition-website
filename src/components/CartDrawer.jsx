@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
-import { api } from '../lib/api.js'
+import { api, API_BASE_URL } from '../lib/api.js'
+import { clientLog } from '../lib/clientLog.js'
 import { openRazorpayCheckout } from '../lib/razorpayCheckout.js'
 import { track, identify, getCookie } from '../lib/metaPixel.js'
 import { getAttributionForOrder } from '../lib/attribution.js'
@@ -20,7 +21,7 @@ const initialForm = {
 }
 
 export default function CartDrawer() {
-  const { isOpen, closeCart, lineItems, subtotal, compareSubtotal, count, updateQty, removeItem, clearCart } = useCart()
+  const { isOpen, closeCart, lineItems, subtotal, compareSubtotal, stackDiscount, stacksApplied, payable, count, updateQty, removeItem, clearCart } = useCart()
   const { navigate } = usePage()
   const [step, setStep] = useState('cart')     // cart | form | success
   const [form, setForm] = useState(initialForm)
@@ -49,6 +50,15 @@ export default function CartDrawer() {
       setNotice(null)
       setErrors({})
     }
+  }, [isOpen])
+
+  // Pre-warm the API the moment the cart opens. Render's free tier spins the
+  // server down after ~15 min idle (30–60s cold start) — by the time the
+  // customer has filled the address form, this ping has already woken it, so
+  // create-order doesn't eat the cold start.
+  useEffect(() => {
+    if (!isOpen) return
+    fetch(`${API_BASE_URL}/health`).catch(() => {})
   }, [isOpen])
 
   // While submitting, advance a status step every 2.2s so the button shows live
@@ -116,11 +126,14 @@ export default function CartDrawer() {
       city: form.city, state: form.state, zip: form.pincode,
     })
 
+    const tStart = Date.now()
     try {
       if (paymentMethod === 'cod') {
         // COD — server creates order + Shiprocket shipment (several courier API
-        // calls) in one request, so allow more time before aborting.
-        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution, fbp, fbc }, { timeout: 45000 })
+        // calls) in one request, and a Render cold start can add 30–60s on top,
+        // so allow generous time before aborting.
+        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution, fbp, fbc }, { timeout: 75000 })
+        clientLog('cod_order_ok', { ms: Date.now() - tStart, orderNumber: cod.orderNumber })
         setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
         setStep('success')
         clearCart()
@@ -134,8 +147,11 @@ export default function CartDrawer() {
         return
       }
 
-      // Online — Razorpay flow.
-      const draft = await api.post('/api/checkout/create-order', { customer, address, items, attribution })
+      // Online — Razorpay flow. 60s timeout: a Render free-tier cold start
+      // alone can take 30–60s, and the old 20s default aborted right in the
+      // middle of it ("Please try again" with no server error to correlate).
+      const draft = await api.post('/api/checkout/create-order', { customer, address, items, attribution }, { timeout: 60000 })
+      clientLog('create_order_ok', { ms: Date.now() - tStart, orderNumber: draft.orderNumber })
 
       let rzp
       try {
@@ -146,6 +162,7 @@ export default function CartDrawer() {
           currency: draft.currency,
           description: `Order ${draft.orderNumber}`,
           prefill: { name: form.name, email: form.email, contact: form.phone },
+          onEvent: (event, detail) => clientLog(`rzp_${event}`, { ...detail, orderNumber: draft.orderNumber }),
         })
       } catch (err) {
         // User dismissed the payment window — not an error. Keep their details
@@ -172,6 +189,7 @@ export default function CartDrawer() {
       } catch (verifyErr) {
         // Money was taken but confirmation didn't come back. Show success with a
         // "we're finalizing" note — do NOT send them back to pay again.
+        clientLog('verify_failed', { orderNumber: draft.orderNumber, paymentId: rzp.paymentId, error: verifyErr?.message })
         setConfirmedOrder({
           orderNumber: draft.orderNumber,
           paymentId: rzp.paymentId,
@@ -191,6 +209,13 @@ export default function CartDrawer() {
         { eventID: `purchase_${draft.internalOrderId}` }
       )
     } catch (err) {
+      clientLog('checkout_failed', {
+        method: paymentMethod,
+        ms: Date.now() - tStart,
+        code: err?.code || err?.payload?.error,
+        status: err?.status,
+        error: err?.message,
+      })
       setSubmitError(friendlyError(err))
     } finally {
       setSubmitting(false)
@@ -199,7 +224,7 @@ export default function CartDrawer() {
 
   const processingSteps = paymentMethod === 'cod'
     ? ['Placing your order…', 'Booking your courier…', 'Almost there — hang tight…', 'Still working — please don’t close this…']
-    : ['Securing your order…', 'Opening secure payment…', 'Almost there…']
+    : ['Securing your order…', 'Opening secure payment…', 'Still connecting — our server may be waking up…', 'Almost there — please don’t close this…']
   const processingLabel = processingSteps[Math.min(procStep, processingSteps.length - 1)]
 
   return (
@@ -230,7 +255,7 @@ export default function CartDrawer() {
             </div>
             <div className="font-display font-bold text-xl">
               {step === 'cart' && `${count} item${count !== 1 ? 's' : ''}`}
-              {step === 'form' && `₹${subtotal.toLocaleString('en-IN')} due`}
+              {step === 'form' && `₹${payable.toLocaleString('en-IN')} due`}
               {step === 'success' && `#${confirmedOrder?.orderNumber || ''}`}
             </div>
           </div>
@@ -334,9 +359,15 @@ export default function CartDrawer() {
                   </button>
                 </div>
               </div>
+              {stackDiscount > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-bone/55">Stack discount</span>
+                  <span className="font-semibold text-amber">−₹{stackDiscount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-bone/55 text-sm">Total</span>
-                <span className="font-display font-bold text-2xl">₹{subtotal.toLocaleString('en-IN')}</span>
+                <span className="font-display font-bold text-2xl">₹{payable.toLocaleString('en-IN')}</span>
               </div>
               <button
                 onClick={handlePay}
@@ -354,8 +385,8 @@ export default function CartDrawer() {
                 ) : (
                   <>
                     {paymentMethod === 'cod'
-                      ? `Place COD order · ₹${subtotal.toLocaleString('en-IN')}`
-                      : `Pay ₹${subtotal.toLocaleString('en-IN')}`}
+                      ? `Place COD order · ₹${payable.toLocaleString('en-IN')}`
+                      : `Pay ₹${payable.toLocaleString('en-IN')}`}
                     <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
                   </>
                 )}
@@ -417,9 +448,17 @@ export default function CartDrawer() {
                   <span className="font-semibold text-amber">₹{saved.toLocaleString('en-IN')}</span>
                 </div>
               )}
+              {stackDiscount > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-bone/55">
+                    Stack discount{stacksApplied.length === 1 ? ` · ${stacksApplied[0].name}` : ''}
+                  </span>
+                  <span className="font-semibold text-amber">−₹{stackDiscount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-bone/55">Subtotal</span>
-                <span className="font-display font-bold text-2xl">₹{subtotal.toLocaleString('en-IN')}</span>
+                <span className="font-display font-bold text-2xl">₹{payable.toLocaleString('en-IN')}</span>
               </div>
               <div className="text-[11px] uppercase tracking-widest text-bone/40 flex items-center gap-2">
                 <svg className="w-3 h-3 text-forest" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
@@ -428,11 +467,11 @@ export default function CartDrawer() {
               <button
                 onClick={() => {
                   setStep('form')
-                  track('InitiateCheckout', { value: subtotal, currency: 'INR', num_items: count })
+                  track('InitiateCheckout', { value: payable, currency: 'INR', num_items: count })
                 }}
                 className="btn-primary w-full text-base"
               >
-                Checkout — ₹{subtotal.toLocaleString('en-IN')}
+                Checkout — ₹{payable.toLocaleString('en-IN')}
                 <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
               </button>
               <button onClick={clearCart} className="w-full text-xs uppercase tracking-widest text-bone/40 hover:text-rust transition">

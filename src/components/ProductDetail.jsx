@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { productById, products, tiers } from '../data/products.js'
+import { stacks, pricingFor } from '../data/stacks.js'
 import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
 import Picture from './Picture.jsx'
@@ -23,7 +24,7 @@ function perDay(variant) {
 
 export default function ProductDetail({ productId }) {
   const product = productById(productId)
-  const { addToCart } = useCart()
+  const { addToCart, openCart } = useCart()
   const { navigate } = usePage()
   const [variantId, setVariantId] = useState(product?.variants[0]?.id)
   const [adding, setAdding] = useState(false)
@@ -83,10 +84,26 @@ export default function ProductDetail({ productId }) {
     .map((id) => productById(id))
     .filter(Boolean)
 
+  // Bundle upsell — the best stack this product belongs to (highest discount,
+  // then fewest extra products). The discount is real: the same stack matcher
+  // runs in the cart and on the server, so the saving survives to Razorpay.
+  const upsellStack = stacks
+    .filter((s) => s.items.some((it) => it.productId === product.id))
+    .sort((a, b) => b.discount - a.discount || a.items.length - b.items.length)[0]
+  const upsellPartners = (upsellStack?.items || [])
+    .filter((it) => it.productId !== product.id)
+    .map((it) => productById(it.productId))
+    .filter(Boolean)
+
   const handleAdd = () => {
     setAdding(true)
     addToCart(product.id, variantId, 1, true)   // open the cart so checkout is one tap away
     setTimeout(() => setAdding(false), 900)
+  }
+
+  const handleAddStack = () => {
+    upsellStack.items.forEach((it) => addToCart(it.productId, it.variantId, 1, false))
+    setTimeout(openCart, 250)
   }
 
   return (
@@ -218,6 +235,44 @@ export default function ProductDetail({ productId }) {
               >
                 {adding ? '✓ Added to cart' : `Add to Cart — ₹${variant.price.toLocaleString('en-IN')}`}
               </button>
+
+              {/* Dispatch urgency — a concrete reason to act now */}
+              <div className="mt-3 flex items-center justify-center gap-2 text-[11px] uppercase tracking-widest text-bone/55 font-brand">
+                <svg className="w-3.5 h-3.5 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                Ships within 24 hours · Delivery in 2–5 days
+              </div>
+
+              {/* Bundle upsell — surface the best stack this product belongs to */}
+              {upsellStack && upsellPartners.length > 0 && (() => {
+                const price = pricingFor(upsellStack)
+                return (
+                  <div className="mt-4 p-4 rounded-xl border border-amber/25 bg-amber/5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[9px] uppercase tracking-[0.22em] text-amber font-brand font-bold mb-1">
+                          {upsellStack.name} · Save {Math.round(upsellStack.discount * 100)}%
+                        </div>
+                        <div className="text-sm font-semibold text-bone leading-snug">
+                          Pairs with {upsellPartners.map((p) => p.name).join(' + ')}
+                        </div>
+                        <div className="text-[12px] text-bone/55 mt-1">
+                          <span className="text-bone font-semibold">₹{price.price.toLocaleString('en-IN')}</span>
+                          {' '}<span className="line-through text-bone/35">₹{price.mrp.toLocaleString('en-IN')}</span>
+                          {' '}· save ₹{price.save.toLocaleString('en-IN')} — applied at checkout
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleAddStack}
+                        className="btn-primary flex-shrink-0 !py-2.5 !px-4 text-xs whitespace-nowrap"
+                      >
+                        Add stack
+                      </button>
+                    </div>
+                  </div>
+                )
+              })()}
 
               <div className="grid grid-cols-3 gap-2 mt-6 text-[10px] uppercase tracking-widest text-bone/50 text-center font-brand">
                 <div className="p-3 border border-bone/10 rounded-xl">
