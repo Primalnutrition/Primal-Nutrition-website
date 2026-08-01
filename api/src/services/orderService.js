@@ -193,16 +193,10 @@ export async function attachRazorpayOrder(internalOrderId, razorpayOrderId) {
 export async function markOrderPaid({ internalOrderId, razorpayPaymentId }) {
   const supabase = requireSupabase()
 
-  const { data: existing, error: gErr } = await supabase
-    .from('orders')
-    .select('id, status, razorpay_payment_id, razorpay_order_id')
-    .eq('id', internalOrderId)
-    .single()
-  if (gErr) throw gErr
-  if (existing.status === 'paid' || existing.status === 'shipped' || existing.status === 'delivered') {
-    return { alreadyPaid: true, order: existing }
-  }
-
+  // Atomic conditional UPDATE: only writes when the order is not yet paid.
+  // Using a single SQL round-trip eliminates the SELECT→UPDATE race condition
+  // where two concurrent callers (verify-payment + Razorpay webhook) both read
+  // status='pending' and both set alreadyPaid=false, causing duplicate CAPI events.
   const { data: updated, error: uErr } = await supabase
     .from('orders')
     .update({
@@ -211,11 +205,23 @@ export async function markOrderPaid({ internalOrderId, razorpayPaymentId }) {
       paid_at: new Date().toISOString(),
     })
     .eq('id', internalOrderId)
+    .not('status', 'in', '("paid","shipped","delivered")')
     .select('id, order_number, razorpay_order_id, razorpay_payment_id, total, status, paid_at')
-    .single()
+    .maybeSingle()
   if (uErr) throw uErr
 
-  return { alreadyPaid: false, order: updated }
+  if (updated) {
+    return { alreadyPaid: false, order: updated }
+  }
+
+  // Row not returned → already in a terminal status; fetch for the caller.
+  const { data: existing, error: gErr } = await supabase
+    .from('orders')
+    .select('id, order_number, razorpay_order_id, razorpay_payment_id, total, status, paid_at')
+    .eq('id', internalOrderId)
+    .single()
+  if (gErr) throw gErr
+  return { alreadyPaid: true, order: existing }
 }
 
 /**

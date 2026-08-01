@@ -88,7 +88,10 @@ router.post('/razorpay', async (req, res) => {
             // to mark the order paid (browser never called verify-payment). No
             // browser context here, but hashed email/phone/address still match.
             // Deduped against the browser pixel via event_id.
-            if (!alreadyPaid && full?.customer) {
+            // Restricted to payment.captured only: Razorpay also fires order.paid
+            // for the same transaction, so allowing both would duplicate CAPI even
+            // after the atomic markOrderPaid guard (they arrive simultaneously).
+            if (!alreadyPaid && full?.customer && event === 'payment.captured') {
               await sendPurchaseEvent({
                 internalOrderId: full.id,
                 orderNumber: full.order_number,

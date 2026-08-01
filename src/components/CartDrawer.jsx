@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { api, API_BASE_URL } from '../lib/api.js'
@@ -32,6 +32,7 @@ export default function CartDrawer() {
   const [procStep, setProcStep] = useState(0)  // advances the "Processing…" label so it never looks frozen
   const [confirmedOrder, setConfirmedOrder] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('online')  // 'online' | 'cod'
+  const firedPurchases = useRef(new Set())
   const saved = compareSubtotal - subtotal
 
   // Lock body scroll when open
@@ -138,12 +139,16 @@ export default function CartDrawer() {
         setStep('success')
         clearCart()
         // Meta Pixel — Purchase event. eventID is shared with the server-side
-        // Conversions API event so Meta dedupes the two.
-        track(
-          'Purchase',
-          { value: cod.total, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
-          { eventID: `purchase_${cod.internalOrderId}` }
-        )
+        // Conversions API event so Meta dedupes the two. The ref guard prevents
+        // a double-fire if React re-renders or the handler is invoked twice.
+        if (!firedPurchases.current.has(cod.internalOrderId)) {
+          firedPurchases.current.add(cod.internalOrderId)
+          track(
+            'Purchase',
+            { value: cod.total, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
+            { eventID: `purchase_${cod.internalOrderId}` }
+          )
+        }
         return
       }
 
@@ -203,11 +208,14 @@ export default function CartDrawer() {
       clearCart()
       // Meta Pixel — Purchase event (payment was captured either way). eventID is
       // shared with the server-side Conversions API event so Meta dedupes them.
-      track(
-        'Purchase',
-        { value: draft.amount / 100, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
-        { eventID: `purchase_${draft.internalOrderId}` }
-      )
+      if (!firedPurchases.current.has(draft.internalOrderId)) {
+        firedPurchases.current.add(draft.internalOrderId)
+        track(
+          'Purchase',
+          { value: draft.amount / 100, currency: 'INR', content_type: 'product', content_ids: contentIds, num_items: numItems },
+          { eventID: `purchase_${draft.internalOrderId}` }
+        )
+      }
     } catch (err) {
       clientLog('checkout_failed', {
         method: paymentMethod,
