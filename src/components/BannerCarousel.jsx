@@ -42,32 +42,39 @@ export default function BannerCarousel() {
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none"
+      className="relative w-full overflow-hidden select-none mt-16 lg:mt-20"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-label="Primal Nutrition banners"
     >
-      {/* Slides */}
+      {/* Slide stack — all rendered, crossfade via opacity */}
       <div className="relative w-full">
+        {/* Invisible spacer sized to the first banner — keeps container height stable */}
+        <div aria-hidden="true" className="invisible">
+          <img src={BANNERS[0].mob} alt="" className="w-full block md:hidden" />
+          <img src={BANNERS[0].dsk} alt="" className="w-full hidden md:block" />
+        </div>
+
+        {/* All slides absolutely positioned, fade in/out */}
         {BANNERS.map((b, i) => (
           <div
             key={i}
-            className={`${i === active ? 'block' : 'hidden'} w-full`}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
             aria-hidden={i !== active}
           >
-            {/* Mobile image — shown below md */}
             <img
               src={b.mob}
               alt={b.alt}
-              className="w-full block md:hidden"
+              className="w-full h-full object-cover block md:hidden"
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
-            {/* Desktop image — shown md and above */}
             <img
               src={b.dsk}
               alt={b.alt}
-              className="w-full hidden md:block"
+              className="w-full h-full object-cover hidden md:block"
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
@@ -98,7 +105,7 @@ export default function BannerCarousel() {
             key={i}
             onClick={() => { go(i); restart() }}
             aria-label={`Go to banner ${i + 1}`}
-            className={`rounded-full transition-all ${
+            className={`rounded-full transition-all duration-300 ${
               i === active ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/70'
             }`}
           />
