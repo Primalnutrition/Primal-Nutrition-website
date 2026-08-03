@@ -13,6 +13,7 @@ import Comparison from './components/Comparison.jsx'
 import Results from './components/Results.jsx'
 import Founder from './components/Founder.jsx'
 import Reviews from './components/Reviews.jsx'
+import RareHerbBanner from './components/RareHerbBanner.jsx'
 import Bundle from './components/Bundle.jsx'
 import FAQ from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
@@ -44,6 +45,7 @@ function HomePage() {
         <Comparison />
         <Founder />
         <Reviews />
+        <RareHerbBanner />
         <Bundle />
         <FAQ />
       </main>
