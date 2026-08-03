@@ -24,13 +24,18 @@ export const products = [
     id: 'trex-liquid',
     image: '/products/trex-liquid-box.jpg',
     gallery: [
+      '/products/trex-liquid/1.jpg',
+      '/products/trex-liquid/2.jpg',
+      '/products/trex-liquid/10.jpg',
+      '/products/trex-liquid/3.jpg',
+      '/products/trex-liquid/4.jpg',
+      '/products/trex-liquid/5.jpg',
+      '/products/trex-liquid/6.jpg',
+      '/products/trex-liquid/7.jpg',
+      '/products/trex-liquid/8.jpg',
+      '/products/trex-liquid/9.jpg',
       '/products/trex-liquid-box.jpg',
       '/products/trex-liquid-01.png',
-      '/products/trex-liquid-02.png',
-      '/products/trex-liquid-03.png',
-      '/products/trex-liquid-04.png',
-      '/products/trex-liquid-05.png',
-      '/products/trex-liquid-06.png',
     ],
     name: 'T-Rex',
     subtitle: 'Strength & Testosterone Booster',
@@ -203,8 +208,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-ginseng',
-    image: '/products/trex-ginseng-new-01.png',
+    image: '/products/trex-ginseng/1.png',
     gallery: [
+      '/products/trex-ginseng/1.png',
+      '/products/trex-ginseng/2.png',
+      '/products/trex-ginseng/3.png',
+      '/products/trex-ginseng/4.png',
+      '/products/trex-ginseng/5.png',
+      '/products/trex-ginseng/6.png',
+      '/products/trex-ginseng/7.png',
       '/products/trex-ginseng-new-01.png',
       '/products/trex-ginseng-new-02.png',
       '/products/trex-ginseng-new-03.png',
@@ -286,8 +298,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-cordyceps',
-    image: '/products/trex-cordyceps-new-01.png',
+    image: '/products/trex-cordyceps/1.png',
     gallery: [
+      '/products/trex-cordyceps/1.png',
+      '/products/trex-cordyceps/2.png',
+      '/products/trex-cordyceps/3.png',
+      '/products/trex-cordyceps/4.png',
+      '/products/trex-cordyceps/5.png',
+      '/products/trex-cordyceps/6.png',
+      '/products/trex-cordyceps/7.png',
       '/products/trex-cordyceps-new-01.png',
       '/products/trex-cordyceps-new-02.png',
       '/products/trex-cordyceps-new-03.png',
@@ -365,8 +384,13 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-tongkat',
-    image: '/products/trex-tongkat-new-01.png',
+    image: '/products/trex-tongkat/1.png',
     gallery: [
+      '/products/trex-tongkat/1.png',
+      '/products/trex-tongkat/2.png',
+      '/products/trex-tongkat/3.png',
+      '/products/trex-tongkat/4.png',
+      '/products/trex-tongkat/5.png',
       '/products/trex-tongkat-new-01.png',
       '/products/trex-tongkat-new-02.png',
       '/products/trex-tongkat-new-03.png',
@@ -447,8 +471,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-royal-jelly',
-    image: '/products/trex-royal-jelly-new-01.png',
+    image: '/products/trex-royal-jelly/1.png',
     gallery: [
+      '/products/trex-royal-jelly/1.png',
+      '/products/trex-royal-jelly/2.png',
+      '/products/trex-royal-jelly/3.png',
+      '/products/trex-royal-jelly/4.png',
+      '/products/trex-royal-jelly/5.png',
+      '/products/trex-royal-jelly/6.png',
+      '/products/trex-royal-jelly/7.png',
       '/products/trex-royal-jelly-new-01.png',
       '/products/trex-royal-jelly-new-02.png',
       '/products/trex-royal-jelly-new-03.png',
@@ -528,8 +559,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-maca',
-    image: '/products/trex-maca-new-01.png',
+    image: '/products/trex-maca/1.png',
     gallery: [
+      '/products/trex-maca/1.png',
+      '/products/trex-maca/2.png',
+      '/products/trex-maca/3.png',
+      '/products/trex-maca/4.png',
+      '/products/trex-maca/5.png',
+      '/products/trex-maca/6.png',
+      '/products/trex-maca/7.png',
       '/products/trex-maca-new-01.png',
       '/products/trex-maca-new-02.png',
       '/products/trex-maca-new-03.png',
@@ -609,8 +647,15 @@ export const products = [
   ============================================================ */
   {
     id: 'trex-liver',
-    image: '/products/trex-liver-new-01.png',
+    image: '/products/trex-liver/1.png',
     gallery: [
+      '/products/trex-liver/1.png',
+      '/products/trex-liver/2.png',
+      '/products/trex-liver/3.png',
+      '/products/trex-liver/4.png',
+      '/products/trex-liver/5.png',
+      '/products/trex-liver/6.png',
+      '/products/trex-liver/7.png',
       '/products/trex-liver-new-01.png',
       '/products/trex-liver-new-02.png',
       '/products/trex-liver-new-03.png',
@@ -691,16 +736,16 @@ export const products = [
   ============================================================ */
   {
     id: 'hydra-muscle',
-    image: '/products/hydra-muscle.png',
+    image: '/products/hydra-muscle/1.png',
     gallery: [
-      '/products/hydra-muscle-01.png',
-      '/products/hydra-muscle-02.jpg',
-      '/products/hydra-muscle-03.jpg',
-      '/products/hydra-muscle-04.jpg',
-      '/products/hydra-muscle-05.jpg',
-      '/products/hydra-muscle-06.jpg',
-      '/products/hydra-muscle-07.jpg',
-      '/products/hydra-muscle-08.jpg',
+      '/products/hydra-muscle/1.png',
+      '/products/hydra-muscle/2.jpg',
+      '/products/hydra-muscle/3.jpg',
+      '/products/hydra-muscle/4.jpg',
+      '/products/hydra-muscle/5.jpg',
+      '/products/hydra-muscle/6.jpg',
+      '/products/hydra-muscle/7.jpg',
+      '/products/hydra-muscle/8.jpg',
     ],
     name: 'Hydra Muscle',
     subtitle: 'Creatine + Electrolytes',

@@ -10,7 +10,6 @@ import IngredientShowcase from './IngredientShowcase.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import LabTested from './LabTested.jsx'
-import Certifications from './Certifications.jsx'
 import { track } from '../lib/metaPixel.js'
 
 // "50 servings" / "30 days" → per-day price string, e.g. "₹40/day"
@@ -727,9 +726,6 @@ export default function ProductDetail({ productId }) {
           </div>
         </section>
       )}
-
-      {/* ── Certifications: real govt/trade cert images ──── */}
-      <Certifications />
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       {pdp?.faq?.length > 0 && (
