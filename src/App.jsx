@@ -4,6 +4,7 @@ import { RouterProvider, usePage } from './context/RouterContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
+import BannerCarousel from './components/BannerCarousel.jsx'
 import TrustStrip from './components/TrustStrip.jsx'
 import Problem from './components/Problem.jsx'
 import ProductDeepDive from './components/ProductDeepDive.jsx'
@@ -15,6 +16,7 @@ import Founder from './components/Founder.jsx'
 import Reviews from './components/Reviews.jsx'
 import Bundle from './components/Bundle.jsx'
 import FAQ from './components/FAQ.jsx'
+import ExploreRange from './components/ExploreRange.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
 import Footer from './components/Footer.jsx'
 import ScrollProgress from './components/ScrollProgress.jsx'
@@ -34,8 +36,10 @@ function HomePage() {
   return (
     <>
       <main>
+        <BannerCarousel />
         <Hero />
         <TrustStrip />
+        <ExploreRange />
         <Problem />
         <ProductDeepDive />
         <Ingredients />
