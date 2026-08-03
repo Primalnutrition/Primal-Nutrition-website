@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
+// mobPos: best object-position for each banner's mobile composition
+//   banner-01: text left → object-left
+//   banner-02: text left → object-left
+//   banner-03: 3 centred bottles (581×815 mobile — centered crop shows all 3)
+//   banner-04: text centred top → object-left
+//   banner-05: large text fills left edge → object-left
 const BANNERS = [
-  { dsk: '/banners/banner-01-dsk.png', mob: '/banners/banner-01-mob.png', alt: 'Primal Nutrition — Banner 1' },
-  { dsk: '/banners/banner-02-dsk.png', mob: '/banners/banner-02-mob.png', alt: 'Primal Nutrition — Banner 2' },
-  { dsk: '/banners/banner-03-dsk.png', mob: '/banners/banner-03-mob.png', alt: 'Primal Nutrition — Banner 3' },
-  { dsk: '/banners/banner-04-dsk.png', mob: '/banners/banner-04-mob.png', alt: 'Primal Nutrition — Banner 4' },
-  { dsk: '/banners/banner-05-dsk.png', mob: '/banners/banner-05-mob.png', alt: 'Primal Nutrition — Banner 5' },
+  { dsk: '/banners/banner-01-dsk.png', mob: '/banners/banner-01-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 1' },
+  { dsk: '/banners/banner-02-dsk.png', mob: '/banners/banner-02-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 2' },
+  { dsk: '/banners/banner-03-dsk.png', mob: '/banners/banner-03-mob.png', mobPos: 'object-center', dskPos: 'object-left', alt: 'Primal Nutrition — Banner 3' },
+  { dsk: '/banners/banner-04-dsk.png', mob: '/banners/banner-04-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 4' },
+  { dsk: '/banners/banner-05-dsk.png', mob: '/banners/banner-05-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 5' },
 ]
 
 const AUTO_MS = 4500
@@ -47,15 +53,18 @@ export default function BannerCarousel() {
       onTouchEnd={onTouchEnd}
       aria-label="Primal Nutrition banners"
     >
-      {/* Slide stack — all rendered, crossfade via opacity */}
       <div className="relative w-full">
-        {/* Invisible spacer sized to the first banner — keeps container height stable */}
-        <div aria-hidden="true" className="invisible">
-          <img src={BANNERS[0].mob} alt="" className="w-full block md:hidden" />
-          <img src={BANNERS[0].dsk} alt="" className="w-full hidden md:block" />
+        {/*
+          Spacers — invisible, define container height for each breakpoint.
+          Mobile: fixed 9:16 aspect ratio (matches banner-01/02/04-mob natural ratio).
+          Desktop: banner-01-dsk natural aspect ratio sets the height.
+        */}
+        <div aria-hidden="true" className="aspect-[9/16] block md:hidden" />
+        <div aria-hidden="true" className="invisible hidden md:block">
+          <img src={BANNERS[0].dsk} alt="" className="w-full" />
         </div>
 
-        {/* All slides absolutely positioned, fade in/out */}
+        {/* All slides absolutely positioned, crossfade via opacity */}
         {BANNERS.map((b, i) => (
           <div
             key={i}
@@ -64,17 +73,19 @@ export default function BannerCarousel() {
             }`}
             aria-hidden={i !== active}
           >
+            {/* Mobile image — per-banner object-position */}
             <img
               src={b.mob}
               alt={b.alt}
-              className="w-full h-full object-cover object-left block md:hidden"
+              className={`w-full h-full object-cover ${b.mobPos} block md:hidden`}
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
+            {/* Desktop image */}
             <img
               src={b.dsk}
               alt={b.alt}
-              className="w-full h-full object-cover object-left hidden md:block"
+              className={`w-full h-full object-cover ${b.dskPos} hidden md:block`}
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
