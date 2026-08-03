@@ -67,14 +67,14 @@ export default function BannerCarousel() {
             <img
               src={b.mob}
               alt={b.alt}
-              className="w-full h-full object-cover block md:hidden"
+              className="w-full h-full object-cover object-left block md:hidden"
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
             <img
               src={b.dsk}
               alt={b.alt}
-              className="w-full h-full object-cover hidden md:block"
+              className="w-full h-full object-cover object-left hidden md:block"
               loading={i === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />
