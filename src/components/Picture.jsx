@@ -106,7 +106,7 @@ const NO_AVIF = new Set([
   '/products/trex-liver-new-06.jpeg',
   '/products/trex-liver-new-07.jpeg',
   '/products/trex-liver-new-08.jpeg',
-  // v2 product images — no AVIF/WebP generated
+  // v2 product images — no AVIF generated (also no WebP — see NO_WEBP below)
   '/products/trex-v2-01.png',
   '/products/trex-v2-02.png',
   '/products/trex-v2-03.png',
@@ -165,6 +165,57 @@ const NO_AVIF = new Set([
 ])
 // Note: /products/trex-liquid.png does have an AVIF — it's rendered without alpha.
 
+// v2 product images have no WebP generated either — skip the <source type="image/webp"> for these.
+const NO_WEBP = new Set([
+  '/products/trex-v2-01.png',
+  '/products/trex-v2-02.png',
+  '/products/trex-v2-03.png',
+  '/products/trex-v2-04.png',
+  '/products/trex-v2-05.png',
+  '/products/trex-v2-06.jpg',
+  '/products/trex-v2-07.png',
+  '/products/ginseng-v2-01.png',
+  '/products/ginseng-v2-02.png',
+  '/products/ginseng-v2-03.png',
+  '/products/ginseng-v2-04.jpeg',
+  '/products/ginseng-v2-05.jpeg',
+  '/products/ginseng-v2-06.jpeg',
+  '/products/ginseng-v2-07.jpeg',
+  '/products/maca-v2-01.png',
+  '/products/maca-v2-02.png',
+  '/products/maca-v2-03.png',
+  '/products/maca-v2-04.jpeg',
+  '/products/maca-v2-05.jpeg',
+  '/products/maca-v2-06.jpeg',
+  '/products/maca-v2-07.jpeg',
+  '/products/cordyceps-v2-01.png',
+  '/products/cordyceps-v2-02.png',
+  '/products/cordyceps-v2-03.png',
+  '/products/cordyceps-v2-04.png',
+  '/products/royal-jelly-v2-01.png',
+  '/products/royal-jelly-v2-02.png',
+  '/products/royal-jelly-v2-03.png',
+  '/products/royal-jelly-v2-04.jpeg',
+  '/products/royal-jelly-v2-05.jpeg',
+  '/products/royal-jelly-v2-06.jpeg',
+  '/products/royal-jelly-v2-07.jpeg',
+  '/products/tongkat-v2-01.png',
+  '/products/tongkat-v2-02.png',
+  '/products/tongkat-v2-03.png',
+  '/products/tongkat-v2-04.jpeg',
+  '/products/tongkat-v2-05.jpeg',
+  '/products/tongkat-v2-06.jpeg',
+  '/products/tongkat-v2-07.jpeg',
+  '/products/liver-v2-01.png',
+  '/products/liver-v2-02.png',
+  '/products/liver-v2-03.png',
+  '/products/liver-v2-04.png',
+  '/products/liver-v2-05.jpeg',
+  '/products/liver-v2-06.jpeg',
+  '/products/liver-v2-07.jpeg',
+  '/products/liver-v2-08.jpeg',
+])
+
 import { forwardRef } from 'react'
 
 const Picture = forwardRef(function Picture({ src, ...imgProps }, ref) {
@@ -175,10 +226,11 @@ const Picture = forwardRef(function Picture({ src, ...imgProps }, ref) {
   const webp = `${base}.webp`
   const avif = `${base}.avif`
   const useAvif = !NO_AVIF.has(src)
+  const useWebp = !NO_WEBP.has(src)
   return (
     <picture>
       {useAvif && <source type="image/avif" srcSet={avif} />}
-      <source type="image/webp" srcSet={webp} />
+      {useWebp && <source type="image/webp" srcSet={webp} />}
       <img ref={ref} src={src} {...imgProps} />
     </picture>
   )
