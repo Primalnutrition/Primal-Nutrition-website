@@ -311,6 +311,7 @@ export const products = [
       '/products/trex-cordyceps-new-02.png',
       '/products/trex-cordyceps-new-03.png',
       '/products/trex-cordyceps-new-04.png',
+      '/products/trex-cordyceps-new-05.png',
     ],
     name: 'Cordyceps',
     subtitle: 'VO₂ Max · Stamina',
