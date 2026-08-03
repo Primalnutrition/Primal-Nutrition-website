@@ -14,6 +14,7 @@ import Results from './components/Results.jsx'
 import Founder from './components/Founder.jsx'
 import Reviews from './components/Reviews.jsx'
 import RareHerbBanner from './components/RareHerbBanner.jsx'
+import PromoBanner from './components/PromoBanner.jsx'
 import Bundle from './components/Bundle.jsx'
 import FAQ from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
@@ -37,14 +38,38 @@ function HomePage() {
       <main>
         <Hero />
         <TrustStrip />
+        <PromoBanner
+          base="/brand/promo-hero"
+          href="#bundle"
+          ariaLabel="Buy T-Rex — India's first 7-in-1 natural liquid"
+          alt="T-Rex — India's First 7-in-1 Natural Liquid. Himalayan Shilajit + 6 Ayurvedic herbs. Buy now — ₹1,999."
+        />
         <Problem />
+        <PromoBanner
+          base="/brand/promo-dangerous"
+          href="#/shop"
+          ariaLabel="Shop T-Rex — for men who choose to be dangerous"
+          alt="T-Rex — 7-in-1 Natural Liquid. For men who choose to be dangerous. 12,400+ verified buyers."
+        />
         <ProductDeepDive />
         <Ingredients />
+        <PromoBanner
+          base="/brand/promo-sourcing"
+          href="#/shilajit-guide"
+          ariaLabel="Read the Shilajit Purity Guide — sourced from the rarest corners of the earth"
+          alt="T-Rex — Sourced from the rarest corners of the earth."
+        />
         <LabTested />
         <Results />
         <Comparison />
         <Founder />
         <Reviews />
+        <PromoBanner
+          base="/brand/promo-androgens"
+          href="#/shop"
+          ariaLabel="Explore the Rare Herb Series — Royal Jelly, Tongkat Ali, Black Maca"
+          alt="Nature's Most Potent Androgens — Royal Jelly, Tongkat Ali, Black Maca. Explore the Rare Herb Series."
+        />
         <RareHerbBanner />
         <Bundle />
         <FAQ />
