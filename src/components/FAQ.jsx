@@ -45,7 +45,7 @@ const faqs = [
   },
   {
     q: 'Can I stack T-Rex with other supplements?',
-    a: 'Yes. T-Rex is designed to layer with whey, creatine, and pre-workouts. It does not contain stimulants, so no overlap risk. Many users pair it with our Hydra Muscle (creatine + electrolytes) and Vita Peak (multivitamin).',
+    a: 'Yes. T-Rex is designed to layer with whey, creatine, and pre-workouts. It does not contain stimulants, so no overlap risk. Many users pair it with our Hydra Muscle (creatine + electrolytes) and the Rare Herb adaptogen range.',
   },
   {
     q: "I'm over 50. Will this work?",

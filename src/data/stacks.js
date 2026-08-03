@@ -77,13 +77,12 @@ export const stacks = [
   {
     id: 'elite-athlete',
     name: 'Elite Athlete Stack',
-    theme: 'TREX + Cordyceps + Vita Peak',
-    promise: 'The three-product floor for serious training output.',
-    pitch: 'T-Rex (hormonal base) + Cordyceps (VO₂ + endurance) + Vita Peak (daily micronutrient floor + clean AM caffeine). The complete daily protocol.',
+    theme: 'TREX + Cordyceps',
+    promise: 'The two-product floor for serious training output.',
+    pitch: 'T-Rex (hormonal base) + Cordyceps (VO₂ + endurance). The complete daily performance protocol.',
     items: [
       { productId: 'trex-liquid', variantId: 'trex-1' },
       { productId: 'trex-cordyceps', variantId: 'cord-60' },
-      { productId: 'vita-peak', variantId: 'vp-60' },
     ],
     discount: 0.10,
     badge: 'Performance Pro',

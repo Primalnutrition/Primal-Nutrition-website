@@ -21,7 +21,7 @@ export default function Shop() {
               <span className="italic font-medium text-amber-light">One bottle at a time.</span>
             </h2>
             <p className="text-bone/65 text-lg leading-relaxed">
-              Start with T-Rex. Layer in adaptogens for specific goals. Stack Vita Peak as a daily floor. Add Hydra Muscle for training days.
+              Start with T-Rex. Layer in adaptogens for specific goals. Add Hydra Muscle for training days.
             </p>
           </div>
           <div className="text-sm text-bone/45">

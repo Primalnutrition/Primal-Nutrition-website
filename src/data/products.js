@@ -53,7 +53,7 @@ export const products = [
       pain: 'Testosterone drop, recovery debt, drive loss',
       proof: '8 standardised adaptogens, Third-Party Lab COA, +23% free T (clinical avg)',
       protocol: '10ml sublingual AM · 90-day cycle',
-      partner: 'Vita Peak + Tongkat Ali',
+      partner: 'Tongkat Ali',
     },
     pdp: {
       heroClaim: "India's first 7-in-1 Natural Liquid — Himalayan Shilajit with six clinically-studied Ayurvedic herbs in hazelnut-flavored liquid form. 100% Ayurvedic. No chemicals. No stimulants. The way our ancestors made it.",
@@ -98,7 +98,7 @@ export const products = [
         'On blood thinners or BP medication without doctor consultation',
         'Pregnancy (obvious)',
       ],
-      stackWith: ['vita-peak', 'trex-tongkat', 'hydra-muscle'],
+      stackWith: ['trex-tongkat', 'hydra-muscle'],
       timeline: [
         { week: 'Week 1', what: 'Sleep deepens. Morning energy sharpens. Cortisol normalises.' },
         { week: 'Week 4', what: 'Strength and stamina return. Recovery time drops between sessions.' },
@@ -118,85 +118,6 @@ export const products = [
     },
   },
 
-
-  /* ============================================================
-     DAILY FLOOR · Vita Peak
-  ============================================================ */
-  {
-    id: 'vita-peak',
-    image: '/products/vita-peak.png',
-    name: 'Vita Peak',
-    subtitle: 'Multivitamin + Energy',
-    tagline: 'Full-spectrum + taurine + clean caffeine',
-    category: 'daily',
-    categoryLabel: 'Daily',
-    tier: 'DAILY FLOOR',
-    accent: 'from-forest to-amber',
-    bottleType: 'jar',
-    description: 'Full-spectrum daily multivitamin with clean caffeine for AM energy.',
-    variants: [
-      { id: 'vp-60', label: '60 tablets', sub: '30 days', price: 1500 },
-      { id: 'vp-120', label: '120 tablets', sub: '60 days', price: 3000, save: 'Stock up' },
-    ],
-    mckinsey: {
-      who: 'Every Primal customer',
-      pain: 'Inconsistent micronutrient floor',
-      proof: '21 nutrients at RDA+ doses, taurine + 80mg caffeine',
-      protocol: '2 tabs AM with breakfast',
-      partner: 'Every other Primal SKU',
-    },
-    pdp: {
-      heroClaim: 'The daily floor every Indian man should be on. 21 micronutrients, taurine, and clean caffeine — engineered for the diet you actually eat.',
-      metrics: [
-        { label: 'Nutrients', value: '21' },
-        { label: 'Caffeine per dose', value: '80mg' },
-        { label: 'Dosing', value: '2 tabs AM' },
-        { label: 'Days per bottle', value: '30 / 60' },
-      ],
-      problem: {
-        title: 'The Indian diet has an iron + B12 + D3 problem.',
-        body: 'NFHS-5 data: 25% of urban Indian men are vitamin D deficient. 47% are B12 insufficient. Most multivitamins under-dose the things Indians actually need and over-dose the rest. Vita Peak is built around the real deficiency pattern.',
-      },
-      mechanism: {
-        title: 'What 21 micronutrients + clean caffeine + taurine actually do',
-        steps: [
-          { h: 'Plug the gaps', b: 'D3, B12, iron, magnesium, zinc — at the doses Indian deficiency profiles actually require.' },
-          { h: 'Clean AM energy', b: '80mg caffeine + 500mg taurine = focused alertness without the jitters or crash of coffee.' },
-          { h: 'Foundation for everything', b: 'Your T-booster works better. Your training works better. Your sleep works better. Multivitamin is the floor that makes ceilings possible.' },
-        ],
-      },
-      evidence: [
-        { study: 'NFHS-5 (2019–21) micronutrient survey', finding: '25% Indian urban men D3 deficient; 47% B12 insufficient; 23% iron-deficient.', source: 'Govt. of India' },
-        { study: 'Caffeine + L-taurine, Giles GE et al. 2012', finding: 'Combination improves vigilance and reaction time vs caffeine alone.', source: 'PMID 22877246' },
-      ],
-      protocol: {
-        when: 'Morning, with breakfast.',
-        how: '2 tablets with food and a full glass of water.',
-        withWhat: 'After your T-Rex shot. Before training (if AM training).',
-        cycle: 'Daily, indefinitely.',
-      },
-      whoFor: [
-        'Every man over 25',
-        'Anyone training 3+ days/week',
-        'Vegetarians (especially B12 attention)',
-        'Indian dietary patterns',
-      ],
-      whoNotFor: [
-        'Anyone caffeine-sensitive (try our caffeine-free Vita Peak coming soon)',
-        'On other high-dose iron supplements',
-      ],
-      stackWith: ['trex-liquid', 'hydra-muscle', 'trex-tongkat'],
-      faq: [
-        { q: 'Is the caffeine harsh?', a: '80mg = roughly one cup of coffee. Smooth from the taurine pairing.' },
-        { q: 'Can I take this with T-Rex?', a: 'Yes — they are designed to layer. Take Vita Peak with breakfast, T-Rex before.' },
-        { q: 'Vegetarian?', a: 'Yes. Gelatin-free shell.' },
-      ],
-      reviews: [
-        { ...sharedReviewSeed[2], title: 'Replaced coffee + 3 other pills', body: 'I was taking D3, B12, and creatine separately. Vita Peak replaced two of them. AM ritual is now one bottle.', time: '6 weeks ago' },
-        { ...sharedReviewSeed[4], title: 'The caffeine is perfectly tuned', body: 'I cannot do pre-workouts. This is sharper than coffee, no jitter. Genuinely impressive blend.', time: '2 weeks ago' },
-      ],
-    },
-  },
 
   /* ============================================================
      SPECIALIST · Korean Panax Ginseng
@@ -270,7 +191,7 @@ export const products = [
         'On blood thinners',
         'Pregnant or breastfeeding',
       ],
-      stackWith: ['trex-cordyceps', 'trex-liquid', 'vita-peak'],
+      stackWith: ['trex-cordyceps', 'trex-liquid'],
       faq: [
         { q: 'Is this Indian ginseng or Korean?', a: 'Korean (Panax). Indian ginseng = ashwagandha, totally different plant.' },
         { q: 'Will I feel it the first day?', a: 'Some men do. Most need 5–10 days for sustained effect.' },
@@ -349,7 +270,7 @@ export const products = [
         'Pure strength athletes (look at Tongkat or Maca)',
         'Those on immunosuppressants',
       ],
-      stackWith: ['hydra-muscle', 'trex-ginseng', 'vita-peak'],
+      stackWith: ['hydra-muscle', 'trex-ginseng'],
       faq: [
         { q: 'Is this the "zombie" Cordyceps from The Last of Us?', a: 'Different genus entirely. The game\'s fungus is Ophiocordyceps unilateralis — an insect parasite. Ours is Cordyceps sinensis — the rare Himalayan species Sherpas have used for centuries.' },
         { q: 'Will it stimulate me like caffeine?', a: 'No. Cordyceps is non-stimulant. You feel it as expanded ceiling, not a buzz.' },
@@ -431,7 +352,7 @@ export const products = [
         'Men with hormone-sensitive cancers (history)',
         'Currently on TRT',
       ],
-      stackWith: ['trex-liquid', 'trex-maca', 'vita-peak'],
+      stackWith: ['trex-liquid', 'trex-maca'],
       faq: [
         { q: 'Can I take this alone, without T-Rex?', a: 'Yes — but T-Rex gives you the foundational stack (cortisol, adaptogens). Tongkat alone is good. With T-Rex it is meaningfully better.' },
         { q: 'Should I take this alongside T-Rex Liquid?', a: 'Yes — T-Rex Liquid uses 7 different herbs (Shilajit, Ashwagandha, Arjun, Gokhru, Draksha, Safed Musli, Kath Badam). Adding standalone Tongkat layers in direct testosterone-release support on top of T-Rex\'s adaptogenic foundation.' },
@@ -593,7 +514,7 @@ export const products = [
         'Anyone allergic to cruciferous vegetables',
         'On thyroid medication (consult doctor)',
       ],
-      stackWith: ['trex-tongkat', 'trex-cordyceps', 'vita-peak'],
+      stackWith: ['trex-tongkat', 'trex-cordyceps'],
       faq: [
         { q: 'Black vs red vs yellow maca?', a: 'Black: best for male energy and libido. Red: female hormonal support. Yellow: generic. We sell only black.' },
         { q: 'Will it raise my testosterone?', a: 'No — maca is non-hormonal. It works on CNS pathways, not the endocrine system directly.' },
@@ -675,7 +596,7 @@ export const products = [
         'Active liver disease (consult doctor)',
         'On medications metabolized by the liver',
       ],
-      stackWith: ['trex-liquid', 'vita-peak'],
+      stackWith: ['trex-liquid'],
       faq: [
         { q: 'Do I need this if I do not drink?', a: 'Less urgently — but if you take supplements year-round, a quarterly reset is sensible.' },
         { q: 'Can I take this with T-Rex?', a: 'Yes. In fact, if you are running long T-Rex cycles, this is recommended every 90 days.' },
@@ -718,7 +639,7 @@ export const products = [
       pain: 'Cramping, hydration, mid-set strength',
       proof: 'Creatine — most validated supplement in sports science',
       protocol: '1 scoop intra-workout',
-      partner: 'Cordyceps + Vita Peak',
+      partner: 'Cordyceps',
     },
     pdp: {
       heroClaim: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes, no artificial sweeteners. Built for Indian summer training — the only category where you sweat 1.5L per hour.',
@@ -758,7 +679,7 @@ export const products = [
         'Pure endurance-only athletes (creatine is less relevant)',
         'Anyone with kidney issues (consult doctor)',
       ],
-      stackWith: ['trex-cordyceps', 'vita-peak', 'trex-liquid'],
+      stackWith: ['trex-cordyceps', 'trex-liquid'],
       faq: [
         { q: 'Do I need a loading phase?', a: 'No. Taking daily for 28 days saturates muscle creatine — same end state as loading, no GI distress.' },
         { q: 'Is creatine safe?', a: 'Most-studied supplement in sports science. Safe for healthy adults at this dose, indefinitely. Consult doctor if kidney issues.' },

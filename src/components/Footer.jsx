@@ -28,7 +28,6 @@ export default function Footer() {
             <Col title="Shop">
               <a href="#/shop">All Products</a>
               <a href="#/product/trex-liquid">T-Rex Liquid</a>
-              <a href="#/product/vita-peak">Vita Peak</a>
               <a href="#/product/hydra-muscle">Hydra Muscle</a>
               <a href="#/stacks">Stacks</a>
             </Col>
