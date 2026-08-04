@@ -62,49 +62,52 @@ router.post('/razorpay', async (req, res) => {
         void createShipmentForOrder(order.id).catch((err) =>
           logger.error({ err: err.message, orderId: order.id }, 'Shiprocket shipment creation failed from webhook (will retry via cron)')
         )
-        // Fire-and-forget confirmation email; idempotent via unique index
-        void (async () => {
-          try {
-            const full = await getOrderForShipment(order.id)
-            if (full?.customer?.email) {
-              await fireOrderConfirmationEmail({
-                orderId: full.id,
-                customerId: full.customer.id,
-                name: full.customer.name,
-                email: full.customer.email,
-                orderNumber: full.order_number,
-                totalInr: Number(full.total),
-                items: (full.order_items ?? []).map((it) => ({
-                  product_name: it.product_name_snapshot,
-                  variant_label: it.variant_label_snapshot,
-                  qty: it.qty,
-                  unit_price: it.unit_price,
-                  line_total: it.line_total,
-                })),
-                placedAt: new Date().toISOString(),
-              })
+        // Post-payment hooks — only run for the caller that actually changed the
+        // status (alreadyPaid=false). If verify-payment already processed this
+        // order the webhook arrives with alreadyPaid=true and skips these, avoiding
+        // duplicate emails and duplicate CAPI events. When the webhook fires first
+        // (browser dropped before calling verify-payment) these hooks are the only
+        // coverage, so we run them here instead.
+        if (!alreadyPaid && event === 'payment.captured') {
+          void (async () => {
+            try {
+              const full = await getOrderForShipment(order.id)
+              if (full?.customer?.email) {
+                await fireOrderConfirmationEmail({
+                  orderId: full.id,
+                  customerId: full.customer.id,
+                  name: full.customer.name,
+                  email: full.customer.email,
+                  orderNumber: full.order_number,
+                  totalInr: Number(full.total),
+                  items: (full.order_items ?? []).map((it) => ({
+                    product_name: it.product_name_snapshot,
+                    variant_label: it.variant_label_snapshot,
+                    qty: it.qty,
+                    unit_price: it.unit_price,
+                    line_total: it.line_total,
+                  })),
+                  placedAt: new Date().toISOString(),
+                })
+              }
+              // Server-side Purchase — deduped with the browser pixel via event_id.
+              // No browser cookies here, but hashed PII from the order still gives
+              // strong server-side match quality.
+              if (full?.customer) {
+                await sendPurchaseEvent({
+                  internalOrderId: full.id,
+                  orderNumber: full.order_number,
+                  value: Number(full.total),
+                  customer: full.customer,
+                  address: full.shipping_address,
+                  items: full.order_items,
+                })
+              }
+            } catch (err) {
+              logger.warn({ err, orderId: order.id }, 'razorpay-webhook post-confirmation hooks failed')
             }
-            // Server-side Purchase fallback — only when this webhook is the FIRST
-            // to mark the order paid (browser never called verify-payment). No
-            // browser context here, but hashed email/phone/address still match.
-            // Deduped against the browser pixel via event_id.
-            // Restricted to payment.captured only: Razorpay also fires order.paid
-            // for the same transaction, so allowing both would duplicate CAPI even
-            // after the atomic markOrderPaid guard (they arrive simultaneously).
-            if (!alreadyPaid && full?.customer && event === 'payment.captured') {
-              await sendPurchaseEvent({
-                internalOrderId: full.id,
-                orderNumber: full.order_number,
-                value: Number(full.total),
-                customer: full.customer,
-                address: full.shipping_address,
-                items: full.order_items,
-              })
-            }
-          } catch (err) {
-            logger.warn({ err, orderId: order.id }, 'razorpay-webhook post-confirmation hooks failed')
-          }
-        })()
+          })()
+        }
         break
       }
       case 'payment.failed': {

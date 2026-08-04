@@ -205,7 +205,7 @@ export async function markOrderPaid({ internalOrderId, razorpayPaymentId }) {
       paid_at: new Date().toISOString(),
     })
     .eq('id', internalOrderId)
-    .not('status', 'in', '("paid","shipped","delivered")')
+    .not('status', 'in', '(paid,shipped,delivered)')
     .select('id, order_number, razorpay_order_id, razorpay_payment_id, total, status, paid_at')
     .maybeSingle()
   if (uErr) throw uErr
