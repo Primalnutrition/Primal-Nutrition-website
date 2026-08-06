@@ -83,6 +83,11 @@ export default function CartDrawer() {
     if (errors[k]) setErrors((e) => ({ ...e, [k]: null }))
   }
 
+  // Calculate payment method adjustments
+  const PREPAID_DISCOUNT = 100  // ₹100 discount for online payment
+  const COD_FEE = 49             // ₹49 convenience charge for COD
+  const adjustedPayable = paymentMethod === 'online' ? payable - PREPAID_DISCOUNT : payable + COD_FEE
+
   const validate = () => {
     const e = {}
     if (form.name.trim().length < 2) e.name = 'Full name required'
@@ -133,7 +138,7 @@ export default function CartDrawer() {
         // COD — server creates order + Shiprocket shipment (several courier API
         // calls) in one request, and a Render cold start can add 30–60s on top,
         // so allow generous time before aborting.
-        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution, fbp, fbc }, { timeout: 75000 })
+        const cod = await api.post('/api/checkout/create-cod-order', { customer, address, items, attribution, fbp, fbc, paymentMethod, adjustedPayable }, { timeout: 75000 })
         clientLog('cod_order_ok', { ms: Date.now() - tStart, orderNumber: cod.orderNumber })
         setConfirmedOrder({ orderNumber: cod.orderNumber, total: cod.total, method: 'cod' })
         setStep('success')
@@ -155,7 +160,7 @@ export default function CartDrawer() {
       // Online — Razorpay flow. 60s timeout: a Render free-tier cold start
       // alone can take 30–60s, and the old 20s default aborted right in the
       // middle of it ("Please try again" with no server error to correlate).
-      const draft = await api.post('/api/checkout/create-order', { customer, address, items, attribution }, { timeout: 60000 })
+      const draft = await api.post('/api/checkout/create-order', { customer, address, items, attribution, paymentMethod, adjustedPayable }, { timeout: 60000 })
       clientLog('create_order_ok', { ms: Date.now() - tStart, orderNumber: draft.orderNumber })
 
       let rzp
@@ -263,7 +268,7 @@ export default function CartDrawer() {
             </div>
             <div className="font-display font-bold text-xl">
               {step === 'cart' && `${count} item${count !== 1 ? 's' : ''}`}
-              {step === 'form' && `₹${payable.toLocaleString('en-IN')} due`}
+              {step === 'form' && `₹${adjustedPayable.toLocaleString('en-IN')} due`}
               {step === 'success' && `#${confirmedOrder?.orderNumber || ''}`}
             </div>
           </div>
@@ -351,6 +356,7 @@ export default function CartDrawer() {
                   >
                     <div className="font-semibold">Pay online</div>
                     <div className="text-[11px] text-bone/50">UPI · Card · Netbanking</div>
+                    <div className="text-[10px] text-amber font-medium mt-1">Save ₹{PREPAID_DISCOUNT}</div>
                   </button>
                   <button
                     type="button"
@@ -364,6 +370,7 @@ export default function CartDrawer() {
                   >
                     <div className="font-semibold">Cash on Delivery</div>
                     <div className="text-[11px] text-bone/50">Pay when it arrives</div>
+                    <div className="text-[10px] text-rust font-medium mt-1">+₹{COD_FEE} charge</div>
                   </button>
                 </div>
               </div>
@@ -373,9 +380,20 @@ export default function CartDrawer() {
                   <span className="font-semibold text-amber">−₹{stackDiscount.toLocaleString('en-IN')}</span>
                 </div>
               )}
+              {paymentMethod === 'online' ? (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-bone/55">Prepaid discount</span>
+                  <span className="font-semibold text-amber">−₹{PREPAID_DISCOUNT.toLocaleString('en-IN')}</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-bone/55">COD convenience charge</span>
+                  <span className="font-semibold text-rust">+₹{COD_FEE.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-bone/55 text-sm">Total</span>
-                <span className="font-display font-bold text-2xl">₹{payable.toLocaleString('en-IN')}</span>
+                <span className="font-display font-bold text-2xl">₹{adjustedPayable.toLocaleString('en-IN')}</span>
               </div>
               <button
                 onClick={handlePay}
@@ -393,8 +411,8 @@ export default function CartDrawer() {
                 ) : (
                   <>
                     {paymentMethod === 'cod'
-                      ? `Place COD order · ₹${payable.toLocaleString('en-IN')}`
-                      : `Pay ₹${payable.toLocaleString('en-IN')}`}
+                      ? `Place COD order · ₹${adjustedPayable.toLocaleString('en-IN')}`
+                      : `Pay ₹${adjustedPayable.toLocaleString('en-IN')}`}
                     <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
                   </>
                 )}
