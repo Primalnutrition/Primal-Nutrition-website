@@ -41,7 +41,7 @@ const schema = z.object({
   SHIPROCKET_EMAIL: z.string().optional().default(''),
   SHIPROCKET_PASSWORD: z.string().optional().default(''),
   SHIPROCKET_PICKUP_PINCODE: z.string().optional().default(''),
-  SHIPROCKET_PICKUP_LOCATION: z.string().optional().default('Primary'),
+  SHIPROCKET_PICKUP_LOCATION: z.string().optional().default('Home'),
 
   // CORS
   ALLOWED_ORIGINS: z

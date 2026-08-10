@@ -18,6 +18,12 @@ function generateOrderNumber() {
   return `PRMNL-${Date.now().toString().slice(-9)}`
 }
 
+// Must mirror the amounts shown to the customer in CartDrawer.jsx
+// (PREPAID_DISCOUNT / COD_FEE) — computed here from paymentMethod (server-known,
+// not client-supplied) so the Razorpay/Shiprocket amount can't be tampered with.
+const PREPAID_DISCOUNT = 100
+const COD_FEE = 49
+
 /**
  * Flatten a storefront attribution object into the flat columns we store on an
  * order (for filtering/sorting) alongside the full JSONB snapshot. The flat
@@ -87,7 +93,13 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
   const shippingFee = subtotal >= 1000 ? 0 : 50
   // Bundle pricing — carts containing a complete stack get the advertised
   // stack discount, computed against the DB prices resolved above.
-  const { discount, applied: stacksApplied } = computeStackDiscount(lineItems)
+  const { discount: stackDiscount, applied: stacksApplied } = computeStackDiscount(lineItems)
+  // Payment-method pricing — prepaid gets a discount, COD carries a
+  // convenience charge. Folded into `discount` (negative = surcharge) so the
+  // existing total formula picks it up everywhere (Razorpay amount, Shiprocket
+  // cod_collectable_amount) without special-casing.
+  const paymentAdjustment = paymentMethod === 'cod' ? -COD_FEE : PREPAID_DISCOUNT
+  const discount = stackDiscount + paymentAdjustment
   const tax = 0
   const total = subtotal + shippingFee + tax - discount
 
