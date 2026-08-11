@@ -509,7 +509,11 @@ export async function createShipmentForOrder(internalOrderId, { paymentMethod = 
       selling_price: Number(i.unit_price),
     })),
     payment_method: paymentMethod,
-    sub_total: Number(order.subtotal),
+    // Declared order value Shiprocket shows in its dashboard/labels — must be
+    // the actual amount charged (order.total), not the pre-discount subtotal.
+    // order.total already folds in the prepaid discount / COD fee and stack
+    // discounts (see createDraftOrder), same as cod_collectable_amount below.
+    sub_total: Number(order.total),
     length: 15,
     breadth: 10,
     height: 10,
