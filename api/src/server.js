@@ -24,6 +24,7 @@ import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
 import adminChatRouter from './routes/admin/chat.js'
+import adminAdsRouter from './routes/admin/ads.js'
 
 // ─── Package version for health endpoint ──────────────────────────────────────
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -112,6 +113,7 @@ app.use('/api/admin/customers', adminCustomersRouter)
 app.use('/api/admin/orders', adminOrdersRouter)
 app.use('/api/admin/analytics', adminAnalyticsRouter)
 app.use('/api/admin/chat', adminChatRouter)
+app.use('/api/admin/ads', adminAdsRouter)
 
 // ─── 404 + error handlers — MUST be last ──────────────────────────────────────
 app.use(notFoundHandler)
