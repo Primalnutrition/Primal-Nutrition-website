@@ -129,7 +129,7 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
 
   const since = daysAgo(days)
 
-  const [daily, creativesRes, tagsRes, verdictsRes] = await Promise.all([
+  const [daily, creativesRes, tagsRes, verdictsRes, adsRes] = await Promise.all([
     fetchDaily(supabase, since),
     supabase.from('ads_creatives').select('*'),
     supabase.from('ads_creative_tags').select('*'),
@@ -138,8 +138,18 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
       .select('*')
       .eq('window_days', days)
       .order('run_date', { ascending: false }),
+    supabase.from('ads_ads').select('creative_id, ad_id, ad_name, effective_status'),
   ])
-  for (const r of [creativesRes, tagsRes, verdictsRes]) if (r.error) throw r.error
+  for (const r of [creativesRes, tagsRes, verdictsRes, adsRes]) if (r.error) throw r.error
+
+  // A creative can back several ads. It is live if ANY of them is delivering.
+  // Without this the leaderboard shows 30 days of history with no way to tell
+  // what is actually running right now.
+  const adsByCreative = new Map()
+  for (const a of adsRes.data ?? []) {
+    if (!adsByCreative.has(a.creative_id)) adsByCreative.set(a.creative_id, [])
+    adsByCreative.get(a.creative_id).push(a)
+  }
 
   const creatives = new Map((creativesRes.data ?? []).map((c) => [c.creative_id, c]))
   const tags = new Map((tagsRes.data ?? []).map((t) => [t.creative_id, t]))
@@ -168,7 +178,12 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
     board.push({
       creativeId,
       name: c.name ?? null,
-      hookText: c.hook_text ?? null,
+      // For carousels Meta stores the page name in `title`; the real hook is
+      // the first card. Falling back to card_hooks[0] stops every carousel
+      // from rendering as an unhelpful "Primal Nutrition".
+      hookText: (c.format === 'carousel' && Array.isArray(c.card_hooks) && c.card_hooks[0])
+        ? c.card_hooks[0]
+        : (c.hook_text ?? null),
       format: c.format ?? null,
       cta: c.cta ?? null,
       cardHooks: c.card_hooks ?? [],
@@ -184,6 +199,10 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
         showsPrice: t.shows_price ?? false,
       },
       notes: t.notes ?? null,
+      ads: (adsByCreative.get(creativeId) ?? []).map(a => ({
+        adId: a.ad_id, adName: a.ad_name, status: a.effective_status,
+      })),
+      isLive: (adsByCreative.get(creativeId) ?? []).some(a => a.effective_status === 'ACTIVE'),
       metrics: agg,
       verdict: v.verdict ?? 'LEARNING',
       confidence: v.confidence ?? 'insufficient',
