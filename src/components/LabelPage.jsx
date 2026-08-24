@@ -383,42 +383,186 @@ const LABEL_DATA = {
     netVolume: '60 capsules',
     ingredients: [
       {
-        name: 'Milk Thistle Extract',
-        scientificName: 'Silybum marianum',
-        amount: '250mg',
-        perLabelDose: '500mg',
-        standardization: 'Silymarin ≥ 80%',
-        origin: 'Mediterranean & Central Europe farms',
-        keyBenefit: 'Hepatocyte membrane protection',
+        name: 'Gulancha',
+        scientificName: 'Tinospora cordifolia',
+        amount: '100mg',
+        perLabelDose: '100mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Stem · St. A.S.',
+        keyBenefit: 'Rasayana adaptogen · Immune and liver support',
         mechanism:
-          'Silybin (the active silymarin flavonoid) stabilises hepatocyte cell membranes, blocking toxin entry. Stimulates hepatic protein synthesis for cell repair. Antifibrotic properties in chronic liver stress.',
+          'Known in Ayurveda as Guduchi or Amrita. Its stem is the classical rasayana used to support hepatic function and immune resilience, and it is the highest-inclusion herb in this formula alongside Rohitak Chhal.',
         traditionalUse:
-          'Used in European herbal medicine for 2,000 years — documented by Dioscorides (70 AD) for liver and bile protection.',
-        study: {
-          citation: 'Abenavoli L. et al., Phytother. Res., 2018',
-          finding:
-            'Silymarin: significant reduction in ALT, AST, and GGT markers across multiple clinical settings including alcoholic and non-alcoholic liver disease.',
-        },
-        emoji: '🌸',
+          'One of the most widely used herbs in Ayurvedic practice, described as Amrita (nectar of immortality) and traditionally taken as a general restorative during and after illness.',
+        emoji: '🌿',
       },
       {
-        name: 'N-Acetyl Cysteine (NAC)',
-        scientificName: 'N-Acetyl-L-Cysteine',
-        amount: '150mg',
-        perLabelDose: '300mg',
-        standardization: 'Pharmaceutical grade',
-        origin: 'Biosynthetic (amino acid derivative)',
-        keyBenefit: 'Glutathione replenishment',
+        name: 'Rohitak Chhal',
+        scientificName: 'Tecomella undulata',
+        amount: '100mg',
+        perLabelDose: '100mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Stem bark · St. Bk. A.S.',
+        keyBenefit: 'Classical liver and spleen herb',
         mechanism:
-          'NAC is the rate-limiting precursor to intracellular glutathione — your primary endogenous detox antioxidant. Restores depleted glutathione from supplement, alcohol, or processed-food load.',
+          'The stem bark of the desert teak, used in Ayurveda specifically for hepatic and splenic conditions. Together with Gulancha it forms the largest single contribution to the blend.',
         traditionalUse:
-          'Used clinically in hospitals as the antidote for acetaminophen overdose — the highest endorsement of hepatoprotective potency.',
-        study: {
-          citation: 'Rushworth G.F. et al., Pharmacol. Ther., 2014',
-          finding:
-            'NAC significantly restores hepatic glutathione, reduces oxidative stress markers, and improves liver function in multiple clinical conditions.',
-        },
-        emoji: '⚗️',
+          'Rohitaka is named in classical Ayurvedic texts as a primary yakrit (liver) herb, traditionally prepared as a decoction of the bark.',
+        emoji: '🪵',
+      },
+      {
+        name: 'Mutha',
+        scientificName: 'Cyperus rotundus',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Rhizome · Rz. A.S.',
+        keyBenefit: 'Digestive and carminative support',
+        mechanism:
+          'Nutgrass rhizome, classically used to support digestion and reduce bloating — a supporting role in a hepatic formula, where digestive comfort accompanies liver work.',
+        traditionalUse:
+          'Musta is a staple of Ayurvedic digestive formulations and one of the oldest documented medicinal plants in the tradition.',
+        emoji: '🌾',
+      },
+      {
+        name: 'Katki',
+        scientificName: 'Picrorhiza kurroa',
+        amount: '25mg',
+        perLabelDose: '25mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Root · Rt. A.S.',
+        keyBenefit: 'Bitter hepatic tonic',
+        mechanism:
+          'Kutki root is among the most concentrated bitter hepatics in Ayurveda. It appears at the lowest inclusion in this blend, consistent with its potency and intensely bitter character.',
+        traditionalUse:
+          'A high-altitude Himalayan herb, traditionally reserved for liver and bile complaints and used sparingly because of its strength.',
+        emoji: '🏔',
+      },
+      {
+        name: 'Daruharidra',
+        scientificName: 'Berberis aristata',
+        amount: '75mg',
+        perLabelDose: '75mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Heart wood · H.W. A.S.',
+        keyBenefit: 'Bitter alterative · Bile support',
+        mechanism:
+          'Indian barberry heartwood, the source of the yellow alkaloid berberine, used in Ayurveda to support bile flow and as a bitter alterative.',
+        traditionalUse:
+          'Daruharidra means tree turmeric, named for the vivid yellow of its inner wood; traditionally used where turmeric alone was considered insufficient.',
+        emoji: '🟡',
+      },
+      {
+        name: 'Kule khara',
+        scientificName: 'Hygrophila spinosa',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Whole plant · Wh. Pl. A.S.',
+        keyBenefit: 'Diuretic support · Fluid balance',
+        mechanism:
+          'Whole plant of the marsh barbel, traditionally used as a diuretic. In a cleanse formula it supports the fluid side of elimination rather than the hepatic side directly.',
+        traditionalUse:
+          'Kokilaksha grows in wet ground across the Indian subcontinent and is classically indicated for oedema and urinary complaints.',
+        emoji: '💧',
+      },
+      {
+        name: 'Khetpapra',
+        scientificName: 'Fumaria parviflora',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Whole plant · Wh. Pl. A.S.',
+        keyBenefit: 'Blood-purifying bitter',
+        mechanism:
+          'Fine-leaved fumitory, used in Ayurveda as a raktashodhaka (blood purifier) and a mild bitter, complementing the stronger hepatics in the blend.',
+        traditionalUse:
+          'Parpata is classically used in fever formulations and as a cooling bitter during the recovery phase.',
+        emoji: '🌿',
+      },
+      {
+        name: 'Bhuiamla',
+        scientificName: 'Phyllanthus niruri',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Pharmacopoeia of India (A.P.I.)',
+        origin: 'Whole plant · Wh. Pl. A.P.I.',
+        keyBenefit: 'Classical liver herb · A.P.I. grade',
+        mechanism:
+          'Stonebreaker, whole plant. This is the only ingredient in the formula specified to Ayurvedic Pharmacopoeia of India standard rather than classical Sastra reference.',
+        traditionalUse:
+          'Bhumyamalaki is the herb most directly associated with liver support in Ayurvedic practice, taken as fresh juice or whole-plant powder.',
+        emoji: '🍃',
+      },
+      {
+        name: 'Pipul',
+        scientificName: 'Piper longum',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Fruit · Fr. A.S.',
+        keyBenefit: 'Bioavailability enhancer (yogavahi)',
+        mechanism:
+          'Long pepper fruit, included as a yogavahi — a carrier herb traditionally added to improve the absorption and reach of the other ingredients rather than to act alone.',
+        traditionalUse:
+          'Pippali is one third of Trikatu, the classical three-pungent combination used to enhance the action of accompanying herbs.',
+        emoji: '🌶',
+      },
+      {
+        name: 'Kalmegh',
+        scientificName: 'Andrographis paniculata',
+        amount: '100mg',
+        perLabelDose: '100mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Whole plant · Wh. Pl. A.S.',
+        keyBenefit: 'King of bitters · Hepatic support',
+        mechanism:
+          'Whole plant of the king of bitters, one of three herbs at the 100mg inclusion level. Its bitter principle, andrographolide, is the compound most associated with its hepatic use.',
+        traditionalUse:
+          'Bhunimba is used across Ayurvedic and Siddha practice for fever and liver complaints, and is notably one of the bitterest herbs in the pharmacopoeia.',
+        emoji: '🌿',
+      },
+      {
+        name: 'Chirata',
+        scientificName: 'Swertia chirata',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Whole plant · Wh. Pl. A.S.',
+        keyBenefit: 'Bitter tonic · Digestive fire',
+        mechanism:
+          'Whole plant of the Himalayan gentian, a classical bitter tonic used to support agni (digestive fire) alongside hepatic function.',
+        traditionalUse:
+          'Kirata tikta is described in classical texts as a bitter febrifuge and appetite stimulant, harvested from Himalayan slopes.',
+        emoji: '🌿',
+      },
+      {
+        name: 'Punarnava',
+        scientificName: 'Boerhaavia diffusa',
+        amount: '50mg',
+        perLabelDose: '50mg',
+        standardization: 'Ayurvedic Sastra (A.S.)',
+        origin: 'Whole plant · Wh. Pl. A.S.',
+        keyBenefit: 'Rejuvenative · Fluid and liver support',
+        mechanism:
+          'Spreading hogweed, whole plant. Its Sanskrit name means that which renews, reflecting its traditional role in restoring tissue after fluid retention or hepatic strain.',
+        traditionalUse:
+          'Punarnava is classically indicated for oedema and is one of the principal Ayurvedic herbs for both kidney and liver support.',
+        emoji: '🌱',
+      },
+      {
+        name: 'Milk thistle',
+        scientificName: 'Silybum marianum',
+        amount: '100mg',
+        perLabelDose: '100mg',
+        standardization: 'Standardised milk thistle extract',
+        origin: 'Seed extract',
+        keyBenefit: 'Silymarin-bearing hepatic protectant',
+        mechanism:
+          'The one non-Ayurvedic inclusion, and the herb the label leads with on the front panel. Milk thistle seed supplies silymarin, the flavonolignan complex most studied for hepatocyte support.',
+        traditionalUse:
+          'European rather than Indian in origin, milk thistle has been used for liver and gallbladder complaints since classical antiquity.',
+        emoji: '🌼',
       },
     ],
     supplementFacts: {
@@ -432,16 +576,16 @@ const LABEL_DATA = {
         { name: 'Katki (Picrorhiza kurroa) Rt. A.S.', amount: '25mg', dv: '†', indent: false },
         { name: 'Daruharidra (Berberis aristata) H.W. A.S.', amount: '75mg', dv: '†', indent: false },
         { name: 'Kule khara (Hygrophila spinosa) Wh. Pl. A.S.', amount: '50mg', dv: '†', indent: false },
-        { name: 'Khatpapra (Fumaria parviflora) Wh. Pl. A.S.', amount: '50mg', dv: '†', indent: false },
+        { name: 'Khetpapra (Fumaria parviflora) Wh. Pl. A.S.', amount: '50mg', dv: '†', indent: false },
         { name: 'Bhuiamla (Phyllanthus niruri) Wh. Pl. A.P.I.', amount: '50mg', dv: '†', indent: false },
         { name: 'Pipul (Piper longum) Fr. A.S.', amount: '50mg', dv: '†', indent: false },
         { name: 'Kalmegh (Andrographis paniculata) Wh. Pl. A.S.', amount: '100mg', dv: '†', indent: false },
         { name: 'Chirata (Swertia chirata) Wh. Pl. A.S.', amount: '50mg', dv: '†', indent: false },
         { name: 'Punarnava (Boerhaavia diffusa) Wh. Pl. A.S.', amount: '50mg', dv: '†', indent: false },
         { name: 'Milk thistle (Silybum marianum)', amount: '100mg', dv: '†', indent: false },
-        { name: 'Louha Bhasma (Calcined Iron) A.S.', amount: '5mg', dv: '†', indent: true },
+        { name: 'Other Ingredients: Louha Bhasma (Calcined Iron) A.S', amount: '5mg', dv: '†', indent: true },
         { name: 'Preservative: Sodium Benzoate I.P.', amount: '2.5mg', dv: '†', indent: true },
-        { name: 'Lactose I.P. Q.S. to', amount: '500mg', dv: '†', indent: true },
+        { name: 'Others: Lactose I.P. Q.S. to.', amount: '500mg', dv: '†', indent: true },
       ],
       suggestedUse: 'Consume 2 capsules after breakfast.',
     },
@@ -682,11 +826,13 @@ function IngredientCard({ ing, index }) {
             <p className="text-bone/60 text-xs leading-relaxed italic">{ing.traditionalUse}</p>
           </div>
 
-          <div className="bg-bone/5 rounded-xl p-3 border border-bone/8">
-            <div className="text-amber text-[10px] font-bold uppercase tracking-widest mb-1">Research</div>
-            <div className="text-bone/50 text-[10px] mb-1 font-mono">{ing.study.citation}</div>
-            <p className="text-bone/80 text-xs leading-relaxed">"{ing.study.finding}"</p>
-          </div>
+          {ing.study && (
+            <div className="bg-bone/5 rounded-xl p-3 border border-bone/8">
+              <div className="text-amber text-[10px] font-bold uppercase tracking-widest mb-1">Research</div>
+              <div className="text-bone/50 text-[10px] mb-1 font-mono">{ing.study.citation}</div>
+              <p className="text-bone/80 text-xs leading-relaxed">"{ing.study.finding}"</p>
+            </div>
+          )}
         </div>
       )}
     </div>
