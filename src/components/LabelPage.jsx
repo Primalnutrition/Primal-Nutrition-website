@@ -177,18 +177,18 @@ const LABEL_DATA = {
   'trex-tongkat': {
     productName: 'Tongkat Ali',
     tagline: 'Free Testosterone Support',
-    licenseNo: '',
+    licenseNo: 'AL946M',
     category: 'Herbal Supplement',
-    servingSize: '1 capsule (200mg)',
-    servingsPerBottle: 60,
+    servingSize: '2 capsules (1,000mg extract)',
+    servingsPerBottle: 30,
     netVolume: '60 capsules',
     ingredients: [
       {
         name: 'Tongkat Ali Root Extract',
         scientificName: 'Eurycoma longifolia',
-        amount: '200mg',
-        perLabelDose: '200mg',
-        standardization: 'Eurycomanone ≥ 2%',
+        amount: '1,000mg',
+        perLabelDose: '1,000mg (per 2-capsule serving)',
+        standardization: 'Ultra-concentrated 100:1 extract — equivalent to 1,00,000mg raw root',
         origin: 'Malaysian rainforest roots',
         keyBenefit: 'Releases bound testosterone · Lifts free T',
         mechanism:
@@ -198,18 +198,24 @@ const LABEL_DATA = {
         study: {
           citation: 'Tambi M.I. et al., Andrologia, 2012',
           finding:
-            'Tongkat Ali 200mg/day × 30 days: significant serum testosterone uplift in hypogonadal men (mean T from 229 → 408 ng/dL).',
+            'Tongkat Ali 200mg/day of standardised extract × 30 days: significant serum testosterone uplift in hypogonadal men (mean T from 229 → 408 ng/dL).',
         },
         emoji: '🌴',
       },
     ],
     supplementFacts: {
-      servingSize: '1 capsule',
-      servingsPerContainer: 60,
+      servingSize: '2 capsules',
+      servingsPerContainer: 30,
       caloriesPerServing: 0,
+      // Mirrors the printed label panel, which states the extract weight and
+      // the raw-root equivalent as two separate lines. Collapsing them into a
+      // single "1,00,000mg" reads as 100 grams of powder.
       rows: [
-        { name: 'Tongkat Ali Root Extract (Eurycoma longifolia) eurycomanone ≥2%', amount: '200mg', dv: '†', indent: false },
+        { name: 'Tongkat Ali Extract (Eurycoma longifolia)', amount: '1,000mg', dv: '†', indent: false },
+        { name: 'Equivalent from 100:1 Ratio', amount: '1,00,000mg', dv: '†', indent: true },
+        { name: 'Ultra-Concentrated standardized for Maximum Bioactivity', amount: '', dv: '', indent: true },
       ],
+      suggestedUse: 'Consume 2 capsules after breakfast.',
     },
     otherIngredients: 'Microcrystalline cellulose, vegetable capsule (HPMC).',
     warnings: [
@@ -583,6 +589,13 @@ function SupplementFacts({ facts }) {
           <span className="w-8 text-right opacity-70">{row.dv}</span>
         </div>
       ))}
+
+      {facts.suggestedUse && (
+        <div className="px-3 py-1.5 flex justify-between gap-3 border-b-[5px] border-bone/80 border-t border-bone/30">
+          <span className="italic shrink-0">Suggested Use:</span>
+          <span className="text-right">{facts.suggestedUse}</span>
+        </div>
+      )}
 
       <div className="px-3 pt-2 pb-3 text-[9px] opacity-55 leading-relaxed border-t border-bone/20">
         * Percent Daily Values are based on a 2,000 calorie diet.

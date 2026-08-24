@@ -317,7 +317,7 @@ export const products = [
       heroClaim: 'The most direct T-supporting adaptogen in nature. Standardized to 2% eurycomanone — the molecule clinical trials use.',
       metrics: [
         { label: 'Eurycomanone', value: '2% std.' },
-        { label: 'Capsule dose', value: '200mg' },
+        { label: 'Per serving', value: '1,000mg' },
         { label: 'Best for', value: 'Plateaued lifters' },
         { label: 'Time to effect', value: '21 days' },
       ],
