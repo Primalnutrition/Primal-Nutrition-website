@@ -32,6 +32,16 @@ function daysAgo(n) {
   return d.toISOString().slice(0, 10)
 }
 
+/**
+ * Start date for an inclusive N-day window ending today.
+ * days=1 -> today only; days=7 -> today plus the previous six.
+ * Using daysAgo(days) directly would return N+1 days and make "Today" mean
+ * "today and yesterday".
+ */
+function windowStart(days) {
+  return daysAgo(Math.max(0, days - 1))
+}
+
 const ratio = (num, den) => (den ? Number((num / den).toFixed(4)) : null)
 
 /** Fold a set of ad_daily rows into one aggregate. */
@@ -80,18 +90,22 @@ export async function getAdsOverview({ days = 30 } = {}) {
   const supabase = getAdminClient()
   if (!supabase) throw notConfigured()
 
-  const since = daysAgo(days)
-  const prevSince = daysAgo(days * 2)
+  const since = windowStart(days)
+  const prevSince = windowStart(days * 2)
 
-  const [daily, ordersRes] = await Promise.all([
+  const [daily, ordersRes, boundsRes] = await Promise.all([
     fetchDaily(supabase, prevSince),
     supabase
       .from('orders')
       .select('total, status, placed_at, utm_campaign, is_new_customer:customer_id')
       .gte('placed_at', prevSince)
       .not('utm_campaign', 'is', null),
+    // Earliest tracked day, so a 6-month or 1-year view can say plainly that
+    // the account has less history than the window asks for.
+    supabase.from('ads_daily').select('date').order('date', { ascending: true }).limit(1),
   ])
   if (ordersRes.error) throw ordersRes.error
+  if (boundsRes.error) throw boundsRes.error
 
   const current = daily.filter((r) => r.date >= since)
   const previous = daily.filter((r) => r.date < since)
@@ -103,8 +117,19 @@ export async function getAdsOverview({ days = 30 } = {}) {
   const cur = fold(current)
   const prev = fold(previous)
 
+  const firstTracked = boundsRes.data?.[0]?.date ?? null
+  const lastTracked = daily.length ? daily[daily.length - 1].date : null
+
   return {
     window: { days, since },
+    coverage: {
+      firstTracked,
+      lastTracked,
+      daysWithData: cur.days,
+      // True when the window reaches further back than the data goes, so the
+      // UI can avoid implying a full year was measured.
+      truncated: Boolean(firstTracked && firstTracked > since),
+    },
     meta: cur,
     previous: prev,
     real: {
@@ -127,7 +152,7 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
   const supabase = getAdminClient()
   if (!supabase) throw notConfigured()
 
-  const since = daysAgo(days)
+  const since = windowStart(days)
 
   const [daily, creativesRes, tagsRes, verdictsRes, adsRes] = await Promise.all([
     fetchDaily(supabase, since),
@@ -204,9 +229,9 @@ export async function getCreativeLeaderboard({ days = 30 } = {}) {
       })),
       isLive: (adsByCreative.get(creativeId) ?? []).some(a => a.effective_status === 'ACTIVE'),
       metrics: agg,
-      verdict: v.verdict ?? 'LEARNING',
-      confidence: v.confidence ?? 'insufficient',
-      evidence: v.evidence ?? 'observational',
+      verdict: v.verdict ?? null,
+      confidence: v.confidence ?? null,
+      evidence: v.evidence ?? null,
       reason: v.reason ?? null,
     })
   }
@@ -243,7 +268,7 @@ export async function getTagRankings({ days = 30, dimension = 'hook_type' } = {}
   const supabase = getAdminClient()
   if (!supabase) throw notConfigured()
 
-  const since = daysAgo(days)
+  const since = windowStart(days)
   const [daily, creativesRes, tagsRes] = await Promise.all([
     fetchDaily(supabase, since),
     supabase.from('ads_creatives').select('creative_id, format'),

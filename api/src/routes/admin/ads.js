@@ -14,7 +14,9 @@ const router = Router()
 function windowDays(req) {
   const raw = parseInt(req.query.days ?? '30', 10)
   if (Number.isNaN(raw)) return 30
-  return Math.min(90, Math.max(1, raw))
+  // Up to ~13 months so the UI can offer 6-month and 1-year views. The tracker
+  // may hold less history than that; the overview reports actual coverage.
+  return Math.min(400, Math.max(1, raw))
 }
 
 /**
