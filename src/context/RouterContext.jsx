@@ -13,6 +13,18 @@ function readRoute() {
   if (head === 'label') return { page: 'label', productId: sub || 'trex-liquid' }
   if (head === 'product-info') return { page: 'product-info', productId: sub || null }
   if (PAGES.has(head)) return { page: head }
+  // No hash: fall back to ?p= / ?page=. Ad platforms append their own tracking
+  // params (fbclid, utm_id, utm_term) to the end of the click URL, which lands
+  // them after the "#" and destroys the fragment — so a hash-only deep link
+  // silently drops every paid visitor on the homepage. A query param survives
+  // that, because appending to a query string is exactly what they expect.
+  if (segments.length === 0) {
+    const params = new URLSearchParams(window.location.search)
+    const productId = params.get('p')
+    if (productId) return { page: 'product', productId }
+    const page = params.get('page')
+    if (page && PAGES.has(page)) return { page }
+  }
   return { page: 'home' }
 }
 
@@ -34,6 +46,25 @@ export function RouterProvider({ children }) {
     const onHash = () => setRoute(readRoute())
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  // Rewrite a ?p= / ?page= entry to its canonical hash form once, on mount.
+  // Without this the param stays in location.search, and because navigate()
+  // preserves the search string, going Home would leave "?p=…" with an empty
+  // hash — so the next hashchange or reload would bounce the visitor back to
+  // the product page. Runs after attribution.js has already read the UTMs, and
+  // only deletes p/page, so the attribution parameters are left untouched.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (!params.has('p') && !params.has('page')) return
+    params.delete('p')
+    params.delete('page')
+    const search = params.toString()
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${search ? `?${search}` : ''}${buildHash(readRoute())}`,
+    )
   }, [])
 
   useEffect(() => {
