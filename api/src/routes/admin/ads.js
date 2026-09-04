@@ -8,6 +8,7 @@ import {
   getDataQuality,
   getDailyBurn,
   getSyncStatus,
+  getDailyUpdates,
 } from '../../services/adsService.js'
 
 const router = Router()
@@ -112,6 +113,18 @@ router.get('/burn', async (req, res, next) => {
 router.get('/sync-status', async (_req, res, next) => {
   try {
     res.json(await getSyncStatus())
+  } catch (err) {
+    next(err)
+  }
+})
+
+/**
+ * GET /api/admin/ads/updates?days=14
+ * One entry per day money moved, with the day's headline action.
+ */
+router.get('/updates', async (req, res, next) => {
+  try {
+    res.json(await getDailyUpdates({ days: windowDays(req) }))
   } catch (err) {
     next(err)
   }

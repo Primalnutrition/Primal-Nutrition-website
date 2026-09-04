@@ -513,3 +513,117 @@ export async function getSyncStatus() {
         : `Synced through ${lastDate}.`,
   }
 }
+
+/**
+ * Daily updates feed.
+ *
+ * Derived from ads_daily rather than from a stored digest table. The tracker
+ * only records verdicts on the days it runs (two run dates so far), so a feed
+ * keyed on verdicts would have two entries. Keying on delivery instead gives
+ * an entry for every day money actually moved, with verdicts attached to the
+ * days they were produced.
+ *
+ * The headline mirrors the ads-tracker mail report: urgent verdicts first by
+ * spend, then scale candidates by ROAS, otherwise a plain movement summary.
+ */
+export async function getDailyUpdates({ days = 14 } = {}) {
+  const supabase = getAdminClient()
+  if (!supabase) throw notConfigured()
+
+  const since = windowStart(days)
+
+  const [daily, verdictsRes, adsRes] = await Promise.all([
+    fetchDaily(supabase, since),
+    supabase
+      .from('ads_verdicts')
+      .select('run_date, creative_id, verdict, reason, spend, roas, window_days')
+      .gte('run_date', since),
+    supabase.from('ads_ads').select('ad_id, ad_name, creative_id'),
+  ])
+  if (verdictsRes.error) throw verdictsRes.error
+  if (adsRes.error) throw adsRes.error
+
+  const nameByCreative = new Map()
+  for (const a of adsRes.data ?? []) {
+    if (a.creative_id && !nameByCreative.has(a.creative_id)) nameByCreative.set(a.creative_id, a.ad_name)
+  }
+
+  // Roll the per-ad rows up to one entry per day, tracking which creative took
+  // the most spend so the feed can name what the money actually went on.
+  const byDate = new Map()
+  for (const r of daily) {
+    const d = byDate.get(r.date) ?? { spend: 0, revenue: 0, purchases: 0, byCreative: new Map() }
+    d.spend += Number(r.spend || 0)
+    d.revenue += Number(r.revenue || 0)
+    d.purchases += Number(r.purchases || 0)
+    if (r.creative_id) {
+      d.byCreative.set(r.creative_id, (d.byCreative.get(r.creative_id) ?? 0) + Number(r.spend || 0))
+    }
+    byDate.set(r.date, d)
+  }
+
+  const verdictsByDate = new Map()
+  for (const v of verdictsRes.data ?? []) {
+    // The 7-day window is the one the daily routine acts on; the 30-day run is
+    // context. Showing both would double every entry.
+    if (v.window_days !== 7) continue
+    const list = verdictsByDate.get(v.run_date) ?? []
+    list.push({
+      creativeId: v.creative_id,
+      name: nameByCreative.get(v.creative_id) ?? null,
+      verdict: v.verdict,
+      reason: v.reason,
+      spend: v.spend === null ? null : Number(v.spend),
+      roas: v.roas === null ? null : Number(v.roas),
+    })
+    verdictsByDate.set(v.run_date, list)
+  }
+
+  const dates = [...byDate.keys()].sort().reverse()
+
+  const entries = dates.map((date, i) => {
+    const d = byDate.get(date)
+    const prev = byDate.get(dates[i + 1])
+    const verdicts = verdictsByDate.get(date) ?? []
+
+    const topCreative = [...d.byCreative.entries()].sort((a, b) => b[1] - a[1])[0] ?? null
+    const urgent = verdicts.filter((v) => v.verdict === 'PAUSE' || v.verdict === 'REFRESH CREATIVE')
+    const scale = verdicts.filter((v) => v.verdict === 'SCALE')
+
+    let headline
+    if (urgent.length) {
+      const top = urgent.reduce((a, v) => ((a?.spend ?? 0) >= (v.spend ?? 0) ? a : v), null)
+      headline = `${top.verdict === 'PAUSE' ? 'Pause' : 'Refresh'}: ${top.name ?? top.creativeId} — ${top.reason}`
+    } else if (scale.length) {
+      const top = scale.reduce((a, v) => ((a?.roas ?? 0) >= (v.roas ?? 0) ? a : v), null)
+      headline = `Scale candidate: ${top.name ?? top.creativeId} — ${top.reason}`
+    } else {
+      headline = d.purchases
+        ? `${d.purchases} purchase${d.purchases === 1 ? '' : 's'} on ₹${Math.round(d.spend).toLocaleString('en-IN')} spend.`
+        : `₹${Math.round(d.spend).toLocaleString('en-IN')} spent, no purchases attributed.`
+    }
+
+    return {
+      date,
+      spend: Number(d.spend.toFixed(2)),
+      revenue: Number(d.revenue.toFixed(2)),
+      purchases: d.purchases,
+      roas: ratio(d.revenue, d.spend),
+      spendDelta:
+        prev && prev.spend
+          ? Number((((d.spend - prev.spend) / prev.spend) * 100).toFixed(1))
+          : null,
+      topCreative: topCreative
+        ? {
+            creativeId: topCreative[0],
+            name: nameByCreative.get(topCreative[0]) ?? null,
+            spend: Number(topCreative[1].toFixed(2)),
+          }
+        : null,
+      verdicts,
+      headline,
+    }
+  })
+
+  return { window: { days, since }, entries }
+}
