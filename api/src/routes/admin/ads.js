@@ -6,6 +6,8 @@ import {
   getLineage,
   getTestQueue,
   getDataQuality,
+  getDailyBurn,
+  getSyncStatus,
 } from '../../services/adsService.js'
 
 const router = Router()
@@ -84,6 +86,32 @@ router.get('/test-queue', async (req, res, next) => {
 router.get('/data-quality', async (_req, res, next) => {
   try {
     res.json(await getDataQuality())
+  } catch (err) {
+    next(err)
+  }
+})
+
+/**
+ * GET /api/admin/ads/burn?days=30
+ * Daily spend series. Actual burn only — Meta budgets are not stored, so this
+ * deliberately reports no pacing or runway figure.
+ */
+router.get('/burn', async (req, res, next) => {
+  try {
+    res.json(await getDailyBurn({ days: windowDays(req) }))
+  } catch (err) {
+    next(err)
+  }
+})
+
+/**
+ * GET /api/admin/ads/sync-status
+ * How fresh the ads data is. The tracker pushes from a scheduled local run, so
+ * the dashboard needs to be able to say plainly when that run last succeeded.
+ */
+router.get('/sync-status', async (_req, res, next) => {
+  try {
+    res.json(await getSyncStatus())
   } catch (err) {
     next(err)
   }

@@ -383,3 +383,133 @@ export async function getDataQuality() {
     issues: (data ?? []).filter((d) => d.run_date === latest),
   }
 }
+
+/**
+ * Daily spend series — the burn view.
+ *
+ * "Burn" here is actual spend per day, not spend against a plan. Meta budgets
+ * are not stored anywhere (no budget column exists on ads_ads or ads_daily),
+ * so pacing, over/under-spend and runway cannot be computed honestly yet. If
+ * budgets are ingested later, this is where the comparison belongs.
+ *
+ * Days with no delivery are emitted as zero-spend rows rather than omitted, so
+ * a chart shows the gap instead of silently joining across it.
+ */
+export async function getDailyBurn({ days = 30 } = {}) {
+  const supabase = getAdminClient()
+  if (!supabase) throw notConfigured()
+
+  const since = windowStart(days)
+  const daily = await fetchDaily(supabase, since)
+
+  const byDate = new Map()
+  for (const r of daily) {
+    const d = byDate.get(r.date) ?? { spend: 0, revenue: 0, purchases: 0, impressions: 0, clicks: 0 }
+    d.spend += Number(r.spend || 0)
+    d.revenue += Number(r.revenue || 0)
+    d.purchases += Number(r.purchases || 0)
+    d.impressions += Number(r.impressions || 0)
+    d.clicks += Number(r.clicks || 0)
+    byDate.set(r.date, d)
+  }
+
+  // Walk the calendar rather than the data so blank days stay visible.
+  const series = []
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const date = daysAgo(i)
+    const d = byDate.get(date)
+    series.push({
+      date,
+      spend: Number((d?.spend ?? 0).toFixed(2)),
+      revenue: Number((d?.revenue ?? 0).toFixed(2)),
+      purchases: d?.purchases ?? 0,
+      roas: ratio(d?.revenue ?? 0, d?.spend ?? 0),
+      hasData: Boolean(d),
+    })
+  }
+
+  const spends = series.map((s) => s.spend)
+  const withData = series.filter((s) => s.hasData)
+  const mean = (arr) => (arr.length ? Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2)) : null)
+
+  // Averages count only days that actually delivered. Including untracked days
+  // as zeros would understate the real daily burn rate.
+  const last7 = withData.slice(-7).map((s) => s.spend)
+  const last30 = withData.slice(-30).map((s) => s.spend)
+
+  const today = series[series.length - 1] ?? null
+  const yesterday = series[series.length - 2] ?? null
+  const peak = withData.reduce((a, s) => (a && a.spend >= s.spend ? a : s), null)
+
+  return {
+    window: { days, since },
+    series,
+    totals: {
+      spend: Number(spends.reduce((a, b) => a + b, 0).toFixed(2)),
+      purchases: series.reduce((a, s) => a + s.purchases, 0),
+      revenue: Number(series.reduce((a, s) => a + s.revenue, 0).toFixed(2)),
+      daysWithDelivery: withData.length,
+    },
+    burn: {
+      today: today?.spend ?? 0,
+      todayHasData: Boolean(today?.hasData),
+      yesterday: yesterday?.spend ?? 0,
+      avg7: mean(last7),
+      avg30: mean(last30),
+      peak: peak ? { date: peak.date, spend: peak.spend } : null,
+      // Projection is the 7-day mean carried forward — deliberately simple,
+      // and only meaningful while budgets and delivery hold steady.
+      projected30: mean(last7) === null ? null : Number((mean(last7) * 30).toFixed(2)),
+    },
+    budget: null,
+    budgetReason: 'No budgets stored — ads_ads has no budget column, so pacing cannot be computed.',
+  }
+}
+
+/**
+ * Freshness of the ads pipeline.
+ *
+ * The tracker pushes to Supabase from a scheduled local run, so the dashboard
+ * can silently show stale numbers if that run fails. This surfaces the age of
+ * the data instead, and the UI is expected to warn rather than hide it.
+ */
+export async function getSyncStatus() {
+  const supabase = getAdminClient()
+  if (!supabase) throw notConfigured()
+
+  const { data, error } = await supabase
+    .from('ads_daily')
+    .select('date, fetched_at')
+    .order('date', { ascending: false })
+    .limit(1)
+  if (error) throw error
+
+  const row = data?.[0] ?? null
+  const lastDate = row?.date ?? null
+  const fetchedAt = row?.fetched_at ?? null
+
+  const today = new Date().toISOString().slice(0, 10)
+  const dayGap =
+    lastDate === null
+      ? null
+      : Math.round((Date.parse(`${today}T00:00:00Z`) - Date.parse(`${lastDate}T00:00:00Z`)) / 86400000)
+  const hoursSinceFetch =
+    fetchedAt === null ? null : Math.round((Date.now() - Date.parse(fetchedAt)) / 3600000)
+
+  // Meta finalises a day's spend a few hours after midnight, so one day behind
+  // is normal and should not read as a failure. Two or more means a missed run.
+  const stale = dayGap !== null && dayGap >= 2
+
+  return {
+    lastDate,
+    fetchedAt,
+    dayGap,
+    hoursSinceFetch,
+    stale,
+    message: lastDate === null
+      ? 'No ad data has been synced yet.'
+      : stale
+        ? `Last synced ${lastDate} — ${dayGap} days behind. The morning tracker run may have failed.`
+        : `Synced through ${lastDate}.`,
+  }
+}
