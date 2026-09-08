@@ -662,9 +662,9 @@ const LABEL_DATA = {
     tagline: 'Creatine + Electrolyte Formula',
     licenseNo: '',
     category: 'Sports Nutrition',
-    servingSize: '1 scoop (5g)',
-    servingsPerBottle: 30,
-    netVolume: '150g',
+    servingSize: '1 scoop (10g)',
+    servingsPerBottle: 25,
+    netVolume: '250g',
     ingredients: [
       {
         name: 'Creatine Monohydrate',
@@ -725,7 +725,7 @@ const LABEL_DATA = {
       },
     ],
     supplementFacts: {
-      servingSize: '1 scoop (5g)',
+      servingSize: '1 scoop (10g)',
       servingsPerContainer: 30,
       caloriesPerServing: 5,
       rows: [

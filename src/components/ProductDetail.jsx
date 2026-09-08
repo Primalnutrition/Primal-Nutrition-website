@@ -196,6 +196,9 @@ export default function ProductDetail({ productId }) {
                             )}
                           </div>
                           <div className="text-[11px] uppercase tracking-widest text-bone/45">{v.sub}</div>
+                          {v.prepaidOnly && (
+                            <div className="text-[10px] text-amber-light/80 mt-0.5">Online payment only</div>
+                          )}
                         </div>
                         <div className="text-right">
                           <div className="font-display font-bold text-bone">₹{v.price.toLocaleString('en-IN')}</div>
@@ -234,6 +237,14 @@ export default function ProductDetail({ productId }) {
               >
                 {adding ? '✓ Added to cart' : `Add to Cart — ₹${variant.price.toLocaleString('en-IN')}`}
               </button>
+
+              {/* Said here rather than sprung at checkout — finding COD gone after
+                  typing an address is how carts get abandoned. */}
+              {variant.prepaidOnly && (
+                <p className="mt-2 text-center text-[11px] text-bone/50">
+                  {variant.label} is online payment only — Cash on Delivery isn’t available for this pack.
+                </p>
+              )}
 
               {/* Dispatch urgency — a concrete reason to act now */}
               <div className="mt-3 flex items-center justify-center gap-2 text-[11px] uppercase tracking-widest text-bone/55 font-brand">

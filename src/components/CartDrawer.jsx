@@ -32,6 +32,16 @@ export default function CartDrawer() {
   const [procStep, setProcStep] = useState(0)  // advances the "Processing…" label so it never looks frozen
   const [confirmedOrder, setConfirmedOrder] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('online')  // 'online' | 'cod'
+
+  // Some variants (the Hydra Double Pack) can't ship COD — a two-unit BOGO that
+  // comes back as an RTO costs both units plus round-trip freight. A single such
+  // line makes the whole order prepaid, because an order can't be part-collected.
+  const prepaidOnlyLine = lineItems.find((l) => l.variant.prepaidOnly)
+  const codBlocked = Boolean(prepaidOnlyLine)
+
+  useEffect(() => {
+    if (codBlocked && paymentMethod === 'cod') setPaymentMethod('online')
+  }, [codBlocked, paymentMethod])
   const firedPurchases = useRef(new Set())
   const saved = compareSubtotal - subtotal
 
@@ -86,7 +96,13 @@ export default function CartDrawer() {
   // Calculate payment method adjustments
   const PREPAID_DISCOUNT = 100  // ₹100 discount for online payment
   const COD_FEE = 49             // ₹49 convenience charge for COD
-  const adjustedPayable = paymentMethod === 'online' ? payable - PREPAID_DISCOUNT : payable + COD_FEE
+  // A prepaid-only cart gets no prepaid discount: the discount exists to move
+  // people off COD, and here there is no COD to move them off. Only when EVERY
+  // line is prepaid-only — a mixed cart did give up a real COD option, and
+  // charging it more than two separate orders would be perverse.
+  const allPrepaidOnly = lineItems.length > 0 && lineItems.every((l) => l.variant.prepaidOnly)
+  const prepaidDiscount = allPrepaidOnly ? 0 : PREPAID_DISCOUNT
+  const adjustedPayable = paymentMethod === 'online' ? payable - prepaidDiscount : payable + COD_FEE
 
   const validate = () => {
     const e = {}
@@ -356,23 +372,37 @@ export default function CartDrawer() {
                   >
                     <div className="font-semibold">Pay online</div>
                     <div className="text-[11px] text-bone/50">UPI · Card · Netbanking</div>
-                    <div className="text-[10px] text-amber font-medium mt-1">Save ₹{PREPAID_DISCOUNT}</div>
+                    {prepaidDiscount > 0 && (
+                      <div className="text-[10px] text-amber font-medium mt-1">Save ₹{prepaidDiscount}</div>
+                    )}
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('cod')}
-                    disabled={submitting}
+                    disabled={submitting || codBlocked}
                     className={`text-left px-3 py-2.5 rounded-lg border text-sm transition ${
-                      paymentMethod === 'cod'
-                        ? 'border-amber bg-amber/10 text-bone'
-                        : 'border-bone/15 text-bone/70 hover:border-bone/30'
+                      codBlocked
+                        ? 'border-bone/10 text-bone/30 cursor-not-allowed'
+                        : paymentMethod === 'cod'
+                          ? 'border-amber bg-amber/10 text-bone'
+                          : 'border-bone/15 text-bone/70 hover:border-bone/30'
                     }`}
                   >
                     <div className="font-semibold">Cash on Delivery</div>
-                    <div className="text-[11px] text-bone/50">Pay when it arrives</div>
-                    <div className="text-[10px] text-rust font-medium mt-1">+₹{COD_FEE} charge</div>
+                    <div className="text-[11px] text-bone/50">{codBlocked ? 'Unavailable' : 'Pay when it arrives'}</div>
+                    {!codBlocked && (
+                      <div className="text-[10px] text-rust font-medium mt-1">+₹{COD_FEE} charge</div>
+                    )}
                   </button>
                 </div>
+
+                {/* Name the cause and the way out. A disabled control with no
+                    explanation just reads as a broken site. */}
+                {codBlocked && (
+                  <p className="mt-2 text-[11px] text-bone/50 leading-relaxed">
+                    {prepaidOnlyLine.variant.label} is online payment only. Remove it from your cart to pay on delivery.
+                  </p>
+                )}
               </div>
               {stackDiscount > 0 && (
                 <div className="flex items-center justify-between text-sm">

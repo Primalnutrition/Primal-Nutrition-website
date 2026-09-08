@@ -632,8 +632,14 @@ export const products = [
     accent: 'from-amber-light to-amber',
     bottleType: 'tub',
     badge: 'New',
-    description: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes. Strawberry.',
-    variants: [{ id: 'hydra-1', label: '150g', sub: '30 servings · strawberry', price: 1200 }],
+    description: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes. Salted strawberry.',
+    variants: [
+      { id: 'hydra-1', label: '250g', sub: '25 servings · salted strawberry', price: 1200 },
+      // Two tubs at the single-tub price. prepaidOnly because a BOGO shipped COD
+      // costs two units plus round-trip freight if it comes back as an RTO.
+      { id: 'hydra-2pk', label: 'Double Pack — 2 × 250g', sub: '50 servings · salted strawberry',
+        price: 1200, compareAt: 2400, save: 'Save ₹1,200', prepaidOnly: true, popular: true },
+    ],
     mckinsey: {
       who: 'Active training days',
       pain: 'Cramping, hydration, mid-set strength',
@@ -646,8 +652,8 @@ export const products = [
       metrics: [
         { label: 'Creatine', value: '3g per serving' },
         { label: 'Electrolytes', value: '1500mg blend' },
-        { label: 'Servings', value: '30' },
-        { label: 'Flavor', value: 'Strawberry' },
+        { label: 'Servings', value: '25' },
+        { label: 'Flavor', value: 'Salted Strawberry' },
       ],
       problem: {
         title: 'Indian gyms are hotter than your AC tells you.',
