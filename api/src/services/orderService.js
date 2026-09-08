@@ -68,7 +68,7 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
   const variantIds = items.map((i) => i.variantId)
   const { data: variants, error: vErr } = await supabase
     .from('variants')
-    .select('id, product_id, label, price, stock_qty, products:product_id (id, name)')
+    .select('id, product_id, label, price, stock_qty, prepaid_only, products:product_id (id, name)')
     .in('id', variantIds)
   if (vErr) throw vErr
 
@@ -78,6 +78,12 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
     if (!v) throw httpError(`Variant ${i.variantId} not found`, 422, 'INVALID_VARIANT')
     if (v.product_id !== i.productId) throw httpError(`Variant ${i.variantId} does not belong to product ${i.productId}`, 422, 'VARIANT_PRODUCT_MISMATCH')
     if (v.stock_qty < i.qty) throw httpError(`Variant ${i.variantId} is out of stock`, 409, 'OUT_OF_STOCK')
+    // The cart drawer greys COD out for these, but that check is client-side and
+    // bypassable — this is the one that holds. A two-unit BOGO shipped COD costs
+    // both units plus round-trip freight if it comes back as an RTO.
+    if (paymentMethod === 'cod' && v.prepaid_only) {
+      throw httpError(`${v.label} is online payment only`, 422, 'PREPAID_ONLY_VARIANT')
+    }
     return {
       product_id: v.product_id,
       variant_id: v.id,
@@ -98,7 +104,15 @@ export async function createDraftOrder({ customer, address, items, paymentMethod
   // convenience charge. Folded into `discount` (negative = surcharge) so the
   // existing total formula picks it up everywhere (Razorpay amount, Shiprocket
   // cod_collectable_amount) without special-casing.
-  const paymentAdjustment = paymentMethod === 'cod' ? -COD_FEE : PREPAID_DISCOUNT
+  // A cart that is entirely prepaid-only gets no prepaid discount: the discount
+  // exists to move people off COD, and here there is no COD to move them off.
+  // Only when EVERY line qualifies — a mixed cart did give up a real COD option,
+  // and charging it more than two separate orders would be perverse.
+  const allPrepaidOnly = lineItems.length > 0 &&
+    lineItems.every((li) => variantMap.get(li.variant_id)?.prepaid_only)
+  const paymentAdjustment = paymentMethod === 'cod'
+    ? -COD_FEE
+    : (allPrepaidOnly ? 0 : PREPAID_DISCOUNT)
   const discount = stackDiscount + paymentAdjustment
   const tax = 0
   const total = subtotal + shippingFee + tax - discount
