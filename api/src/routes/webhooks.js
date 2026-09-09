@@ -68,7 +68,15 @@ router.post('/razorpay', async (req, res) => {
         // duplicate emails and duplicate CAPI events. When the webhook fires first
         // (browser dropped before calling verify-payment) these hooks are the only
         // coverage, so we run them here instead.
-        if (!alreadyPaid && event === 'payment.captured') {
+        //
+        // Deliberately NOT gated on the event name. Razorpay sends both
+        // payment.captured and order.paid for one payment and does not guarantee
+        // their order; when order.paid landed first it marked the order paid
+        // (alreadyPaid=false) but failed the name check and sent nothing, then
+        // payment.captured arrived with alreadyPaid=true and skipped as a
+        // duplicate — so the customer was never emailed at all. alreadyPaid is
+        // the whole de-dupe: whichever event wins the race sends exactly once.
+        if (!alreadyPaid) {
           void (async () => {
             try {
               const full = await getOrderForShipment(order.id)
