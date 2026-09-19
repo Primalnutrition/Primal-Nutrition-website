@@ -94,8 +94,8 @@ export default function CartDrawer() {
   }
 
   // Calculate payment method adjustments
-  const PREPAID_DISCOUNT = 100  // ₹100 discount for online payment
-  const COD_FEE = 49             // ₹49 convenience charge for COD
+  const PREPAID_DISCOUNT = 200  // ₹200 discount for online payment
+  const COD_FEE = 99             // ₹99 convenience charge for COD
   // A prepaid-only cart gets no prepaid discount: the discount exists to move
   // people off COD, and here there is no COD to move them off. Only when EVERY
   // line is prepaid-only — a mixed cart did give up a real COD option, and
@@ -411,10 +411,12 @@ export default function CartDrawer() {
                 </div>
               )}
               {paymentMethod === 'online' ? (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-bone/55">Prepaid discount</span>
-                  <span className="font-semibold text-amber">−₹{PREPAID_DISCOUNT.toLocaleString('en-IN')}</span>
-                </div>
+                prepaidDiscount > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-bone/55">Prepaid discount</span>
+                    <span className="font-semibold text-amber">−₹{prepaidDiscount.toLocaleString('en-IN')}</span>
+                  </div>
+                )
               ) : (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-bone/55">COD convenience charge</span>
