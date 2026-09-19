@@ -21,8 +21,8 @@ function generateOrderNumber() {
 // Must mirror the amounts shown to the customer in CartDrawer.jsx
 // (PREPAID_DISCOUNT / COD_FEE) — computed here from paymentMethod (server-known,
 // not client-supplied) so the Razorpay/Shiprocket amount can't be tampered with.
-const PREPAID_DISCOUNT = 100
-const COD_FEE = 49
+const PREPAID_DISCOUNT = 200
+const COD_FEE = 99
 
 /**
  * Flatten a storefront attribution object into the flat columns we store on an

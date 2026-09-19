@@ -84,8 +84,8 @@ export default function CartDrawer() {
   }
 
   // Calculate payment method adjustments
-  const PREPAID_DISCOUNT = 100  // ₹100 discount for online payment
-  const COD_FEE = 49             // ₹49 convenience charge for COD
+  const PREPAID_DISCOUNT = 200  // ₹200 discount for online payment
+  const COD_FEE = 99             // ₹99 convenience charge for COD
   const adjustedPayable = paymentMethod === 'online' ? payable - PREPAID_DISCOUNT : payable + COD_FEE
 
   const validate = () => {
