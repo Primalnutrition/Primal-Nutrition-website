@@ -108,7 +108,7 @@ export default function StacksPage() {
 
           {/* Trust line */}
           <p className="mt-14 text-center text-[11px] uppercase tracking-widest text-bone/40 font-brand">
-            Free pan-India shipping · Cash on delivery · Independent lab tested
+            Free pan-India shipping · Pay online and save ₹200 · Independent lab tested
           </p>
         </div>
       </section>

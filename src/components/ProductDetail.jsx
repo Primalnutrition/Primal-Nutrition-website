@@ -783,7 +783,7 @@ export default function ProductDetail({ productId }) {
               <div className="mt-5 flex items-center justify-center gap-4 text-[11px] uppercase tracking-widest text-bone/40 font-brand">
                 <span>Free shipping</span>
                 <span>·</span>
-                <span>Cash on delivery</span>
+                <span>Pay online and save ₹200</span>
                 <span>·</span>
                 <span>3rd Party tested</span>
               </div>

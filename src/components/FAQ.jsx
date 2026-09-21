@@ -41,7 +41,7 @@ const faqs = [
   },
   {
     q: 'Shipping + payment?',
-    a: 'Free pan-India shipping. Secure online payments. Cash on delivery available. No-contact shipping standard.',
+    a: 'Free pan-India shipping. Pay online (UPI, card, netbanking) and save ₹200, or choose cash on delivery with a ₹99 convenience charge. No-contact shipping standard.',
   },
   {
     q: 'Can I stack T-Rex with other supplements?',

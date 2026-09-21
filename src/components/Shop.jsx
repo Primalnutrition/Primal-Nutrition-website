@@ -26,7 +26,7 @@ export default function Shop() {
           </div>
           <div className="text-sm text-bone/45">
             <span className="block">Free shipping</span>
-            <span className="block">Cash on delivery available</span>
+            <span className="block">Pay online and save ₹200</span>
             <span className="block">Third-party tested · every batch</span>
           </div>
         </div>
