@@ -32,7 +32,7 @@ const INGREDIENTS = {
       { name: 'Safed Musli', sanskrit: 'सफेद मूसली', botanical: 'Chlorophytum arundinaceum', dose: '200 mg', source: 'Rare Indian root', role: 'Testosterone & stamina', detail: 'The natural alternative to commercial drugs. Supports testosterone production, sperm count and desire — effective even where diabetes-driven dysfunction is present.', image: '/products/ingredients/safed-musli.jpg' },
       { name: 'Kath Badam', sanskrit: 'कथ बादाम', botanical: 'Prunus dulcis', dose: '100 mg', source: 'Whole almond extract', role: 'Aphrodisiac · building block', detail: 'Vatada in Ayurveda. Raises good cholesterol — the raw material testosterone is built from — stabilises blood sugar, and sharpens memory.', image: '/products/ingredients/kath-badam.jpg' },
     ],
-    credit: 'Ingredient photos: Pexels & Wikimedia Commons (Tribulus terrestris fruit © Hüseyin Cahid Doğan, Safed Musli/Shilajit/Ashwagandha contributors, CC BY-SA); Arjun bark — public domain.',
+    credit: 'Ingredient photos: Pexels & Wikimedia Commons (Tribulus terrestris fruit © Hüseyin Cahid Doğan, Shilajit © Chirag jindal, Safed Musli/Ashwagandha contributors, CC BY-SA); Arjun bark — public domain.',
     claims: ['100% Ayurvedic', 'No Proprietary Blends', 'No Stimulants', 'No Chemicals', 'Non-GMO', '3rd-Party Lab Tested'],
   },
 }

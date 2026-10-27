@@ -438,6 +438,15 @@ export default function ProductDetail({ productId }) {
         </section>
       )}
 
+      {/* ── Protocol, early placement (right after the mechanism) ── */}
+      {pdp?.protocol?.early && (
+        <section className="pb-24">
+          <div className="container-x max-w-3xl">
+            <ProtocolSteps protocol={pdp.protocol} />
+          </div>
+        </section>
+      )}
+
       {/* ── What's inside (ingredients showcase) ──────────── */}
       <IngredientShowcase product={product} />
 
@@ -473,102 +482,10 @@ export default function ProductDetail({ productId }) {
       {/* ── Protocol + Who-for/Not-for ─────────────────────── */}
       <section className="py-24">
         <div className="container-x grid lg:grid-cols-2 gap-12">
-          {pdp?.protocol && (
-            <div>
-              <div className="eyebrow mb-5">{pdp.protocol.eyebrow || 'The Protocol'}</div>
-              <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
-                {pdp.protocol.title || 'When, how, with what.'}
-              </h3>
-              <div className="space-y-4">
-                {[
-                  {
-                    label: pdp.protocol.labels?.[0] || 'When', value: pdp.protocol.when,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Sunrise */}
-                        <path d="M9 27C9 21.48 13.03 17 18 17C22.97 17 27 21.48 27 27" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M5 27H31" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M18 13V10" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M9.5 16.5L7.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M26.5 16.5L28.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M5.5 20.5H8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M28 20.5H30.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: pdp.protocol.labels?.[1] || 'How', value: pdp.protocol.how,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Dropper / sublingual */}
-                        <path d="M22 4L26 8L14 20L10 16L22 4Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M10 16L8 24L16 22L10 16Z" fill="rgba(245,176,55,0.1)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <circle cx="21" cy="29" r="2.5" fill="rgba(245,176,55,0.25)" stroke="rgb(245,176,55)" strokeWidth="1.3"/>
-                        <path d="M21 25V26.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: pdp.protocol.labels?.[2] || 'With', value: pdp.protocol.withWhat,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Shaker bottle with motion lines */}
-                        <path d="M14 7H22V11H14V7Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M12 11H24L26 29C26 29.55 25.55 30 25 30H11C10.45 30 10 29.55 10 29L12 11Z" fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M5 18H8.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
-                        <path d="M4 22H7" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
-                        <path d="M27.5 18H31" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
-                        <path d="M29 22H32" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: pdp.protocol.labels?.[3] || 'Cycle', value: pdp.protocol.cycle,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Circular refresh arrows */}
-                        <path d="M28 18C28 23.52 23.52 28 18 28C12.48 28 8 23.52 8 18C8 12.48 12.48 8 18 8C21.5 8 24.6 9.74 26.5 12.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M24 8L27 12.5L22 13" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    ),
-                  },
-                ].map(({ label, value, icon }, i) => (
-                  <div key={label} className="flex items-center gap-3 md:gap-4 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 py-4 md:px-5">
-                    {/* Dashed-ring icon */}
-                    <div className="relative flex-shrink-0 w-[58px] h-[58px]">
-                      <svg viewBox="0 0 58 58" className="absolute inset-0 w-full h-full" aria-hidden>
-                        <circle cx="29" cy="29" r="27" stroke="rgb(245,176,55)" strokeOpacity="0.35"
-                                strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
-                      </svg>
-                      <div className="absolute inset-[8px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
-                        {icon}
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
-
-                    {/* Step number */}
-                    <span className="font-display font-black text-[1.85rem] leading-none text-amber flex-shrink-0 tracking-tighter">
-                      0{i + 1}<span className="text-amber/45">.</span>
-                    </span>
-
-                    {/* Divider */}
-                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
-
-                    {/* Label + value */}
-                    <div className="min-w-0">
-                      <div className="font-display font-bold text-[0.8rem] uppercase tracking-widest text-bone mb-1">{label}</div>
-                      <div className="text-bone/60 text-[13px] leading-relaxed">{value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {pdp?.protocol && !pdp.protocol.early && <ProtocolSteps protocol={pdp.protocol} />}
 
           {(pdp?.whoFor || pdp?.whoNotFor) && (
-            <div className="grid gap-6">
+            <div className={`grid gap-6 ${pdp?.protocol?.early ? 'lg:col-span-2 lg:grid-cols-2' : ''}`}>
               {pdp?.whoFor && (
                 <div className="p-6 rounded-2xl border border-amber/20 bg-amber/5">
                   <div className="eyebrow mb-3 text-amber">Built for</div>
@@ -924,6 +841,102 @@ function ForgeBand({ product }) {
   )
 }
 
+function ProtocolSteps({ protocol }) {
+  return (
+    <div>
+      <div className="eyebrow mb-5">{protocol.eyebrow || 'The Protocol'}</div>
+      <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
+        {protocol.title || 'When, how, with what.'}
+      </h3>
+      <div className="space-y-4">
+        {[
+          {
+            label: protocol.labels?.[0] || 'When', value: protocol.when,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Sunrise */}
+                <path d="M9 27C9 21.48 13.03 17 18 17C22.97 17 27 21.48 27 27" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M5 27H31" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M18 13V10" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M9.5 16.5L7.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M26.5 16.5L28.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M5.5 20.5H8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M28 20.5H30.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[1] || 'How', value: protocol.how,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Dropper / sublingual */}
+                <path d="M22 4L26 8L14 20L10 16L22 4Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M10 16L8 24L16 22L10 16Z" fill="rgba(245,176,55,0.1)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <circle cx="21" cy="29" r="2.5" fill="rgba(245,176,55,0.25)" stroke="rgb(245,176,55)" strokeWidth="1.3"/>
+                <path d="M21 25V26.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[2] || 'With', value: protocol.withWhat,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Shaker bottle with motion lines */}
+                <path d="M14 7H22V11H14V7Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M12 11H24L26 29C26 29.55 25.55 30 25 30H11C10.45 30 10 29.55 10 29L12 11Z" fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M5 18H8.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                <path d="M4 22H7" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+                <path d="M27.5 18H31" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                <path d="M29 22H32" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[3] || 'Cycle', value: protocol.cycle,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Circular refresh arrows */}
+                <path d="M28 18C28 23.52 23.52 28 18 28C12.48 28 8 23.52 8 18C8 12.48 12.48 8 18 8C21.5 8 24.6 9.74 26.5 12.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M24 8L27 12.5L22 13" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            ),
+          },
+        ].map(({ label, value, icon }, i) => (
+          <div key={label} className="flex items-center gap-3 md:gap-4 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 py-4 md:px-5">
+            {/* Dashed-ring icon */}
+            <div className="relative flex-shrink-0 w-[58px] h-[58px]">
+              <svg viewBox="0 0 58 58" className="absolute inset-0 w-full h-full" aria-hidden>
+                <circle cx="29" cy="29" r="27" stroke="rgb(245,176,55)" strokeOpacity="0.35"
+                        strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
+              </svg>
+              <div className="absolute inset-[8px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
+                {icon}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+            {/* Step number */}
+            <span className="font-display font-black text-[1.85rem] leading-none text-amber flex-shrink-0 tracking-tighter">
+              0{i + 1}<span className="text-amber/45">.</span>
+            </span>
+
+            {/* Divider */}
+            <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+            {/* Label + value */}
+            <div className="min-w-0">
+              <div className="font-display font-bold text-[0.8rem] uppercase tracking-widest text-bone mb-1">{label}</div>
+              <div className="text-bone/60 text-[13px] leading-relaxed">{value}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Row({ label, value }) {
   return (
     <div className="grid grid-cols-3 gap-4 py-3 border-b border-bone/10">
@@ -933,8 +946,9 @@ function Row({ label, value }) {
   )
 }
 
-/* Benefit icons — thin line, brand red, one stroke weight */
+/* Benefit icons — thin line, one stroke weight, violet → brand-red gradient */
 const BENEFIT_ICONS = {
+  moon: (<path d="M24 19.5A9.5 9.5 0 0 1 12.5 8a9.5 9.5 0 1 0 11.5 11.5z" />),
   male: (<><circle cx="14" cy="20" r="7.5" /><path d="M19.5 14.5L27 7M21 7h6v6" /></>),
   arm: (<path d="M6 25c0-5 2-8 5-10 2-1.5 3-3 3.5-5.5C15 7 17 5.5 19.5 6c2.5.5 4 3 3.5 5.5l-1 3.5 3 2.5c2 1.8 2.2 5 .3 6.7-1.6 1.4-4 1.2-5.3-.4L18 21.5c-1.5 1.3-3.5 2-5.5 1.8C10 23 7.5 24 6 26" />),
   bolt: (<path d="M18 4L8 18h8l-2 10 10-14h-8l2-10z" />),
@@ -943,10 +957,28 @@ const BENEFIT_ICONS = {
   leaf: (<><path d="M7 25C7 14 14 7 26 6c0 12-6 19-17 19" /><path d="M7 25c4-6 8-10 13-13" /></>),
 }
 
+function GradientIcon({ name, className }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" stroke="url(#benefit-grad)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      {BENEFIT_ICONS[name]}
+    </svg>
+  )
+}
+
 function BenefitsSection({ benefits, timeline }) {
   return (
     <section className="relative py-24 overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
+      {/* Shared gradient for every benefit/timeline icon */}
+      <svg width="0" height="0" className="absolute" aria-hidden>
+        <defs>
+          <linearGradient id="benefit-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#B57BFF" />
+            <stop offset="0.5" stopColor="#8B5CF6" />
+            <stop offset="1" stopColor="#F33A45" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.14),transparent_65%)] pointer-events-none" />
       <div className="container-x relative">
         <div className="max-w-2xl mb-12">
           <div className="eyebrow mb-5">The benefits</div>
@@ -958,12 +990,10 @@ function BenefitsSection({ benefits, timeline }) {
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
+              className="group relative p-5 lg:p-7 rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.08] via-ink-800/60 to-ink hover:border-violet-400/50 transition"
             >
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
-                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 lg:w-8 lg:h-8 text-amber" aria-hidden>
-                  {BENEFIT_ICONS[b.icon]}
-                </svg>
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-violet-500/20 to-amber/15 border border-violet-400/30 flex items-center justify-center mb-4 lg:mb-5">
+                <GradientIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
               </div>
               <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
               <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
@@ -972,12 +1002,19 @@ function BenefitsSection({ benefits, timeline }) {
         </div>
         {timeline?.length > 0 && (
           <div className="mt-10 rounded-2xl border border-bone/10 bg-ink-800/40 p-5 lg:p-6">
-            <div className="text-[10px] uppercase tracking-[0.25em] text-amber font-brand font-bold mb-4">What to expect</div>
+            <div className="text-[10px] uppercase tracking-[0.25em] text-violet-300 font-brand font-bold mb-4">What to expect</div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {timeline.map((t) => (
-                <div key={t.week} className="border-l-2 border-amber/40 pl-3">
-                  <div className="font-display font-bold text-bone text-sm uppercase tracking-wide">{t.week}</div>
-                  <div className="text-[13px] text-bone/65 leading-snug mt-1">{t.what}</div>
+                <div key={t.week} className="flex items-start gap-3">
+                  {t.icon && (
+                    <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-violet-500/20 to-amber/15 border border-violet-400/30 flex items-center justify-center">
+                      <GradientIcon name={t.icon} className="w-6 h-6" />
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-display font-bold text-bone text-sm uppercase tracking-wide">{t.week}</div>
+                    <div className="text-[13px] text-bone/65 leading-snug mt-1">{t.what}</div>
+                  </div>
                 </div>
               ))}
             </div>

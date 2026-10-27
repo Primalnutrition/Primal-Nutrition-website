@@ -69,7 +69,7 @@ export const products = [
         body: 'Long workdays, late nights and endless chai leave most men drained by evening. Energy drinks and pre-workouts spike you up, then crash you down. T-REX is the steady, natural fix: seven Ayurvedic herbs in one daily shot.',
       },
       mechanism: {
-        eyebrow: 'Why it works',
+        eyebrow: 'The T-REX difference',
         title: 'Why T-REX works',
         steps: [
           { h: 'Liquid, not pills', b: 'One smooth 10 ml shot. Easy to take, and mixes into coffee, milk or a shake.' },
@@ -83,12 +83,13 @@ export const products = [
         { study: 'Ashwagandha extract studies, multiple', finding: 'Anxiety-relieving effects as powerful as common antidepressants, without side effects. Regenerates nerve cells (Japanese university research). Balances thyroid + adrenals.', source: 'Ayurvedic clinical literature' },
       ],
       protocol: {
+        early: true,
         eyebrow: 'Daily vitality, made simple',
         title: 'One shot. All-day energy.',
         labels: ['When', 'How much', 'How', 'How long'],
         when: 'Every morning.',
         how: 'One 10 ml shot. Want more? Take a second 10 ml shot later in the day.',
-        withWhat: 'Straight, or in your coffee, milk or protein shake. Shake well before use.',
+        withWhat: 'Take it straight, or mix it into your coffee or your favourite beverage. Shake well before use.',
         cycle: 'Every day. Best results with 8–12 weeks of daily use.',
       },
       whoFor: [
@@ -114,10 +115,10 @@ export const products = [
         { icon: 'leaf', title: 'Stress & Sleep Balance', line: 'Ashwagandha helps you stay calm under pressure and sleep deeper.' },
       ],
       timeline: [
-        { week: 'Week 1', what: 'Better sleep, steadier mornings.' },
-        { week: 'Week 4', what: 'Strength and stamina pick up.' },
-        { week: 'Week 8', what: 'Drive and mood feel steadier.' },
-        { week: 'Week 12', what: 'Your new normal.' },
+        { week: 'Week 1', icon: 'moon', what: 'Better sleep, steadier mornings.' },
+        { week: 'Week 2', icon: 'bolt', what: 'More energy through the day.' },
+        { week: 'Week 3', icon: 'arm', what: 'Strength and stamina pick up.' },
+        { week: 'Week 4', icon: 'flame', what: 'Drive and mood feel stronger.' },
       ],
       faq: [
         { q: 'Is this a steroid or stimulant?', a: 'No. T-Rex is an Ayurvedic Proprietary Medicine. Zero hormones, stimulants, or banned substances. Mfg. Lic. AL946M.' },
