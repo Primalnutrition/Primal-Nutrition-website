@@ -86,9 +86,11 @@ export default function ProductDetail({ productId }) {
   // Bundle upsell — the best stack this product belongs to (highest discount,
   // then fewest extra products). The discount is real: the same stack matcher
   // runs in the cart and on the server, so the saving survives to Razorpay.
-  const upsellStack = stacks
-    .filter((s) => s.items.some((it) => it.productId === product.id))
-    .sort((a, b) => b.discount - a.discount || a.items.length - b.items.length)[0]
+  const upsellStack =
+    (pdp?.upsellStackId && stacks.find((s) => s.id === pdp.upsellStackId)) ||
+    stacks
+      .filter((s) => s.items.some((it) => it.productId === product.id))
+      .sort((a, b) => b.discount - a.discount || a.items.length - b.items.length)[0]
   const upsellPartners = (upsellStack?.items || [])
     .filter((it) => it.productId !== product.id)
     .map((it) => productById(it.productId))
@@ -243,6 +245,14 @@ export default function ProductDetail({ productId }) {
                 {adding ? '✓ Added to cart' : `Add to Cart — ₹${variant.price.toLocaleString('en-IN')}`}
               </button>
 
+              {/* The ₹200 prepaid saving, shown at the price instead of only in the footer */}
+              {!variant.prepaidOnly && (
+                <p className="mt-2 text-center text-[13px] text-bone/70">
+                  Pay online: <span className="text-amber font-semibold">₹{(variant.price - 200).toLocaleString('en-IN')}</span>
+                  <span className="text-bone/45"> · save ₹200</span>
+                </p>
+              )}
+
               {/* Said here rather than sprung at checkout — finding COD gone after
                   typing an address is how carts get abandoned. */}
               {variant.prepaidOnly && (
@@ -323,9 +333,6 @@ export default function ProductDetail({ productId }) {
 
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
-
-      {/* ── Proof: full COA breakdown (T-Rex has its own report component) ── */}
-      {product.id === 'trex-liquid' && <LabTested />}
 
       {/* ── Problem ───────────────────────────────────────── */}
       {pdp?.problem && (
@@ -769,6 +776,10 @@ export default function ProductDetail({ productId }) {
           </div>
         </section>
       )}
+
+      {/* ── Proof: full COA breakdown (T-Rex has its own report component).
+          Sits below the selling content so ad traffic reads benefits first. ── */}
+      {product.id === 'trex-liquid' && <LabTested />}
 
       {/* ── Final CTA ────────────────────────────────────── */}
       <section className="py-24">

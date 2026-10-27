@@ -94,12 +94,13 @@ export const products = [
         'Want a natural path before pharmaceuticals',
       ],
       whoNotFor: [
-        'Under 16',
+        'Under 18',
         'Currently on TRT',
         'On blood thinners or BP medication without doctor consultation',
         'Pregnancy (obvious)',
       ],
       stackWith: ['trex-tongkat', 'hydra-muscle'],
+      upsellStackId: 'testosterone',
       timeline: [
         { week: 'Week 1', what: 'Sleep deepens. Morning energy sharpens. Cortisol normalises.' },
         { week: 'Week 4', what: 'Strength and stamina return. Recovery time drops between sessions.' },

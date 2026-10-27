@@ -79,7 +79,7 @@ export default function LabTested() {
                 </li>
               ))}
             </ul>
-            <a href="#" className="btn-ghost">View certifications →</a>
+            <a href="#/product-info/trex-liquid" className="btn-ghost">View certifications →</a>
           </div>
         </div>
       </div>

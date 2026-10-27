@@ -12,7 +12,7 @@ import Picture from './Picture.jsx'
  *   - credibility chips + an "us vs typical proprietary blend" strip
  *
  * Data-driven: add a product id below and the section renders for it. T-Rex
- * Liquid is populated from the real T-REX label composition (per 5 ml).
+ * Liquid is populated from the real T-REX label composition (shown per 10 ml serving).
  */
 const INGREDIENTS = {
   'trex-liquid': {
@@ -20,17 +20,17 @@ const INGREDIENTS = {
     title: (<>What's inside.<br /><span className="text-shimmer">Down to the milligram.</span></>),
     intro:
       'No proprietary blends. No fairy-dusting. Seven Ayurvedic actives, each named in Sanskrit, botanical and English — at the exact mg printed on the bottle.',
-    servingLabel: 'Per 5 ml',
+    servingLabel: 'Per 10 ml',
     doseNote: 'Label dose: 15 ml twice daily with milk or beverage.',
     otherIngredients: 'Hazelnut-flavoured natural liquid base.',
     items: [
-      { name: 'Himalayan Shilajit', sanskrit: 'शिलाजीत', botanical: 'Asphaltum', dose: '50 mg', source: 'Bhutan / Himalayan rock', role: 'The fulvic-acid engine', detail: 'The fulvic-acid-rich resin that powers the whole formula. Liquid-extracted by the ancestral 15-day granthit process — the only form the body fully absorbs.', image: '/products/ingredients/shilajit.jpg' },
-      { name: 'Ashwagandha', sanskrit: 'अश्वगंधा', botanical: 'Withania somnifera', dose: '100 mg', source: 'Root extract', role: 'Cortisol & calm energy', detail: 'Balances cortisol and the adrenals so daily energy holds without caffeine — anxiety-relieving, without the side effects of stimulants.', image: '/products/ingredients/ashwagandha.jpg' },
-      { name: 'Arjun Chal', sanskrit: 'अर्जुन छाल', botanical: 'Terminalia arjuna', dose: '100 mg', source: 'Tree-bark extract', role: 'Heart & VO₂ max', detail: 'Cardio-protective — supports healthy cholesterol and blood pressure. A study showed VO₂ max +4.9% in two weeks. Pairs with Ashwagandha for effect.', image: '/products/ingredients/arjun.jpg' },
-      { name: 'Gokhru', sanskrit: 'गोखरू', botanical: 'Tribulus terrestris', dose: '50 mg', source: 'Fruit extract', role: 'Libido & vitality', detail: 'Used for millennia across Indian and Chinese medicine. Steroidal glycosides support sexual well-being, function and natural vitality.', image: '/products/ingredients/gokhru.jpg' },
-      { name: 'Draksha', sanskrit: 'द्राक्षा', botanical: 'Vitis vinifera', dose: '100 mg', source: 'Dried grape extract', role: 'Recovery adaptogen', detail: 'The ancient endurance fuel — speeds muscle recovery, guards against muscle loss, scavenges free radicals, and protects the heart.', image: '/products/ingredients/draksha.jpg' },
-      { name: 'Safed Musli', sanskrit: 'सफेद मूसली', botanical: 'Chlorophytum arundinaceum', dose: '100 mg', source: 'Rare Indian root', role: 'Testosterone & stamina', detail: 'The natural alternative to commercial drugs. Supports testosterone production, sperm count and desire — effective even where diabetes-driven dysfunction is present.', image: '/products/ingredients/safed-musli.jpg' },
-      { name: 'Kath Badam', sanskrit: 'कथ बादाम', botanical: 'Prunus dulcis', dose: '50 mg', source: 'Whole almond extract', role: 'Aphrodisiac · building block', detail: 'Vatada in Ayurveda. Raises good cholesterol — the raw material testosterone is built from — stabilises blood sugar, and sharpens memory.', image: '/products/ingredients/kath-badam.jpg' },
+      { name: 'Himalayan Shilajit', sanskrit: 'शिलाजीत', botanical: 'Asphaltum', dose: '100 mg', source: 'Bhutan / Himalayan rock', role: 'The fulvic-acid engine', detail: 'The fulvic-acid-rich resin that powers the whole formula. Liquid-extracted by the ancestral 15-day granthit process — the only form the body fully absorbs.', image: '/products/ingredients/shilajit.jpg' },
+      { name: 'Ashwagandha', sanskrit: 'अश्वगंधा', botanical: 'Withania somnifera', dose: '200 mg', source: 'Root extract', role: 'Cortisol & calm energy', detail: 'Balances cortisol and the adrenals so daily energy holds without caffeine — anxiety-relieving, without the side effects of stimulants.', image: '/products/ingredients/ashwagandha.jpg' },
+      { name: 'Arjun Chal', sanskrit: 'अर्जुन छाल', botanical: 'Terminalia arjuna', dose: '200 mg', source: 'Tree-bark extract', role: 'Heart & VO₂ max', detail: 'Cardio-protective — supports healthy cholesterol and blood pressure. A study showed VO₂ max +4.9% in two weeks. Pairs with Ashwagandha for effect.', image: '/products/ingredients/arjun.jpg' },
+      { name: 'Gokhru', sanskrit: 'गोखरू', botanical: 'Tribulus terrestris', dose: '100 mg', source: 'Fruit extract', role: 'Libido & vitality', detail: 'Used for millennia across Indian and Chinese medicine. Steroidal glycosides support sexual well-being, function and natural vitality.', image: '/products/ingredients/gokhru.jpg' },
+      { name: 'Draksha', sanskrit: 'द्राक्षा', botanical: 'Vitis vinifera', dose: '200 mg', source: 'Dried grape extract', role: 'Recovery adaptogen', detail: 'The ancient endurance fuel — speeds muscle recovery, guards against muscle loss, scavenges free radicals, and protects the heart.', image: '/products/ingredients/draksha.jpg' },
+      { name: 'Safed Musli', sanskrit: 'सफेद मूसली', botanical: 'Chlorophytum arundinaceum', dose: '200 mg', source: 'Rare Indian root', role: 'Testosterone & stamina', detail: 'The natural alternative to commercial drugs. Supports testosterone production, sperm count and desire — effective even where diabetes-driven dysfunction is present.', image: '/products/ingredients/safed-musli.jpg' },
+      { name: 'Kath Badam', sanskrit: 'कथ बादाम', botanical: 'Prunus dulcis', dose: '100 mg', source: 'Whole almond extract', role: 'Aphrodisiac · building block', detail: 'Vatada in Ayurveda. Raises good cholesterol — the raw material testosterone is built from — stabilises blood sugar, and sharpens memory.', image: '/products/ingredients/kath-badam.jpg' },
     ],
     credit: 'Ingredient photos: Pexels & Wikimedia Commons (Tribulus terrestris fruit © Hüseyin Cahid Doğan, Safed Musli/Shilajit/Ashwagandha contributors, CC BY-SA); Arjun bark — public domain.',
     claims: ['100% Ayurvedic', 'No Proprietary Blends', 'No Stimulants', 'No Chemicals', 'Non-GMO', '3rd-Party Lab Tested'],
