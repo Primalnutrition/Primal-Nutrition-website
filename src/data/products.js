@@ -56,12 +56,13 @@ export const products = [
       partner: 'Tongkat Ali',
     },
     pdp: {
-      heroClaim: "India's first 7-in-1 Natural Liquid — Himalayan Shilajit with six clinically-studied Ayurvedic herbs in hazelnut-flavored liquid form. 100% Ayurvedic. No chemicals. No stimulants. The way our ancestors made it.",
+      heroClaim: 'Ancient strength, made modern. Himalayan Shilajit and six Ayurvedic herbs, in a daily hazelnut shot.',
       metrics: [
-        { label: '7-in-1 Natural Formula', value: '7 Herbs' },
-        { label: 'Bottle size', value: '500 ml' },
-        { label: 'Daily dose · sublingual', value: '10 ml' },
-        { label: 'Cost per day (50 servings)', value: '₹40' },
+        { label: 'Ayurvedic formula', value: '7 Herbs' },
+        { label: 'Flavour', value: 'Hazelnut' },
+        { label: 'Daily dose', value: '10 ml' },
+        { label: 'Servings', value: '50' },
+        { label: 'Formula', value: 'Daily Vitality' },
       ],
       problem: {
         title: 'Chemical supplements broke a generation of Indian men.',

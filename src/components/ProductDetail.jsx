@@ -128,9 +128,14 @@ export default function ProductDetail({ productId }) {
                 <ProductGallery product={product} />
               </div>
               {pdp?.metrics && (
-                <div className="grid grid-cols-2 gap-3 mt-6 max-w-md mx-auto">
-                  {pdp.metrics.map((m) => (
-                    <div key={m.label} className="p-4 rounded-xl border border-bone/10 bg-ink-800/40">
+                <div className={`grid ${pdp.metrics.length === 5 ? 'grid-cols-6' : 'grid-cols-2'} gap-3 mt-6 max-w-md mx-auto`}>
+                  {pdp.metrics.map((m, i) => (
+                    <div
+                      key={m.label}
+                      className={`p-4 rounded-xl border border-bone/10 bg-ink-800/40 ${
+                        pdp.metrics.length === 5 ? (i < 3 ? 'col-span-2' : 'col-span-3') : ''
+                      }`}
+                    >
                       <div className="font-display font-bold text-amber text-xl leading-none">{m.value}</div>
                       <div className="text-[10px] uppercase tracking-widest text-bone/45 mt-1.5">{m.label}</div>
                     </div>
@@ -141,7 +146,7 @@ export default function ProductDetail({ productId }) {
 
             {/* Content */}
             <div className="lg:col-span-6">
-              {product.tier && (
+              {product.tier && product.id !== 'trex-liquid' && (
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold mb-5 px-3 py-1 rounded-full bg-amber/15 text-amber border border-amber/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                   {tiers[product.tier]?.label || product.tier} · {tiers[product.tier]?.role}
@@ -805,9 +810,9 @@ const FORGE_BANDS = {
   'trex-liquid': {
     video: '/brand/volcano-forge.mp4',
     poster: '/brand/volcano-forge-poster.webp',
-    eyebrow: 'Forged, not formulated',
-    title: (<>Built in the heat.<br /><span className="text-shimmer">Made for the grind.</span></>),
-    body: 'Himalayan Shilajit is pressure-born — squeezed from rock over centuries. T-Rex carries that same raw intensity into every serving.',
+    eyebrow: "The modern man's problem",
+    title: (<>Tired by 3 PM.<br /><span className="text-shimmer">Done by 9.</span></>),
+    body: 'Rare herbs, sourced at origin. Extracted the slow, traditional way. Lab-tested every batch. Nothing synthetic. Nothing hidden.',
   },
   'trex-maca': {
     image: '/products/forge/trex-maca.jpg',
