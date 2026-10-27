@@ -331,6 +331,9 @@ export default function ProductDetail({ productId }) {
         </div>
       </section>
 
+      {/* ── Benefits first: ad traffic needs to know what it does before anything else ── */}
+      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} />}
+
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
 
@@ -352,7 +355,7 @@ export default function ProductDetail({ productId }) {
         <section className="py-24">
           <div className="container-x">
             <div className="max-w-2xl mb-12">
-              <div className="eyebrow mb-5">The Mechanism</div>
+              <div className="eyebrow mb-5">{pdp.mechanism.eyebrow || 'The Mechanism'}</div>
               <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
                 {pdp.mechanism.title}
               </h2>
@@ -472,14 +475,14 @@ export default function ProductDetail({ productId }) {
         <div className="container-x grid lg:grid-cols-2 gap-12">
           {pdp?.protocol && (
             <div>
-              <div className="eyebrow mb-5">The Protocol</div>
+              <div className="eyebrow mb-5">{pdp.protocol.eyebrow || 'The Protocol'}</div>
               <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
-                When, how, with what.
+                {pdp.protocol.title || 'When, how, with what.'}
               </h3>
               <div className="space-y-4">
                 {[
                   {
-                    label: 'When', value: pdp.protocol.when,
+                    label: pdp.protocol.labels?.[0] || 'When', value: pdp.protocol.when,
                     icon: (
                       <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
                         {/* Sunrise */}
@@ -494,7 +497,7 @@ export default function ProductDetail({ productId }) {
                     ),
                   },
                   {
-                    label: 'How', value: pdp.protocol.how,
+                    label: pdp.protocol.labels?.[1] || 'How', value: pdp.protocol.how,
                     icon: (
                       <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
                         {/* Dropper / sublingual */}
@@ -506,7 +509,7 @@ export default function ProductDetail({ productId }) {
                     ),
                   },
                   {
-                    label: 'With', value: pdp.protocol.withWhat,
+                    label: pdp.protocol.labels?.[2] || 'With', value: pdp.protocol.withWhat,
                     icon: (
                       <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
                         {/* Shaker bottle with motion lines */}
@@ -520,7 +523,7 @@ export default function ProductDetail({ productId }) {
                     ),
                   },
                   {
-                    label: 'Cycle', value: pdp.protocol.cycle,
+                    label: pdp.protocol.labels?.[3] || 'Cycle', value: pdp.protocol.cycle,
                     icon: (
                       <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
                         {/* Circular refresh arrows */}
@@ -596,7 +599,7 @@ export default function ProductDetail({ productId }) {
       </section>
 
       {/* ── Timeline (for T-Rex Liquid) ─────────────────────── */}
-      {pdp?.timeline && (
+      {pdp?.timeline && !pdp?.benefits && (
         <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
           <div className="container-x">
             <div className="max-w-2xl mb-12">
@@ -927,5 +930,60 @@ function Row({ label, value }) {
       <dt className="text-[11px] uppercase tracking-widest text-bone/45 self-center">{label}</dt>
       <dd className="col-span-2 text-bone/85 text-[15px]">{value}</dd>
     </div>
+  )
+}
+
+/* Benefit icons — thin line, brand red, one stroke weight */
+const BENEFIT_ICONS = {
+  male: (<><circle cx="14" cy="20" r="7.5" /><path d="M19.5 14.5L27 7M21 7h6v6" /></>),
+  arm: (<path d="M6 25c0-5 2-8 5-10 2-1.5 3-3 3.5-5.5C15 7 17 5.5 19.5 6c2.5.5 4 3 3.5 5.5l-1 3.5 3 2.5c2 1.8 2.2 5 .3 6.7-1.6 1.4-4 1.2-5.3-.4L18 21.5c-1.5 1.3-3.5 2-5.5 1.8C10 23 7.5 24 6 26" />),
+  bolt: (<path d="M18 4L8 18h8l-2 10 10-14h-8l2-10z" />),
+  flame: (<path d="M16 28c-5 0-8.5-3.5-8.5-8 0-4.5 3.5-7 5-11 1 2.5 2.5 3.5 4 3.5C16 9 17 6 20 4c0 5 4.5 7.5 4.5 13 0 6-3.5 11-8.5 11zm0 0c-2 0-3.5-1.6-3.5-3.6 0-2.4 2-3.4 3.5-5.9 1.5 2.5 3.5 3.5 3.5 5.9 0 2-1.5 3.6-3.5 3.6z" />),
+  dumbbell: (<><path d="M4 13v6M8 10v12M24 10v12M28 13v6M8 16h16" /></>),
+  leaf: (<><path d="M7 25C7 14 14 7 26 6c0 12-6 19-17 19" /><path d="M7 25c4-6 8-10 13-13" /></>),
+}
+
+function BenefitsSection({ benefits, timeline }) {
+  return (
+    <section className="relative py-24 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
+      <div className="container-x relative">
+        <div className="max-w-2xl mb-12">
+          <div className="eyebrow mb-5">The benefits</div>
+          <h2 className="font-display text-4xl lg:text-6xl font-bold tracking-tightest leading-[1.02]">
+            What T-REX does for you.
+          </h2>
+        </div>
+        <div data-reveal-stagger className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+          {benefits.map((b) => (
+            <div
+              key={b.title}
+              className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
+            >
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 lg:w-8 lg:h-8 text-amber" aria-hidden>
+                  {BENEFIT_ICONS[b.icon]}
+                </svg>
+              </div>
+              <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
+              <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
+            </div>
+          ))}
+        </div>
+        {timeline?.length > 0 && (
+          <div className="mt-10 rounded-2xl border border-bone/10 bg-ink-800/40 p-5 lg:p-6">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-amber font-brand font-bold mb-4">What to expect</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {timeline.map((t) => (
+                <div key={t.week} className="border-l-2 border-amber/40 pl-3">
+                  <div className="font-display font-bold text-bone text-sm uppercase tracking-wide">{t.week}</div>
+                  <div className="text-[13px] text-bone/65 leading-snug mt-1">{t.what}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }

@@ -21,7 +21,7 @@ const INGREDIENTS = {
     intro:
       'No proprietary blends. No fairy-dusting. Seven Ayurvedic actives, each named in Sanskrit, botanical and English — at the exact mg printed on the bottle.',
     servingLabel: 'Per 10 ml',
-    doseNote: 'Label dose: 15 ml twice daily with milk or beverage.',
+    doseNote: 'Daily dose: 10 ml. For a higher dose, take 2 × 10 ml.',
     otherIngredients: 'Hazelnut-flavoured natural liquid base.',
     items: [
       { name: 'Himalayan Shilajit', sanskrit: 'शिलाजीत', botanical: 'Asphaltum', dose: '100 mg', source: 'Bhutan / Himalayan rock', role: 'The fulvic-acid engine', detail: 'The fulvic-acid-rich resin that powers the whole formula. Liquid-extracted by the ancestral 15-day granthit process — the only form the body fully absorbs.', image: '/products/ingredients/shilajit.jpg' },
