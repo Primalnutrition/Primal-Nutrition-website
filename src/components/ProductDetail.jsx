@@ -742,7 +742,7 @@ const FORGE_BANDS = {
     video: '/brand/volcano-forge.mp4',
     poster: '/brand/volcano-forge-poster.webp',
     eyebrow: "The modern man's problem",
-    title: (<>Tired by 3 PM.<br /><span className="text-shimmer">Done by 9.</span></>),
+    title: (<>Ignite your inner<br /><span className="text-shimmer">strength & vitality.</span></>),
     body: 'Rare herbs, sourced at origin. Extracted the slow, traditional way. Lab-tested every batch. Nothing synthetic. Nothing hidden.',
   },
   'trex-maca': {
@@ -946,7 +946,7 @@ function Row({ label, value }) {
   )
 }
 
-/* Benefit icons — thin line, one stroke weight, violet → brand-red gradient */
+/* Benefit icons — thin line, brand red, one stroke weight */
 const BENEFIT_ICONS = {
   moon: (<path d="M24 19.5A9.5 9.5 0 0 1 12.5 8a9.5 9.5 0 1 0 11.5 11.5z" />),
   male: (<><circle cx="14" cy="20" r="7.5" /><path d="M19.5 14.5L27 7M21 7h6v6" /></>),
@@ -957,9 +957,9 @@ const BENEFIT_ICONS = {
   leaf: (<><path d="M7 25C7 14 14 7 26 6c0 12-6 19-17 19" /><path d="M7 25c4-6 8-10 13-13" /></>),
 }
 
-function GradientIcon({ name, className }) {
+function BenefitIcon({ name, className }) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" stroke="url(#benefit-grad)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={`text-amber ${className}`} aria-hidden>
       {BENEFIT_ICONS[name]}
     </svg>
   )
@@ -968,17 +968,7 @@ function GradientIcon({ name, className }) {
 function BenefitsSection({ benefits, timeline }) {
   return (
     <section className="relative py-24 overflow-hidden">
-      {/* Shared gradient for every benefit/timeline icon */}
-      <svg width="0" height="0" className="absolute" aria-hidden>
-        <defs>
-          <linearGradient id="benefit-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#B57BFF" />
-            <stop offset="0.5" stopColor="#8B5CF6" />
-            <stop offset="1" stopColor="#F33A45" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.14),transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
       <div className="container-x relative">
         <div className="max-w-2xl mb-12">
           <div className="eyebrow mb-5">The benefits</div>
@@ -990,10 +980,10 @@ function BenefitsSection({ benefits, timeline }) {
           {benefits.map((b) => (
             <div
               key={b.title}
-              className="group relative p-5 lg:p-7 rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.08] via-ink-800/60 to-ink hover:border-violet-400/50 transition"
+              className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
             >
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-violet-500/20 to-amber/15 border border-violet-400/30 flex items-center justify-center mb-4 lg:mb-5">
-                <GradientIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
+                <BenefitIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
               </div>
               <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
               <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
@@ -1002,13 +992,13 @@ function BenefitsSection({ benefits, timeline }) {
         </div>
         {timeline?.length > 0 && (
           <div className="mt-10 rounded-2xl border border-bone/10 bg-ink-800/40 p-5 lg:p-6">
-            <div className="text-[10px] uppercase tracking-[0.25em] text-violet-300 font-brand font-bold mb-4">What to expect</div>
+            <div className="text-[10px] uppercase tracking-[0.25em] text-amber font-brand font-bold mb-4">What to expect</div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {timeline.map((t) => (
                 <div key={t.week} className="flex items-start gap-3">
                   {t.icon && (
-                    <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-violet-500/20 to-amber/15 border border-violet-400/30 flex items-center justify-center">
-                      <GradientIcon name={t.icon} className="w-6 h-6" />
+                    <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-amber/15 border border-amber/30 flex items-center justify-center">
+                      <BenefitIcon name={t.icon} className="w-6 h-6" />
                     </div>
                   )}
                   <div>
