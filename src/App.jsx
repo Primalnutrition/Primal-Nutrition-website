@@ -136,7 +136,7 @@ function PageBody() {
       <Suspense fallback={fallback}>{node}</Suspense>
     </ChunkLoadBoundary>
   )
-  if (page === 'product') return guarded(<ProductDetail productId={productId} />)
+  if (page === 'product') return guarded(<ProductDetail key={productId} productId={productId} />)
   if (page === 'shop') return guarded(<ShopPage />)
   if (page === 'stacks') return guarded(<StacksPage />)
   if (page === 'dealer') return guarded(<DealerPage />)
