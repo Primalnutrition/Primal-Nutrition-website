@@ -35,6 +35,20 @@ const INGREDIENTS = {
     credit: 'Ingredient photos: Pexels & Wikimedia Commons (Tribulus terrestris fruit © Hüseyin Cahid Doğan, Shilajit © Chirag jindal, Safed Musli/Ashwagandha contributors, CC BY-SA); Arjun bark — public domain.',
     claims: ['100% Ayurvedic', 'No Proprietary Blends', 'No Stimulants', 'No Chemicals', 'Non-GMO', '3rd-Party Lab Tested'],
   },
+  'trex-tongkat': {
+    eyebrow: '1 active · fully disclosed',
+    title: (<>What's inside.<br /><span className="text-shimmer">One root. Nothing else.</span></>),
+    intro:
+      'A single hero ingredient, named in botanical and English, at the exact strength printed on the bottle. No blends, no fillers dressed up as actives.',
+    servingLabel: 'Per 2 capsules',
+    doseNote: 'Daily dose: 2 capsules after breakfast. 60 capsules = 30 days.',
+    otherIngredients: 'Microcrystalline cellulose, vegetable capsule (HPMC).',
+    items: [
+      { name: 'Tongkat Ali Root Extract', sanskrit: 'Ali\u2019s walking stick', botanical: 'Eurycoma longifolia', dose: '1,000 mg', source: 'Malaysian rainforest root', role: '100:1 ultra-concentrated extract', detail: 'Equal to 1,00,000 mg of raw root. Made from rainforest roots that mature for 5\u20137 years, then concentrated for maximum strength. It supports free testosterone, drive and stamina.', image: '/products/ingredients/tongkat-ali.jpg' },
+    ],
+    credit: 'Ingredient photo: Tongkat Ali (Eurycoma longifolia) \u00a9 Mokkie, Wikimedia Commons, CC BY-SA 3.0.',
+    claims: ['100:1 Extract', 'No Stimulants', 'No Fillers', 'Non-GMO', '3rd-Party Lab Tested'],
+  },
 }
 
 export default function IngredientShowcase({ product }) {

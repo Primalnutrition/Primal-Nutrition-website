@@ -148,7 +148,7 @@ export default function ProductDetail({ productId }) {
 
             {/* Content */}
             <div className="lg:col-span-6">
-              {product.tier && product.id !== 'trex-liquid' && (
+              {product.tier && !['trex-liquid', 'trex-tongkat'].includes(product.id) && (
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold mb-5 px-3 py-1 rounded-full bg-amber/15 text-amber border border-amber/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                   {tiers[product.tier]?.label || product.tier} · {tiers[product.tier]?.role}
@@ -332,7 +332,7 @@ export default function ProductDetail({ productId }) {
       </section>
 
       {/* ── Benefits first: ad traffic needs to know what it does before anything else ── */}
-      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} />}
+      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} heading={pdp.benefitsHeading} />}
 
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
@@ -783,9 +783,9 @@ const FORGE_BANDS = {
   },
   'trex-tongkat': {
     image: '/products/forge/trex-tongkat.jpg',
-    eyebrow: 'Root of fire',
-    title: (<>Forged under<br /><span className="text-shimmer">pressure & heat.</span></>),
-    body: 'Tongkat Ali earns its potency the hard way — a deep-jungle root that takes years to mature. Raw, unforgiving conditions, concentrated into clean drive.',
+    eyebrow: "Ali's walking stick",
+    title: (<>From the heart of the<br /><span className="text-shimmer">Malaysian rainforest.</span></>),
+    body: 'Tongkat Ali (Eurycoma longifolia) is a rare rainforest root, harvested only after 5–7 years of growth. For centuries, Malay healers have trusted it as their herb for male strength and vitality.',
   },
 }
 
@@ -965,7 +965,7 @@ function BenefitIcon({ name, className }) {
   )
 }
 
-function BenefitsSection({ benefits, timeline }) {
+function BenefitsSection({ benefits, timeline, heading = 'What T-REX does for you.' }) {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
@@ -973,7 +973,7 @@ function BenefitsSection({ benefits, timeline }) {
         <div className="max-w-2xl mb-12">
           <div className="eyebrow mb-5">The benefits</div>
           <h2 className="font-display text-4xl lg:text-6xl font-bold tracking-tightest leading-[1.02]">
-            What T-REX does for you.
+            {heading}
           </h2>
         </div>
         <div data-reveal-stagger className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
