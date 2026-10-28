@@ -95,7 +95,7 @@ export default function CartDrawer() {
 
   // Calculate payment method adjustments
   const PREPAID_DISCOUNT = 200  // ₹200 discount for online payment
-  const COD_FEE = 99             // ₹99 convenience charge for COD
+  const COD_FEE = 0              // COD is free — must mirror COD_FEE in api/src/services/orderService.js
   // A prepaid-only cart gets no prepaid discount: the discount exists to move
   // people off COD, and here there is no COD to move them off. Only when EVERY
   // line is prepaid-only — a mixed cart did give up a real COD option, and
@@ -103,6 +103,22 @@ export default function CartDrawer() {
   const allPrepaidOnly = lineItems.length > 0 && lineItems.every((l) => l.variant.prepaidOnly)
   const prepaidDiscount = allPrepaidOnly ? 0 : PREPAID_DISCOUNT
   const adjustedPayable = paymentMethod === 'online' ? payable - prepaidDiscount : payable + COD_FEE
+
+  // Abandoned-checkout capture: once there is a valid phone + name, tell the
+  // server (debounced, fire-and-forget) so a reminder can follow if they don't pay.
+  useEffect(() => {
+    if (step !== 'form' || !/^[6-9]\d{9}$/.test(form.phone) || form.name.trim().length < 2) return
+    const t = setTimeout(() => {
+      api.post('/api/checkout/lead', {
+        fullName: form.name.trim(),
+        phone: form.phone,
+        email: /^\S+@\S+\.\S+$/.test(form.email) ? form.email : undefined,
+        pincode: /^\d{6}$/.test(form.pincode) ? form.pincode : undefined,
+        items: lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty })),
+      }).catch(() => {})
+    }, 1500)
+    return () => clearTimeout(t)
+  }, [step, form.name, form.phone, form.email, form.pincode, lineItems])
 
   const validate = () => {
     const e = {}
@@ -391,7 +407,9 @@ export default function CartDrawer() {
                     <div className="font-semibold">Cash on Delivery</div>
                     <div className="text-[11px] text-bone/50">{codBlocked ? 'Unavailable' : 'Pay when it arrives'}</div>
                     {!codBlocked && (
-                      <div className="text-[10px] text-rust font-medium mt-1">+₹{COD_FEE} charge</div>
+                      <div className="text-[10px] text-bone/60 font-medium mt-1">
+                        {COD_FEE > 0 ? `+₹${COD_FEE} charge` : 'No extra charge'}
+                      </div>
                     )}
                   </button>
                 </div>

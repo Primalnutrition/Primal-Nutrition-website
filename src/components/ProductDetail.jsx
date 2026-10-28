@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { productById, products, tiers } from '../data/products.js'
@@ -306,7 +306,7 @@ export default function ProductDetail({ productId }) {
                 </div>
                 <div className="p-3 border border-bone/10 rounded-xl">
                   <div className="text-amber font-bold mb-1">COD</div>
-                  Available nationwide
+                  No extra charge
                 </div>
                 <button
                   onClick={() => navigate('label', { id: product.id })}
@@ -791,13 +791,27 @@ const FORGE_BANDS = {
 
 function ForgeBand({ product }) {
   const band = FORGE_BANDS[product.id]
+  const ref = useRef(null)
+  // The volcano video is ~4 MB — only start loading it once the band is near
+  // the viewport; until then the poster image is shown.
+  const [nearView, setNearView] = useState(false)
+  useEffect(() => {
+    if (!band?.video || nearView) return
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setNearView(true); return }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setNearView(true); io.disconnect() }
+    }, { rootMargin: '400px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [band, nearView])
   if (!band) return null
   return (
-    <section className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
+    <section ref={ref} className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
       {/* Background media */}
       {band.video ? (
         <video
-          src={band.video}
+          src={nearView ? band.video : undefined}
           poster={band.poster}
           autoPlay
           loop
