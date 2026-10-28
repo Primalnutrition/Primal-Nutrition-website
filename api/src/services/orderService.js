@@ -22,7 +22,7 @@ function generateOrderNumber() {
 // (PREPAID_DISCOUNT / COD_FEE) — computed here from paymentMethod (server-known,
 // not client-supplied) so the Razorpay/Shiprocket amount can't be tampered with.
 const PREPAID_DISCOUNT = 200
-const COD_FEE = 99
+const COD_FEE = 0     // COD is free (was 99) — a surprise charge at the last step was killing checkouts
 
 /**
  * Flatten a storefront attribution object into the flat columns we store on an

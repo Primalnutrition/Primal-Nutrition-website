@@ -10,6 +10,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { config } from '../config.js'
 import { logger } from '../utils/logger.js'
+import { getAdminClient } from '../lib/supabase.js'
 import {
   createRazorpayOrder,
   verifyPaymentSignature,
@@ -267,6 +268,42 @@ router.post('/create-order', async (req, res, next) => {
 const ClientLogSchema = z.object({
   event: z.string().min(1).max(64),
   data: z.record(z.any()).optional(),
+})
+
+// Abandoned-checkout capture — saved once the shipping form passes validation,
+// so a reminder can be sent to people who start but don't finish. Never blocks
+// the checkout: always answers 204.
+const LeadSchema = z.object({
+  fullName: z.string().max(100).optional(),
+  phone: z.string().regex(/^[6-9]\d{9}$/),
+  email: z.string().email().max(200).optional(),
+  pincode: z.string().regex(/^\d{6}$/).optional(),
+  items: z.array(CartItemSchema).min(1).max(20),
+})
+
+router.post('/lead', async (req, res) => {
+  try {
+    const result = LeadSchema.safeParse(req.body)
+    if (!result.success) return res.status(204).end()
+    const { fullName, phone, email, pincode, items } = result.data
+    const supabase = getAdminClient()
+    if (!supabase) return res.status(204).end()
+    const { error } = await supabase.from('checkout_leads').upsert(
+      {
+        phone,
+        email: email ?? null,
+        full_name: fullName ?? null,
+        pincode: pincode ?? null,
+        items,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'phone' }
+    )
+    if (error) logger.warn({ err: error.message }, 'checkout lead save failed')
+  } catch (err) {
+    logger.warn({ err: err.message }, 'checkout lead save failed')
+  }
+  return res.status(204).end()
 })
 
 router.post('/client-log', (req, res) => {
