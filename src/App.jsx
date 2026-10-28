@@ -8,8 +8,9 @@ import HomeHero from './components/HomeHero.jsx'
 import HomeProblems from './components/HomeProblems.jsx'
 import HomeApproach from './components/HomeApproach.jsx'
 import HomeRange from './components/HomeRange.jsx'
+import HomeStory from './components/HomeStory.jsx'
+import HomeReviews from './components/HomeReviews.jsx'
 import Founder from './components/Founder.jsx'
-import Reviews from './components/Reviews.jsx'
 import FAQ, { homeFaqs } from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
 import Footer from './components/Footer.jsx'
@@ -25,15 +26,32 @@ const LabelPage = lazy(() => import('./components/LabelPage.jsx'))
 const ProductInfoPage = lazy(() => import('./components/ProductInfoPage.jsx'))
 
 function HomePage() {
+  const { navigate } = usePage()
   return (
     <>
       <main>
         <HomeHero />
         <TrustStrip />
+        <HomeRange />
         <HomeProblems />
         <HomeApproach />
-        <HomeRange />
-        <Reviews limit={3} compact />
+        <HomeStory
+          img="/products/forge/trex-maca.jpg" /* placeholder → /home/story-source.jpg */
+          side="left"
+          eyebrow="From the source"
+          title={['Every herb, from', 'where it grows best.']}
+          body="Shilajit from the high Himalayas. Tongkat Ali from Malaysian rainforests. Black Maca from the Peruvian Andes. We go to the origin, because that is where each herb is at its most potent."
+          cta={{ label: 'Read the Shilajit guide', onClick: () => navigate('shilajit-guide') }}
+        />
+        <HomeStory
+          img="/products/forge/trex-ginseng.jpg" /* placeholder → /home/story-factory.jpg */
+          side="right"
+          eyebrow="Made the clean way"
+          title={['Ancient recipes.', 'Clean manufacturing.']}
+          body="Made in a GMP-certified facility in Siliguri, West Bengal, by a family with more than 60 years in Ayurvedic manufacturing. Every batch is tested by an independent lab before it ships."
+          cta={{ label: 'See the lab reports', onClick: () => navigate('product-info', { id: 'trex-liquid' }) }}
+        />
+        <HomeReviews />
         <Founder compact />
         <FAQ items={homeFaqs} limit={6} compact />
       </main>

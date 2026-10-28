@@ -1,33 +1,47 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePage } from '../context/RouterContext.jsx'
-import Picture from './Picture.jsx'
 
-/* Brand-level hero: 3 slides, real HTML text over text-free photography.
-   Swipe + dots, auto-advances, pauses on touch. */
+/* Product-led hero: one banner per product, real HTML text in the image's open
+   area (images carry no text). Each slide has a desktop + mobile crop; `tone`
+   says whether the open area is light (dark text) or dark (light text).
+   PLACEHOLDERS until the commissioned nature/studio banners land in /home/:
+     hero-trex-{dsk,mob}.jpg · hero-tongkat-* · hero-cordyceps-* · hero-range-* */
 const SLIDES = [
   {
-    img: '/brand/volcano-forge-poster.webp',
-    eyebrow: 'Primal Nutrition',
-    title: ['Built for the men', 'India forgot to make.'],
-    sub: 'Rare herbs, sourced at origin. Lab-tested. Made for Indian men.',
-    cta: 'Shop the range',
-    action: 'range',
+    img: { desktop: '/brand/volcano-forge-poster.webp', mobile: '/brand/volcano-forge-poster.webp' },
+    tone: 'dark',
+    eyebrow: 'T-REX Liquid',
+    title: ['Strength from the', 'roof of the world.'],
+    sub: 'Himalayan Shilajit and six Ayurvedic herbs, in one daily shot.',
+    cta: 'Shop T-REX',
+    to: { page: 'product', id: 'trex-liquid' },
   },
   {
-    img: '/products/forge/trex-royal-jelly.jpg',
+    img: { desktop: '/products/forge/trex-tongkat.jpg', mobile: '/products/forge/trex-tongkat.jpg' },
+    tone: 'dark',
+    eyebrow: 'Tongkat Ali',
+    title: ['Born in the', 'rainforest.'],
+    sub: 'Wild-harvested Malaysian root, concentrated 100:1, for strength and drive.',
+    cta: 'Shop Tongkat Ali',
+    to: { page: 'product', id: 'trex-tongkat' },
+  },
+  {
+    img: { desktop: '/products/forge/trex-cordyceps.jpg', mobile: '/products/forge/trex-cordyceps.jpg' },
+    tone: 'dark',
+    eyebrow: 'Cordyceps',
+    title: ['Thrives where', 'the air runs thin.'],
+    sub: 'The high-altitude mushroom for stamina and endurance.',
+    cta: 'Shop Cordyceps',
+    to: { page: 'product', id: 'trex-cordyceps' },
+  },
+  {
+    img: { desktop: '/products/forge/trex-royal-jelly.jpg', mobile: '/products/forge/trex-royal-jelly.jpg' },
+    tone: 'dark',
     eyebrow: 'The Rare Herb Series',
     title: ['Sourced from the wild.', 'Built for performance.'],
     sub: 'Tongkat Ali, Royal Jelly, Black Maca, Cordyceps and more.',
-    cta: 'Explore the series',
-    action: 'shop',
-  },
-  {
-    img: '/products/forge/trex-tongkat.jpg',
-    eyebrow: 'Free delivery · Free COD',
-    title: ['No extra charge.', 'No excuses.'],
-    sub: 'Cash on Delivery at no extra cost, or pay online and save ₹200.',
-    cta: 'Shop now',
-    action: 'range',
+    cta: 'Explore the range',
+    to: { page: 'shop' },
   },
 ]
 
@@ -54,10 +68,7 @@ export default function HomeHero() {
     touchX.current = null
   }
 
-  const onCta = (action) => {
-    if (action === 'shop') navigate('shop')
-    else document.getElementById('range')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+  const onCta = (to) => navigate(to.page, to.id ? { id: to.id } : undefined)
 
   return (
     <section
@@ -68,28 +79,37 @@ export default function HomeHero() {
     >
       {SLIDES.map((s, i) => (
         <div
-          key={s.title[0]}
+          key={s.eyebrow}
           className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           aria-hidden={i !== active}
         >
-          <Picture
-            src={s.img}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-            loading={i === 0 ? 'eager' : 'lazy'}
-            fetchpriority={i === 0 ? 'high' : 'auto'}
-            decoding="async"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/70" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/20 to-transparent" />
+          <picture>
+            <source media="(max-width: 767px)" srcSet={s.img.mobile} />
+            <img
+              src={s.img.desktop}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-right"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              decoding="async"
+            />
+          </picture>
+          {s.tone === 'dark' ? (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/60" />
+              <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/20 to-transparent" />
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-white/10 to-transparent md:from-white/60" />
+          )}
           <div className="container-x relative h-full flex flex-col justify-center pb-10">
             <div className="max-w-xl">
               <div className="eyebrow mb-5 text-amber">{s.eyebrow}</div>
-              <h1 className="font-display font-black text-[2.6rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-5">
+              <h1 className={`font-display font-black text-[2.6rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-5 ${s.tone === 'light' ? 'text-ink' : ''}`}>
                 {s.title[0]}<br /><span className="text-shimmer">{s.title[1]}</span>
               </h1>
-              <p className="text-lg text-bone/75 leading-relaxed max-w-md mb-8">{s.sub}</p>
-              <button onClick={() => onCta(s.action)} className="btn-primary">{s.cta}</button>
+              <p className={`text-lg leading-relaxed max-w-md mb-8 ${s.tone === 'light' ? 'text-ink/75' : 'text-bone/75'}`}>{s.sub}</p>
+              <button onClick={() => onCta(s.to)} className="btn-primary">{s.cta}</button>
             </div>
           </div>
         </div>
@@ -98,7 +118,7 @@ export default function HomeHero() {
       <div className="absolute bottom-5 left-0 right-0 z-10 flex justify-center gap-2">
         {SLIDES.map((s, i) => (
           <button
-            key={s.title[0]}
+            key={s.eyebrow}
             onClick={() => go(i)}
             aria-label={`Go to slide ${i + 1}`}
             className={`rounded-full transition-all duration-300 h-1.5 ${i === active ? 'w-7 bg-amber' : 'w-1.5 bg-bone/35'}`}

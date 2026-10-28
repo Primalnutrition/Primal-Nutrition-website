@@ -1,6 +1,6 @@
 import CountUp from './CountUp.jsx'
 
-const reviews = [
+export const reviews = [
   { name: 'Arjun M.', city: 'Bengaluru', age: 34, rating: 5, title: 'My morning is no longer a fight', body: 'Switched from a synthetic stack I was running for 14 months. Within 6 weeks I sleep deeper, lift heavier, and my fasting energy is back. The price is fair for what is in the bottle.', verified: true, time: '2 weeks ago' },
   { name: 'Vikrant S.', city: 'Mumbai', age: 41, rating: 5, title: 'Father of two, slept 4hrs, was a zombie', body: 'I am not a supplement guy. I tried this only because I saw the Third-Party Lab report. It actually works. My wife noticed before I did.', verified: true, time: '1 month ago' },
   { name: 'Rohan T.', city: 'Pune', age: 29, rating: 5, title: 'Liquid format is the unlock', body: 'I had tried Kapiva and a US brand. Capsules sit in my stomach. The liquid hits in 20 minutes and I can feel a clean lift that lasts till evening. No crash.', verified: true, time: '3 weeks ago' },
