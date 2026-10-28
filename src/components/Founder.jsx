@@ -1,8 +1,8 @@
 import Picture from './Picture.jsx'
 
-export default function Founder() {
+export default function Founder({ compact = false }) {
   return (
-    <section id="founder" className="py-28 relative">
+    <section id="founder" className={compact ? 'py-16 lg:py-20 relative' : 'py-28 relative'}>
       <div className="container-x">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* Founder portrait — real photograph */}
@@ -44,6 +44,8 @@ export default function Founder() {
               <p>
                 Our founder is a pro-level athlete — and heir to a family that has been in Ayurvedic manufacturing for <strong className="text-bone">over 60 years</strong>. Two worlds in one person: the discipline of competitive sport, the lineage of authentic Ayurveda.
               </p>
+              {!compact && (
+              <>
               <p>
                 He spent years watching both worlds fail. <strong className="text-bone">Athletes wrecking their hormones</strong> on synthetic stacks. Genuine <strong className="text-bone">Ayurveda losing relevance</strong> because it looked tired and felt dated. Primal is what he built when he refused to accept either outcome.
               </p>
@@ -53,6 +55,8 @@ export default function Founder() {
               <p className="text-bone">
                 We refuse to do it any other way. We walk the rough road — because that is where real strength is built.
               </p>
+              </>
+              )}
             </div>
 
             <div className="mt-10 flex flex-wrap items-center gap-8">
@@ -62,6 +66,7 @@ export default function Founder() {
             </div>
 
             {/* What we refuse — the brand promise distilled */}
+            {!compact && (
             <div className="mt-10 pt-8 border-t border-bone/10 max-w-2xl">
               <div className="eyebrow mb-4 font-brand tracking-[0.28em] text-bone/55">What we refuse</div>
               <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-bone/70 font-brand">
@@ -73,6 +78,7 @@ export default function Founder() {
                 <Refusal>Mass-produced Ayurveda</Refusal>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>

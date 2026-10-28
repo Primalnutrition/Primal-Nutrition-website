@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useCart } from '../context/CartContext.jsx'
+import { usePage } from '../context/RouterContext.jsx'
 
 export default function StickyCTA() {
   const [visible, setVisible] = useState(false)
   const { addToCart } = useCart()
+  const { page } = usePage()
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // The homepage is brand-level; a T-REX buy bar there would pitch one product.
+  if (page === 'home') return null
 
   return (
     <div className={`fixed bottom-0 inset-x-0 z-30 sm:hidden transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}>

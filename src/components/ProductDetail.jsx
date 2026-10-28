@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { BENEFIT_ICONS } from '../lib/benefitIcons.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { productById, products, tiers } from '../data/products.js'
@@ -960,16 +961,6 @@ function Row({ label, value }) {
   )
 }
 
-/* Benefit icons — thin line, brand red, one stroke weight */
-const BENEFIT_ICONS = {
-  moon: (<path d="M24 19.5A9.5 9.5 0 0 1 12.5 8a9.5 9.5 0 1 0 11.5 11.5z" />),
-  male: (<><circle cx="14" cy="20" r="7.5" /><path d="M19.5 14.5L27 7M21 7h6v6" /></>),
-  arm: (<path d="M6 25c0-5 2-8 5-10 2-1.5 3-3 3.5-5.5C15 7 17 5.5 19.5 6c2.5.5 4 3 3.5 5.5l-1 3.5 3 2.5c2 1.8 2.2 5 .3 6.7-1.6 1.4-4 1.2-5.3-.4L18 21.5c-1.5 1.3-3.5 2-5.5 1.8C10 23 7.5 24 6 26" />),
-  bolt: (<path d="M18 4L8 18h8l-2 10 10-14h-8l2-10z" />),
-  flame: (<path d="M16 28c-5 0-8.5-3.5-8.5-8 0-4.5 3.5-7 5-11 1 2.5 2.5 3.5 4 3.5C16 9 17 6 20 4c0 5 4.5 7.5 4.5 13 0 6-3.5 11-8.5 11zm0 0c-2 0-3.5-1.6-3.5-3.6 0-2.4 2-3.4 3.5-5.9 1.5 2.5 3.5 3.5 3.5 5.9 0 2-1.5 3.6-3.5 3.6z" />),
-  dumbbell: (<><path d="M4 13v6M8 10v12M24 10v12M28 13v6M8 16h16" /></>),
-  leaf: (<><path d="M7 25C7 14 14 7 26 6c0 12-6 19-17 19" /><path d="M7 25c4-6 8-10 13-13" /></>),
-}
 
 function BenefitIcon({ name, className }) {
   return (

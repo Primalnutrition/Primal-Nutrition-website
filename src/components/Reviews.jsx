@@ -9,9 +9,10 @@ const reviews = [
   { name: 'Aakash V.', city: 'Gurgaon', age: 45, rating: 5, title: 'TRT was on the table. Not anymore.', body: 'My T was 340. Doctor suggested TRT. I gave myself 90 days with Primal first. Retested last week — 510. I am not saying it will work for everyone. I am saying it worked for me.', verified: true, time: '2 months ago' },
 ]
 
-export default function Reviews() {
+export default function Reviews({ limit, compact = false }) {
+  const shown = limit ? reviews.slice(0, limit) : reviews
   return (
-    <section id="reviews" className="py-28 bg-gradient-to-b from-ink-800/40 to-ink relative">
+    <section id="reviews" className={`${compact ? 'py-16 lg:py-20' : 'py-28'} bg-gradient-to-b from-ink-800/40 to-ink relative`}>
       <div className="container-x">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
           <div className="max-w-2xl">
@@ -21,6 +22,7 @@ export default function Reviews() {
               <span className="italic font-medium text-amber-light">One bottle that delivered.</span>
             </h2>
           </div>
+          {!compact && (
           <div className="flex items-center gap-6">
             <div className="text-center">
               <div className="flex items-center gap-1 text-amber text-2xl">★★★★★</div>
@@ -33,10 +35,11 @@ export default function Reviews() {
               <div className="text-xs uppercase tracking-widest text-bone/50">Verified reviews</div>
             </div>
           </div>
+          )}
         </div>
 
         <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {reviews.map((r) => (
+          {shown.map((r) => (
             <article key={r.name} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/40 hover:border-amber/30 transition group flex flex-col">
               <div className="flex items-center gap-1 text-amber text-sm mb-3">
                 {Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}
@@ -66,9 +69,11 @@ export default function Reviews() {
           ))}
         </div>
 
+        {!compact && (
         <div className="mt-12 text-center">
           <a href="#" className="btn-ghost text-sm">Read all 2,431 reviews →</a>
         </div>
+        )}
       </div>
     </section>
   )

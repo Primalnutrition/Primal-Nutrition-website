@@ -53,10 +53,21 @@ const faqs = [
   },
 ]
 
-export default function FAQ() {
+/* Brand-level answers for the homepage (the product FAQ above is T-REX specific). */
+export const homeFaqs = [
+  { q: 'What is Primal Nutrition?', a: 'Ayurvedic strength and vitality supplements for men, made in a 60+ year GMP-certified facility in Siliguri, West Bengal. Rare herbs, sourced at origin, extracted the traditional way.' },
+  { q: 'Are these steroids, hormones or stimulants?', a: 'No. Our products are Ayurvedic Proprietary Medicines (Mfg. Lic. AL946M) with no synthetic hormones, steroids or stimulants. Not for anyone under 18.' },
+  { q: 'Which one should I start with?', a: 'T-REX Liquid is the all-round daily formula for energy, strength and calm. Tongkat Ali is for drive and strength. Many men take the two together. Open any product page to see exactly what is inside.' },
+  { q: 'How soon will I notice a difference?', a: 'Most men notice steadier energy and better sleep within the first one to two weeks, and strength and stamina build over the first month. Individual results vary.' },
+  { q: 'Do you offer Cash on Delivery?', a: 'Yes, with no extra charge. Pay online instead and save ₹200. Delivery takes 2–5 days and is free.' },
+  { q: 'Is it lab tested?', a: 'Every batch is tested by an independent third-party lab, and the certificates are available on each product page.' },
+]
+
+export default function FAQ({ items = faqs, limit, compact = false }) {
   const [open, setOpen] = useState(0)
+  const list = limit ? items.slice(0, limit) : items
   return (
-    <section className="py-28 relative">
+    <section className={compact ? 'py-16 lg:py-20 relative' : 'py-28 relative'}>
       <div className="container-x">
         <div className="grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-4">
@@ -78,7 +89,7 @@ export default function FAQ() {
 
           <div className="lg:col-span-8">
             <div className="border-t border-bone/10">
-              {faqs.map((f, i) => (
+              {list.map((f, i) => (
                 <div key={f.q} className="border-b border-bone/10">
                   <button
                     onClick={() => setOpen(open === i ? -1 : i)}
