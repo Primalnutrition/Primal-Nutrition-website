@@ -2,6 +2,33 @@ import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import Footer from './Footer.jsx'
 import Picture from './Picture.jsx'
+import { BENEFIT_ICONS } from '../lib/benefitIcons.jsx'
+
+const MOB = '(max-width: 767px)'
+
+/* Desktop + mobile crops, each as avif / webp / jpg */
+function Art({ base, className = '', eager = false }) {
+  return (
+    <picture>
+      <source media={MOB} type="image/avif" srcSet={`${base}-mob.avif`} />
+      <source media={MOB} type="image/webp" srcSet={`${base}-mob.webp`} />
+      <source media={MOB} srcSet={`${base}-mob.jpg`} />
+      <source type="image/avif" srcSet={`${base}-dsk.avif`} />
+      <source type="image/webp" srcSet={`${base}-dsk.webp`} />
+      <img src={`${base}-dsk.jpg`} alt="" className={className} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    </picture>
+  )
+}
+
+function IconTile({ name, size = 'w-12 h-12' }) {
+  return (
+    <span className={`${size} rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center shrink-0`}>
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-amber" aria-hidden>
+        {BENEFIT_ICONS[name]}
+      </svg>
+    </span>
+  )
+}
 
 export default function ShilajitGuide() {
   const { navigate } = usePage()
@@ -9,11 +36,11 @@ export default function ShilajitGuide() {
 
   return (
     <>
-      <section className="relative pt-28 pb-20 gradient-amber grain border-b border-bone/10 overflow-hidden">
-        <div className="absolute -top-32 right-0 w-[600px] h-[600px] rounded-full bg-amber/10 blur-[140px] pointer-events-none" />
-        <Picture src="/brand/dotted-circle.png" alt="" aria-hidden loading="lazy" decoding="async" className="absolute -bottom-20 right-10 w-[420px] opacity-15 mix-blend-lighten pointer-events-none" />
+      <section className="relative pt-28 pb-20 border-b border-bone/10 overflow-hidden min-h-[640px] lg:min-h-[680px] flex items-end">
+        <Art base="/shilajit/hero-mountain" eager className="absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10 md:bg-gradient-to-r md:from-ink/85 md:via-ink/45 md:to-transparent" />
 
-        <div className="container-x relative">
+        <div className="container-x relative z-10">
           <nav className="mb-8 text-xs uppercase tracking-widest text-bone/45 flex items-center gap-2 font-brand">
             <button onClick={() => navigate('home')} className="hover:text-amber transition">Home</button>
             <span>/</span>
@@ -53,6 +80,15 @@ export default function ShilajitGuide() {
         </div>
       </section>
 
+      {/* Raw resin, collected by hand */}
+      <section className="relative aspect-[735/919] md:aspect-[1919/820] max-h-[760px] w-full overflow-hidden">
+        <Art base="/shilajit/hands" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/80 to-transparent" />
+        <div className="container-x absolute inset-x-0 bottom-6 lg:bottom-10">
+          <p className="font-brand text-[11px] lg:text-xs uppercase tracking-[0.28em] text-white/85">Raw Shilajit, hand-collected high in the Himalayas</p>
+        </div>
+      </section>
+
       {/* The Process — visual flow */}
       <section className="py-24 bg-gradient-to-b from-ink to-ink-800/50">
         <div className="container-x">
@@ -70,7 +106,10 @@ export default function ShilajitGuide() {
           <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {process.map((p, i) => (
               <article key={p.title} className="card-lift relative p-7 rounded-2xl border border-bone/10 bg-ink-800/60 flex flex-col">
-                <div className="font-stencil text-gradient-primal text-6xl leading-none mb-4">0{i + 1}</div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="font-stencil text-red-500 text-6xl leading-none">0{i + 1}</div>
+                  <IconTile name={processIcons[i]} />
+                </div>
                 <div className="font-brand text-[10px] uppercase tracking-[0.28em] text-amber mb-2">{p.span}</div>
                 <h3 className="font-display text-2xl tracking-tight uppercase mb-3 leading-tight">{p.title}</h3>
                 <p className="text-bone/65 text-[14px] leading-relaxed">{p.body}</p>
@@ -122,7 +161,10 @@ export default function ShilajitGuide() {
           <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {tests.map((t) => (
               <article key={t.title} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/60">
-                <div className="font-brand text-[10px] uppercase tracking-[0.28em] text-amber mb-3">{t.test}</div>
+                <div className="flex items-center gap-3 mb-4">
+                  <IconTile name={testIcons[t.test]} size="w-11 h-11" />
+                  <div className="font-brand text-[10px] uppercase tracking-[0.28em] text-amber">{t.test}</div>
+                </div>
                 <h3 className="font-display text-xl tracking-tight uppercase mb-3 leading-tight">{t.title}</h3>
                 <p className="text-bone/65 text-[13px] leading-relaxed mb-3">{t.real}</p>
                 <p className="text-[12px] text-rust/80 italic">{t.fake}</p>
@@ -164,6 +206,9 @@ export default function ShilajitGuide() {
     </>
   )
 }
+
+const processIcons = ['peak', 'filter', 'pot', 'flask']
+const testIcons = { Pliability: 'hand', Solubility: 'glass', Flame: 'flame', Form: 'drop' }
 
 const process = [
   { span: 'Day 1-3', title: 'Collection', body: 'Local villagers hand-collect resin from cracks in Himalayan/Bhutanese rocks at 18,000+ ft altitude. Summer-only harvest.' },

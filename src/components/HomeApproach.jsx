@@ -17,7 +17,7 @@ const PILLARS = [
   {
     n: '03',
     img: '/home/pillar-lab.jpg',
-    title: 'Proven, not promised',
+    title: 'Proven, not just promised',
     body: 'Every batch is tested by an independent lab, and the certificates are online for you to read.',
   },
 ]

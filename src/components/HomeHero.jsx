@@ -10,8 +10,8 @@ const SLIDES = [
     base: '/home/hero-speed',
     tone: 'dark',                 // white text over a dark wash
     eyebrow: 'Primal Nutrition',
-    title: ['Built for the men', 'India forgot to make.'],
-    sub: 'Rare herbs, sourced at origin. Lab-tested. Made for Indian men.',
+    title: ['Move like', 'you mean it.'],
+    sub: 'Ayurvedic strength and stamina for men who refuse to slow down.',
     cta: 'Shop the range',
     to: { scroll: 'range' },
   },
@@ -20,8 +20,8 @@ const SLIDES = [
     tone: 'dark',
     align: 'center',
     eyebrow: 'The Rare Herb Series',
-    title: ['Sourced from the wild.', 'Built for performance.'],
-    sub: 'Tongkat Ali, Royal Jelly, Black Maca, Cordyceps and more.',
+    title: ['Rare herbs.', 'Raw power.'],
+    sub: 'Six rare roots and resins, sourced from where they grow wild.',
     cta: 'Explore the range',
     to: { page: 'shop' },
   },
@@ -30,7 +30,7 @@ const SLIDES = [
     tone: 'light',                // dark text over a white wash
     eyebrow: 'T-REX Liquid',
     title: ['Strength from the', 'roof of the world.'],
-    sub: 'Himalayan Shilajit and six Ayurvedic herbs, in one daily shot.',
+    sub: 'Himalayan Shilajit and six Ayurvedic herbs. One shot a day.',
     cta: 'Shop T-REX',
     to: { page: 'product', id: 'trex-liquid' },
   },
@@ -38,8 +38,8 @@ const SLIDES = [
     base: '/home/hero-tongkat',
     tone: 'light',
     eyebrow: 'Tongkat Ali',
-    title: ['Born in the', 'rainforest.'],
-    sub: 'Wild-harvested Malaysian root, concentrated 100:1.',
+    title: ['The root of', 'male vitality.'],
+    sub: 'Wild-harvested in Malaysian rainforests. Concentrated 100:1.',
     cta: 'Shop Tongkat Ali',
     to: { page: 'product', id: 'trex-tongkat' },
   },
@@ -47,8 +47,8 @@ const SLIDES = [
     base: '/home/hero-sprint',
     tone: 'light',
     eyebrow: 'Strength · Stamina · Drive',
-    title: ['Built to', 'perform.'],
-    sub: 'Ayurvedic strength support for men who train hard.',
+    title: ['Start strong.', 'Finish stronger.'],
+    sub: 'Daily strength, stamina and recovery, the Ayurvedic way.',
     cta: 'Shop T-REX',
     to: { page: 'product', id: 'trex-liquid' },
     callouts: [
@@ -139,11 +139,11 @@ export default function HomeHero() {
             s.align === 'center' ? 'justify-center items-center text-center' : 'justify-start pt-10 md:justify-center md:pt-0'
           }`}>
             <div className={s.align === 'center' ? 'max-w-xl' : 'max-w-md lg:max-w-xl'}>
-              <div className={`eyebrow mb-4 ${s.tone === 'dark' ? 'text-white/85' : 'text-amber'}`}>{s.eyebrow}</div>
-              <h1 className={`font-display font-black text-[2.4rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-4 ${s.tone === 'dark' ? 'text-white' : 'text-ink'}`}>
+              <div className={`eyebrow mb-5 text-[13px] ${s.tone === 'dark' ? 'text-white/85' : 'text-amber'}`}>{s.eyebrow}</div>
+              <h1 className={`font-display font-black text-[2.9rem] sm:text-7xl lg:text-[5.5rem] tracking-[0.015em] leading-[1.02] mb-5 ${s.tone === 'dark' ? 'text-white' : 'text-ink'}`}>
                 {s.title[0]}<br /><span className={s.tone === 'dark' ? 'text-white/90 italic font-medium' : 'text-amber'}>{s.title[1]}</span>
               </h1>
-              <p className={`text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 ${s.align === 'center' ? 'mx-auto max-w-md' : 'max-w-sm lg:max-w-md'} ${s.tone === 'dark' ? 'text-white/85' : 'text-ink/75'}`}>{s.sub}</p>
+              <p className={`text-lg lg:text-xl leading-relaxed mb-7 lg:mb-9 ${s.align === 'center' ? 'mx-auto max-w-md' : 'max-w-sm lg:max-w-md'} ${s.tone === 'dark' ? 'text-white/85' : 'text-ink/75'}`}>{s.sub}</p>
               <button onClick={() => onCta(s.to)} className="btn-primary">{s.cta}</button>
             </div>
           </div>
