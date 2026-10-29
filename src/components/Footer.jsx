@@ -33,18 +33,19 @@ export default function Footer() {
             </Col>
             <Col title="Learn">
               <a href="#/shilajit-guide">Shilajit Purity Guide</a>
-              <a href="#/product/trex-liquid">Ingredient sourcing</a>
+              <a href="#/manufacturing">Ingredient sourcing</a>
               <a href="#/shop">Adaptogen series</a>
             </Col>
-            <Col title="Support">
-              <a href="https://wa.me/917838026415">WhatsApp +91-7838026415</a>
-              <a href="mailto:salesmanager@primalnutrition.in">salesmanager@primalnutrition.in</a>
-              <a href="#/dealer">Become a Dealer</a>
+            <Col title="Help">
+              <a href="#/contact">Contact us</a>
+              <a href="#/shipping">Shipping &amp; delivery</a>
+              <a href="#/contact">Returns &amp; refunds</a>
             </Col>
             <Col title="Company">
-              <a href="#/shilajit-guide">Manufacturing</a>
+              <a href="#/manufacturing">Our Manufacturing</a>
               <a href="#/shop">Our Products</a>
               <a href="#/dealer">Wholesale</a>
+              <a href="#/about">About us</a>
             </Col>
           </div>
         </div>

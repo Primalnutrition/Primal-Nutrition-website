@@ -32,6 +32,7 @@ export default function Header() {
           <Tab active={page === 'shop'} onClick={() => go('shop')}>Shop</Tab>
           <Tab active={page === 'stacks'} onClick={() => go('stacks')}>Stacks</Tab>
           <Tab active={page === 'shilajit-guide'} onClick={() => go('shilajit-guide')}>Shilajit</Tab>
+          <Tab active={page === 'manufacturing'} onClick={() => go('manufacturing')}>Manufacturing</Tab>
           <Tab active={page === 'dealer'} onClick={() => go('dealer')}>Dealer</Tab>
         </nav>
 
@@ -61,6 +62,7 @@ export default function Header() {
             ['shop', 'Shop'],
             ['stacks', 'Stacks'],
             ['shilajit-guide', 'Shilajit Purity Guide'],
+            ['manufacturing', 'Our Manufacturing'],
             ['dealer', 'Become a Dealer'],
           ].map(([id, label]) => (
             <button

@@ -781,8 +781,8 @@ const FORGE_BANDS = {
   'trex-liver': {
     image: '/products/forge/trex-liver.jpg',
     eyebrow: 'Classical Ayurveda',
-    title: (<>Thirteen herbs.<br /><span className="text-shimmer">One daily formula.</span></>),
-    body: 'Kalmegh, Giloy, Bhuiamla, Katki and more, each used in Ayurveda for generations, blended with milk thistle.',
+    title: (<>The scrubber<br /><span className="text-shimmer">for your liver.</span></>),
+    body: 'Thirteen classical Ayurvedic herbs, Kalmegh, Giloy, Bhuiamla and Katki among them, blended with milk thistle.',
   },
   'trex-royal-jelly': {
     image: '/products/forge/trex-royal-jelly.jpg',

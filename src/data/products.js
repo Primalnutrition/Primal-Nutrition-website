@@ -1002,8 +1002,8 @@ export const products = [
       '/products/liver-v2-08.jpeg',
     ],
     name: 'Liver Detox',
-    subtitle: "Liver · Digestion · Balance",
-    tagline: "13 Ayurvedic herbs + milk thistle",
+    subtitle: "Cleanse · Absorb · Renew",
+    tagline: "The scrubber for your liver",
     category: 'adaptogen',
     categoryLabel: 'Recovery',
     tier: 'RECOVERY',
@@ -1019,7 +1019,7 @@ export const products = [
       partner: 'T-Rex (mandatory if on cycle)',
     },
     pdp: {
-      heroClaim: "A 13-herb Ayurvedic liver formula with milk thistle. For men who train hard, eat out and live fast. Two capsules a day.",
+      heroClaim: "The scrubber for your liver. 13 Ayurvedic herbs and milk thistle that help you detox, digest more and get more out of every meal. Two capsules a day.",
       metrics: [
         {
           "label": "Ayurvedic herbs",
@@ -1102,33 +1102,48 @@ export const products = [
       benefits: [
         {
           "icon": "leaf",
-          "title": "Liver Function",
-          "line": "Supports healthy liver function."
+          "title": "A Scrubber for Your Liver",
+          "line": "Supports your liver's natural cleansing, every day."
         },
         {
           "icon": "dumbbell",
-          "title": "Protein Absorption",
-          "line": "Helps you absorb and use the protein you eat."
+          "title": "Enhanced Protein Absorption",
+          "line": "Helps your body absorb and use the protein you eat."
         },
         {
           "icon": "bolt",
-          "title": "Metabolism & Energy",
-          "line": "Supports metabolism and daily energy."
-        },
-        {
-          "icon": "drop",
-          "title": "Clears Toxins",
-          "line": "Supports your body's natural cleansing."
+          "title": "Get More Out of Your Diet",
+          "line": "More of every meal goes to work for you."
         },
         {
           "icon": "flame",
-          "title": "Digestion",
-          "line": "Bitter herbs that support appetite and digestion."
+          "title": "Absorb More, Digest More",
+          "line": "Bitter Ayurvedic herbs that support appetite and digestion."
+        },
+        {
+          "icon": "drop",
+          "title": "Detox Your Body",
+          "line": "Helps clear toxins and metabolic waste."
+        },
+        {
+          "icon": "shield",
+          "title": "Freshen Up Your Cells",
+          "line": "Supports cell renewal and regeneration."
+        },
+        {
+          "icon": "arm",
+          "title": "Metabolism & Energy",
+          "line": "Supports metabolism and steady daily energy."
         },
         {
           "icon": "scale",
-          "title": "Balance",
-          "line": "Helps you feel lighter and more balanced."
+          "title": "Lighter, Balanced Gut",
+          "line": "Feel lighter after heavy meals."
+        },
+        {
+          "icon": "heart",
+          "title": "Recover From the Weekend",
+          "line": "Support after late nights, rich food and social drinks."
         }
       ],
       timeline: [

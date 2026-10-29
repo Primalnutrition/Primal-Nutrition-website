@@ -4,7 +4,7 @@ import { productById } from '../data/products.js'
 
 const RouterContext = createContext(null)
 
-const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info', 'shipping', 'privacy', 'terms', 'contact', 'about'])
+const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info', 'shipping', 'privacy', 'terms', 'contact', 'about', 'manufacturing'])
 
 function readRoute() {
   if (typeof window === 'undefined') return { page: 'home' }
@@ -77,7 +77,7 @@ export function RouterProvider({ children }) {
   useEffect(() => {
     const names = {
       shop: 'Shop the range', stacks: 'Stacks', dealer: 'Become a dealer', 'shilajit-guide': 'Shilajit purity guide',
-      shipping: 'Shipping & delivery', privacy: 'Privacy policy', terms: 'Terms of use', contact: 'Contact us', about: 'About us',
+      shipping: 'Shipping & delivery', privacy: 'Privacy policy', terms: 'Terms of use', contact: 'Contact us', about: 'About us', manufacturing: 'Our manufacturing',
     }
     const base = 'Primal Nutrition'
     let title = `${base} — Ayurvedic strength and vitality for Indian men`

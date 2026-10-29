@@ -43,7 +43,8 @@ const PAGES = {
     title: 'Contact us',
     sections: [
       ['WhatsApp', 'Message us on WhatsApp at +91 78380 26415 for orders, delivery, returns, refunds and product questions. A person replies.', WA, 'Open WhatsApp'],
-      ['Email', 'salesmanager@primalnutrition.in'],
+      ['Email', 'salesmanager@primalnutrition.in', 'mailto:salesmanager@primalnutrition.in', 'Send an email'],
+      ['Become a dealer', 'Stock Primal Nutrition in your store or gym. Tell us about your business and we will get back to you.', '#/dealer', 'Apply to become a dealer'],
       ['Marketed by', 'Primal Nutrition (a unit of Jiyo Ayurveda Pvt. Ltd.), No. 5, FF, Sec-8 Market, Rama Krishna Puram, New Delhi 110022.'],
       ['Licences', 'Mfg. Lic. No. AL946M · FSSAI Lic. No. 13326998000382'],
     ],
@@ -78,7 +79,7 @@ export default function PolicyPage({ which }) {
               <div key={h} className="border-t border-bone/10 pt-6">
                 <h2 className="font-display text-2xl mb-2">{h}</h2>
                 <p className="text-bone/70 leading-relaxed text-[17px]">{body}</p>
-                {href && <a href={href} target="_blank" rel="noreferrer" className="btn-ghost text-sm mt-4 inline-block">{cta} →</a>}
+                {href && <a href={href} {...(href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})} className="btn-ghost text-sm mt-4 inline-block">{cta} →</a>}
               </div>
             ))}
           </div>
