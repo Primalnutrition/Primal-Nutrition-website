@@ -36,7 +36,7 @@ function HomePage() {
         <HomeProblems />
         <HomeApproach />
         <HomeStory
-          img="/products/forge/trex-maca.jpg" /* placeholder → /home/story-source.jpg */
+          img="/home/story-source.jpg"
           side="left"
           eyebrow="From the source"
           title={['Every herb, from', 'where it grows best.']}
@@ -44,7 +44,7 @@ function HomePage() {
           cta={{ label: 'Read the Shilajit guide', onClick: () => navigate('shilajit-guide') }}
         />
         <HomeStory
-          img="/products/forge/trex-ginseng.jpg" /* placeholder → /home/story-factory.jpg */
+          img="/home/story-factory.jpg"
           side="right"
           eyebrow="Made the clean way"
           title={['Ancient recipes.', 'Clean manufacturing.']}

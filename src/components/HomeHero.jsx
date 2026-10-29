@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePage } from '../context/RouterContext.jsx'
 
-/* Product-led hero: one banner per product, real HTML text in the image's open
-   area (images carry no text). Each slide has a desktop + mobile crop; `tone`
-   says whether the open area is light (dark text) or dark (light text).
-   PLACEHOLDERS until the commissioned nature/studio banners land in /home/:
-     hero-trex-{dsk,mob}.jpg · hero-tongkat-* · hero-cordyceps-* · hero-range-* */
+/* Product-led hero: one nature banner per product, real HTML text in the
+   image's open area (the images carry no text). Each slide ships a desktop
+   crop (1920×820, product on the right, open sky left) and a mobile crop
+   (~1030×1526, product low, open sky on top), each as avif/webp/jpg. */
 const SLIDES = [
   {
-    img: { desktop: '/brand/volcano-forge-poster.webp', mobile: '/brand/volcano-forge-poster.webp' },
-    tone: 'dark',
+    base: '/home/hero-trex',
     eyebrow: 'T-REX Liquid',
     title: ['Strength from the', 'roof of the world.'],
     sub: 'Himalayan Shilajit and six Ayurvedic herbs, in one daily shot.',
@@ -17,17 +15,15 @@ const SLIDES = [
     to: { page: 'product', id: 'trex-liquid' },
   },
   {
-    img: { desktop: '/products/forge/trex-tongkat.jpg', mobile: '/products/forge/trex-tongkat.jpg' },
-    tone: 'dark',
+    base: '/home/hero-tongkat',
     eyebrow: 'Tongkat Ali',
     title: ['Born in the', 'rainforest.'],
-    sub: 'Wild-harvested Malaysian root, concentrated 100:1, for strength and drive.',
+    sub: 'Wild-harvested Malaysian root, concentrated 100:1.',
     cta: 'Shop Tongkat Ali',
     to: { page: 'product', id: 'trex-tongkat' },
   },
   {
-    img: { desktop: '/products/forge/trex-cordyceps.jpg', mobile: '/products/forge/trex-cordyceps.jpg' },
-    tone: 'dark',
+    base: '/home/hero-cordyceps',
     eyebrow: 'Cordyceps',
     title: ['Thrives where', 'the air runs thin.'],
     sub: 'The high-altitude mushroom for stamina and endurance.',
@@ -35,17 +31,37 @@ const SLIDES = [
     to: { page: 'product', id: 'trex-cordyceps' },
   },
   {
-    img: { desktop: '/products/forge/trex-royal-jelly.jpg', mobile: '/products/forge/trex-royal-jelly.jpg' },
-    tone: 'dark',
-    eyebrow: 'The Rare Herb Series',
-    title: ['Sourced from the wild.', 'Built for performance.'],
-    sub: 'Tongkat Ali, Royal Jelly, Black Maca, Cordyceps and more.',
-    cta: 'Explore the range',
-    to: { page: 'shop' },
+    base: '/home/hero-maca',
+    eyebrow: 'Black Maca',
+    title: ['Grown at', '4,000 metres.'],
+    sub: 'Andean black maca for strength, drive and stamina.',
+    cta: 'Shop Black Maca',
+    to: { page: 'product', id: 'trex-maca' },
   },
 ]
 
+const MOB = '(max-width: 767px)'
 const AUTO_MS = 6000
+
+function SlideImage({ base, eager }) {
+  return (
+    <picture>
+      <source media={MOB} type="image/avif" srcSet={`${base}-mob.avif`} />
+      <source media={MOB} type="image/webp" srcSet={`${base}-mob.webp`} />
+      <source media={MOB} srcSet={`${base}-mob.jpg`} />
+      <source type="image/avif" srcSet={`${base}-dsk.avif`} />
+      <source type="image/webp" srcSet={`${base}-dsk.webp`} />
+      <img
+        src={`${base}-dsk.jpg`}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </picture>
+  )
+}
 
 export default function HomeHero() {
   const { navigate } = usePage()
@@ -72,56 +88,44 @@ export default function HomeHero() {
 
   return (
     <section
-      className="relative w-full overflow-hidden mt-16 lg:mt-20 h-[78svh] min-h-[500px] max-h-[760px] select-none"
+      className="relative w-full overflow-hidden mt-16 lg:mt-20 select-none bg-white"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       aria-label="Primal Nutrition"
     >
+      {/* Height follows the artwork: 2:3 on phones, 1920:820 on desktop */}
+      <div aria-hidden="true" className="aspect-[1030/1526] md:hidden" />
+      <div aria-hidden="true" className="hidden md:block aspect-[1920/820] max-h-[86vh]" />
+
       {SLIDES.map((s, i) => (
         <div
-          key={s.eyebrow}
+          key={s.base}
           className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           aria-hidden={i !== active}
         >
-          <picture>
-            <source media="(max-width: 767px)" srcSet={s.img.mobile} />
-            <img
-              src={s.img.desktop}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover object-right"
-              loading={i === 0 ? 'eager' : 'lazy'}
-              fetchpriority={i === 0 ? 'high' : 'auto'}
-              decoding="async"
-            />
-          </picture>
-          {s.tone === 'dark' ? (
-            <>
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/60" />
-              <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/20 to-transparent" />
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-white/10 to-transparent md:from-white/60" />
-          )}
-          <div className="container-x relative h-full flex flex-col justify-center pb-10">
-            <div className="max-w-xl">
-              <div className="eyebrow mb-5 text-amber">{s.eyebrow}</div>
-              <h1 className={`font-display font-black text-[2.6rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-5 ${s.tone === 'light' ? 'text-ink' : ''}`}>
-                {s.title[0]}<br /><span className="text-shimmer">{s.title[1]}</span>
+          <SlideImage base={s.base} eager={i === 0} />
+          {/* Soft light wash on the text side only, so the photo stays bright */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/10 to-transparent md:bg-gradient-to-r md:from-white/55 md:via-white/10" />
+          <div className="container-x relative h-full flex flex-col justify-start pt-10 md:justify-center md:pt-0">
+            <div className="max-w-md lg:max-w-xl">
+              <div className="eyebrow mb-4 text-amber">{s.eyebrow}</div>
+              <h1 className="font-display font-black text-ink text-[2.4rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-4">
+                {s.title[0]}<br /><span className="text-amber">{s.title[1]}</span>
               </h1>
-              <p className={`text-lg leading-relaxed max-w-md mb-8 ${s.tone === 'light' ? 'text-ink/75' : 'text-bone/75'}`}>{s.sub}</p>
+              <p className="text-base lg:text-lg text-ink/75 leading-relaxed max-w-sm lg:max-w-md mb-6 lg:mb-8">{s.sub}</p>
               <button onClick={() => onCta(s.to)} className="btn-primary">{s.cta}</button>
             </div>
           </div>
         </div>
       ))}
 
-      <div className="absolute bottom-5 left-0 right-0 z-10 flex justify-center gap-2">
+      <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
         {SLIDES.map((s, i) => (
           <button
-            key={s.eyebrow}
+            key={s.base}
             onClick={() => go(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`rounded-full transition-all duration-300 h-1.5 ${i === active ? 'w-7 bg-amber' : 'w-1.5 bg-bone/35'}`}
+            className={`rounded-full transition-all duration-300 h-1.5 ${i === active ? 'w-7 bg-amber' : 'w-1.5 bg-ink/30'}`}
           />
         ))}
       </div>

@@ -6,7 +6,7 @@ export default function HomeStory({ img, side = 'left', eyebrow, title, body, ct
   return (
     <section className="py-16 lg:py-24">
       <div className="container-x grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-        <div className={`rounded-3xl overflow-hidden aspect-[4/5] sm:aspect-[4/3] ${side === 'right' ? 'lg:order-2' : ''}`}>
+        <div className={`rounded-3xl overflow-hidden aspect-[4/5] max-h-[720px] w-full ${side === 'right' ? 'lg:order-2' : ''}`}>
           <Picture src={img} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         </div>
         <div className="max-w-lg">

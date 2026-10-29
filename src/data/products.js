@@ -25,6 +25,7 @@ export const products = [
     image: '/products/trex-v2-01.png',
     gallery: [
       '/products/trex-v2-01.png',
+      '/products/trex-nature.jpg',
       '/products/trex-v2-02.png',
       '/products/trex-v2-03.png',
       '/products/trex-v2-04.png',
@@ -225,6 +226,7 @@ export const products = [
     image: '/products/cordyceps-v2-01.png',
     gallery: [
       '/products/cordyceps-v2-01.png',
+      '/products/cordyceps-nature.jpg',
       '/products/cordyceps-v2-02.png',
       '/products/cordyceps-v2-03.png',
       '/products/cordyceps-v2-04.png',
@@ -304,6 +306,7 @@ export const products = [
     image: '/products/tongkat-v2-01.png',
     gallery: [
       '/products/tongkat-v2-01.png',
+      '/products/tongkat-nature.jpg',
       '/products/tongkat-v2-02.png',
       '/products/tongkat-v2-03.png',
       '/products/tongkat-v2-04.jpeg',
@@ -489,6 +492,7 @@ export const products = [
     image: '/products/maca-v2-01.png',
     gallery: [
       '/products/maca-v2-01.png',
+      '/products/maca-nature.jpg',
       '/products/maca-v2-02.png',
       '/products/maca-v2-03.png',
       '/products/maca-v2-04.jpeg',

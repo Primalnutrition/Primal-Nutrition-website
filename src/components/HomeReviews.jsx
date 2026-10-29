@@ -4,7 +4,7 @@ import { reviews } from './Reviews.jsx'
 
 /* One large lifestyle image beside one quote at a time — calmer than a card grid. */
 const SHOWN = reviews.slice(0, 3)
-const IMG = '/products/trex-v2-01.png'   // placeholder → /home/reviews-lifestyle.jpg
+const IMG = '/home/reviews-hand.jpg'
 
 export default function HomeReviews() {
   const [i, setI] = useState(0)
@@ -17,7 +17,7 @@ export default function HomeReviews() {
   return (
     <section className="py-16 lg:py-24 bg-ink-800/30">
       <div className="container-x grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-        <div className="rounded-3xl overflow-hidden aspect-[4/5] sm:aspect-[4/3]">
+        <div className="rounded-3xl overflow-hidden aspect-[4/5] max-h-[720px] w-full">
           <Picture src={IMG} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         </div>
         <div className="max-w-lg">
