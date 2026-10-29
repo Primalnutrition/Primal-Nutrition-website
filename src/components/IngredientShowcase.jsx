@@ -138,9 +138,40 @@ const INGREDIENTS = {
   },
 }
 
+/* Large herb photo (4:5) shown beside the herb detail on single-herb products;
+   the multi-herb Liver Detox shows its flat-lay as a wide strip instead. */
+const HERO = {
+  'trex-ginseng': '/products/herbs/ginseng.jpg',
+  'trex-cordyceps': '/products/herbs/cordyceps.jpg',
+  'trex-royal-jelly': '/products/herbs/royaljelly.jpg',
+  'trex-maca': '/products/herbs/maca.jpg',
+  'trex-tongkat': '/products/herbs/tongkat.jpg',
+  'trex-liver': '/products/herbs/liver.jpg',
+}
+
+function FeaturedHerb({ h, src }) {
+  return (
+    <div className="sm:col-span-2 rounded-2xl border border-bone/10 hover:border-amber/30 transition bg-ink-800/40 overflow-hidden grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+      <div className="aspect-[4/5] md:aspect-auto md:min-h-[420px] relative">
+        <Picture src={src} alt={h.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+      <div className="p-6 lg:p-8 flex flex-col justify-center">
+        <div className="text-[10px] uppercase tracking-widest text-amber font-brand mb-3">{h.role}</div>
+        <div className="font-display text-2xl lg:text-3xl uppercase tracking-tight text-bone leading-tight">{h.name}</div>
+        <div className="font-stencil text-gradient-primal text-3xl leading-none mt-2 mb-2">{h.dose}</div>
+        <div className="text-[10px] uppercase tracking-widest text-bone/40 italic font-brand mb-5">{h.sanskrit} · {h.botanical}</div>
+        <p className="text-[15px] text-bone/70 leading-relaxed mb-5">{h.detail}</p>
+        <div className="pt-4 border-t border-bone/10 text-[10px] uppercase tracking-widest text-bone/45 font-brand">Sourced · {h.source}</div>
+      </div>
+    </div>
+  )
+}
+
 export default function IngredientShowcase({ product }) {
   const data = INGREDIENTS[product.id]
   if (!data) return null
+  const hero = HERO[product.id]
+  const featured = hero && data.items.length === 1
 
   return (
     <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
@@ -160,7 +191,13 @@ export default function IngredientShowcase({ product }) {
         <div className="grid lg:grid-cols-12 gap-6">
           {/* Ingredient cards — expand on tap */}
           <div data-reveal-stagger className="lg:col-span-8 grid sm:grid-cols-2 gap-4 self-start">
-            {data.items.map((h) => (
+            {featured && <FeaturedHerb h={data.items[0]} src={hero} />}
+            {hero && !featured && (
+              <div className="sm:col-span-2 rounded-2xl overflow-hidden aspect-[2/1] relative">
+                <Picture src={hero} alt="Classical Ayurvedic herbs" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+              </div>
+            )}
+            {!featured && data.items.map((h) => (
               <details
                 key={h.name}
                 className="group card-lift rounded-2xl border border-bone/10 bg-ink-800/40 hover:border-amber/30 transition overflow-hidden"

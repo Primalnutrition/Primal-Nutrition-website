@@ -762,6 +762,7 @@ const FORGE_BANDS = {
   },
   'trex-cordyceps': {
     image: '/products/forge/trex-cordyceps.jpg',
+    origin: { base: '/products/origin/cordyceps', caption: 'Himalayan & Tibetan plateau' },
     eyebrow: 'Keedajadi',
     title: (<>Born at altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
     body: 'Cordyceps sinensis is a rare medicinal fungus traditionally found on the high Himalayan and Tibetan plateau, prized for centuries for stamina.',
@@ -786,6 +787,7 @@ const FORGE_BANDS = {
   },
   'trex-royal-jelly': {
     image: '/products/forge/trex-royal-jelly.jpg',
+    origin: { base: '/products/origin/royaljelly', caption: 'Forest hives, India' },
     eyebrow: 'Made by bees',
     title: (<>Food fit<br /><span className="text-shimmer">for a queen.</span></>),
     body: 'Royal jelly is what worker bees feed their queen. Rich in protein, amino acids and B vitamins.',
@@ -829,6 +831,15 @@ function ForgeBand({ product }) {
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
         />
+      ) : band.origin ? (
+        <picture>
+          <source media="(max-width: 767px)" type="image/avif" srcSet={`${band.origin.base}-mob.avif`} />
+          <source media="(max-width: 767px)" type="image/webp" srcSet={`${band.origin.base}-mob.webp`} />
+          <source media="(max-width: 767px)" srcSet={`${band.origin.base}-mob.jpg`} />
+          <source type="image/avif" srcSet={`${band.origin.base}-dsk.avif`} />
+          <source type="image/webp" srcSet={`${band.origin.base}-dsk.webp`} />
+          <img src={`${band.origin.base}-dsk.jpg`} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center" />
+        </picture>
       ) : (
         <Picture
           src={band.image}
@@ -840,10 +851,20 @@ function ForgeBand({ product }) {
       )}
 
       {/* Primal gradient stack — ink edges, brand-red/rust heat, grain */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
-      <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
-      <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+      {band.origin ? (
+        <>
+          {/* Real origin photo: keep it vivid, darken only the text side */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/10 to-ink/30 md:bg-gradient-to-r md:from-ink/80 md:via-ink/25 md:to-transparent" />
+          <div className="absolute bottom-4 right-4 md:right-6 px-3 py-1.5 rounded-full bg-ink/60 backdrop-blur text-[10px] uppercase tracking-[0.22em] text-bone/85 font-brand">{band.origin.caption}</div>
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
+          <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
+          <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+        </>
+      )}
 
       {/* Copy */}
       <div className="container-x relative h-full flex items-center">
