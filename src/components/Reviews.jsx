@@ -22,7 +22,7 @@ export default function Reviews({ limit, compact = false }) {
               <span className="italic font-medium text-amber-light">One bottle that delivered.</span>
             </h2>
           </div>
-          {!compact && (
+          {false && (
           <div className="flex items-center gap-6">
             <div className="text-center">
               <div className="flex items-center gap-1 text-amber text-2xl">★★★★★</div>
@@ -69,11 +69,7 @@ export default function Reviews({ limit, compact = false }) {
           ))}
         </div>
 
-        {!compact && (
-        <div className="mt-12 text-center">
-          <a href="#" className="btn-ghost text-sm">Read all 2,431 reviews →</a>
-        </div>
-        )}
+        
       </div>
     </section>
   )

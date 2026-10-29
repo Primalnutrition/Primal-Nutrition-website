@@ -15,7 +15,7 @@ export default function Shop() {
       <div className="container-x">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
           <div className="max-w-2xl">
-            <div className="eyebrow mb-5">The Stack · 10 Products</div>
+            <div className="eyebrow mb-5">The Range · 8 Products</div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05] mb-5">
               Build your protocol.<br/>
               <span className="italic font-medium text-amber-light">One bottle at a time.</span>

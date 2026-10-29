@@ -1,5 +1,8 @@
 /* Shared thin-line icon paths (32×32 viewBox) used on the product pages and the homepage. */
 export const BENEFIT_ICONS = {
+  brain: (<><path d="M13 6a4 4 0 0 0-4 4 4 4 0 0 0-2.5 7A4 4 0 0 0 10 22a3 3 0 0 0 6 1V8a3 3 0 0 0-3-2z" /><path d="M19 6a4 4 0 0 1 4 4 4 4 0 0 1 2.5 7A4 4 0 0 1 22 22a3 3 0 0 1-6 1" /></>),
+  shield: (<><path d="M16 4l10 4v7c0 6-4.5 10.5-10 13C10.5 25.5 6 21 6 15V8l10-4z" /><path d="M11.5 15.5l3 3 6-6" /></>),
+  scale: (<><path d="M16 5v21M8 26h16M6 10h20" /><path d="M6 10l-3 8a4 4 0 0 0 6 0l-3-8zM26 10l-3 8a4 4 0 0 0 6 0l-3-8z" /></>),
   peak: (<><path d="M3 26L12 9l5 8 3-5 9 14z" /><path d="M9.5 14.5l2.5 2.5 2-2" /></>),
   filter: (<><path d="M16 4s-8 9-8 15a8 8 0 0 0 16 0c0-6-8-15-8-15z" /><path d="M12 20h8M13.5 24h5" /></>),
   pot: (<><path d="M6 14h20v6a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8v-6z" /><path d="M4 14h24M12 6c0 2 2 2 2 4M18 6c0 2 2 2 2 4" /></>),

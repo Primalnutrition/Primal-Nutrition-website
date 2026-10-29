@@ -3,7 +3,7 @@ import PrimalLogo from './PrimalLogo.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 
 const PRODUCTS = [
-  { id: 'trex-liquid',      name: 'T-Rex Strength & Testosterone Booster', pack: '500 ml liquid' },
+  { id: 'trex-liquid',      name: 'T-REX Liquid', pack: '500 ml liquid' },
   { id: 'trex-cordyceps',   name: 'Primal Nutrition Cordyceps Capsules',   pack: '60 capsules' },
   { id: 'trex-royal-jelly', name: 'Primal Nutrition Royal Jelly Capsules', pack: '60 capsules' },
   { id: 'trex-maca',        name: 'Primal Nutrition Black Maca Capsules',  pack: '60 capsules' },
@@ -91,7 +91,7 @@ function ComplianceBlock({ product, onBack }) {
 
         {/* Trust note */}
         <p className="text-center text-bone/30 text-[11px] leading-relaxed px-2">
-          This page is only accessible via the QR code printed on the original Primal Nutrition product label.
+          Product and compliance details for your Primal Nutrition product.
           If you received this product without a label QR, please contact customer care.
         </p>
 
@@ -132,7 +132,7 @@ export default function ProductInfoPage({ productId }) {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-2 h-2 rounded-full bg-amber animate-pulse" />
-            <span className="text-amber text-[10px] font-bold uppercase tracking-widest">QR Verified · Authentic Label</span>
+            <span className="text-amber text-[10px] font-bold uppercase tracking-widest">Product details</span>
           </div>
           <h1 className="font-display text-2xl font-black tracking-tight leading-tight mb-2">
             Which product are you holding?

@@ -149,7 +149,7 @@ export default function ProductDetail({ productId }) {
 
             {/* Content */}
             <div className="lg:col-span-6">
-              {product.tier && !['trex-liquid', 'trex-tongkat'].includes(product.id) && (
+              {product.tier && false && (
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold mb-5 px-3 py-1 rounded-full bg-amber/15 text-amber border border-amber/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                   {tiers[product.tier]?.label || product.tier} · {tiers[product.tier]?.role}
@@ -756,39 +756,39 @@ const FORGE_BANDS = {
   },
   'trex-maca': {
     image: '/products/forge/trex-maca.jpg',
-    eyebrow: 'Andean fire',
-    title: (<>Rooted in altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
-    body: 'Black maca grows where the air thins and the cold bites — high in the Andes. That adversity is exactly what makes it potent.',
+    eyebrow: 'The Andes, Peru',
+    title: (<>Grown at<br /><span className="text-shimmer">4,100 metres.</span></>),
+    body: 'Black maca grows on the Junín plateau where the air is thin and the cold bites. That harsh start is what makes the root so potent.',
   },
   'trex-cordyceps': {
     image: '/products/forge/trex-cordyceps.jpg',
-    eyebrow: 'Born in thin air',
-    title: (<>Thrives where<br /><span className="text-shimmer">oxygen runs low.</span></>),
-    body: 'Cordyceps evolved on the high Himalayan plateau to wring energy from scarce air — and it trains your body to do the same.',
+    eyebrow: 'Keedajadi',
+    title: (<>Born at altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
+    body: 'Cordyceps sinensis is a rare medicinal fungus traditionally found on the high Himalayan and Tibetan plateau, prized for centuries for stamina.',
   },
   'hydra-muscle': {
     image: '/products/forge/hydra-muscle.jpg',
-    eyebrow: 'Pure as the source',
-    title: (<>Hydration,<br /><span className="text-shimmer">stripped to essentials.</span></>),
-    body: 'Real output starts with water and electrolytes and nothing artificial in the way. Clean in, full performance out.',
+    eyebrow: 'Pure and simple',
+    title: (<>Strength with<br /><span className="text-shimmer">the salts to match.</span></>),
+    body: 'Creatine builds strength. Pink salt, coconut water and magnesium keep you hydrated through the session.',
   },
   'trex-ginseng': {
     image: '/products/forge/trex-ginseng.jpg',
-    eyebrow: 'Forest-forged',
+    eyebrow: 'Mountains of Korea',
     title: (<>Slow-grown.<br /><span className="text-shimmer">Deeply rooted.</span></>),
-    body: 'Korean red ginseng takes years in mountain-forest soil to mature. That patience is what powers clean, lasting energy.',
+    body: 'Korean Panax takes years in mountain soil to mature. That patience is what gives clean, lasting energy.',
   },
   'trex-liver': {
     image: '/products/forge/trex-liver.jpg',
-    eyebrow: 'Cellular clean',
-    title: (<>Cleared at the<br /><span className="text-shimmer">cellular level.</span></>),
-    body: 'Your liver filters everything you put your body through. This is the support that keeps that engine running clean.',
+    eyebrow: 'Classical Ayurveda',
+    title: (<>Thirteen herbs.<br /><span className="text-shimmer">One daily formula.</span></>),
+    body: 'Kalmegh, Giloy, Bhuiamla, Katki and more, each used in Ayurveda for generations, blended with milk thistle.',
   },
   'trex-royal-jelly': {
     image: '/products/forge/trex-royal-jelly.jpg',
-    eyebrow: 'Liquid gold',
-    title: (<>The hive’s<br /><span className="text-shimmer">rawest fuel.</span></>),
-    body: 'Royal jelly is what turns an ordinary bee into a queen — concentrated vitality, straight from the comb.',
+    eyebrow: 'Made by bees',
+    title: (<>Food fit<br /><span className="text-shimmer">for a queen.</span></>),
+    body: 'Royal jelly is what worker bees feed their queen. Rich in protein, amino acids and B vitamins.',
   },
   'trex-tongkat': {
     image: '/products/forge/trex-tongkat.jpg',

@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { track } from '../lib/metaPixel.js'
+import { productById } from '../data/products.js'
 
 const RouterContext = createContext(null)
 
-const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info'])
+const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info', 'shipping', 'privacy', 'terms', 'contact', 'about'])
 
 function readRoute() {
   if (typeof window === 'undefined') return { page: 'home' }
@@ -70,6 +71,27 @@ export function RouterProvider({ children }) {
   useEffect(() => {
     if (firstRun.current) { firstRun.current = false; return }
     track('PageView')
+  }, [route])
+
+  // Per-route browser title + description (helps tabs, shares and search).
+  useEffect(() => {
+    const names = {
+      shop: 'Shop the range', stacks: 'Stacks', dealer: 'Become a dealer', 'shilajit-guide': 'Shilajit purity guide',
+      shipping: 'Shipping & delivery', privacy: 'Privacy policy', terms: 'Terms of use', contact: 'Contact us', about: 'About us',
+    }
+    const base = 'Primal Nutrition'
+    let title = `${base} — Ayurvedic strength and vitality for Indian men`
+    let desc = 'Rare herbs, sourced at origin and made the traditional way. T-REX Liquid, Tongkat Ali, Cordyceps, Black Maca and more. Free delivery, COD available.'
+    if (route.page === 'product' && route.productId) {
+      const prod = productById(route.productId)
+      title = `${prod ? prod.name : 'Product'} | ${base}`
+      desc = 'Ayurvedic strength and vitality from Primal Nutrition. Free delivery, COD available, every batch third-party tested.'
+    } else if (names[route.page]) {
+      title = `${names[route.page]} | ${base}`
+    }
+    document.title = title
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', desc)
   }, [route])
 
   const navigate = useCallback((next, params = {}, { scroll = true } = {}) => {

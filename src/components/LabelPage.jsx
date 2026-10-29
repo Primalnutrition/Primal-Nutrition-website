@@ -189,7 +189,7 @@ const LABEL_DATA = {
     },
     otherIngredients: 'Purified water, hazelnut flavour (natural), citric acid (preservative).',
     warnings: [
-      'Not for use by persons under 16 years of age.',
+      'Not for use by persons under 18 years of age.',
       'Keep out of reach of children.',
       'If you are pregnant, nursing, or taking any medications, consult a physician before use.',
       'Not a substitute for a varied diet.',
@@ -258,16 +258,16 @@ const LABEL_DATA = {
     ingredients: [
       {
         name: 'Cordyceps Extract',
-        scientificName: 'Cordyceps militaris',
+        scientificName: 'Cordyceps sinensis',
         amount: '1,000mg',
         perLabelDose: '1,000mg (per 2-capsule serving)',
         standardization: 'Cordycepin ≥ 0.3% · Adenosine ≥ 0.3%',
-        origin: 'Cultivated (food-grade), not wild-harvested',
+        origin: 'High-altitude caterpillar fungus (keedajadi)',
         keyBenefit: 'ATP production · VO₂ max · Stamina',
         mechanism:
           'Cordycepin (3′-deoxyadenosine) is a structural adenosine analogue that supports mitochondrial ATP synthesis. Improves oxygen utilization efficiency — measurable as VO₂ max uplift within 3–6 weeks.',
         traditionalUse:
-          'Tibetan Sherpas have used Cordyceps sinensis for high-altitude endurance for centuries. Our strain (militaris) is the cultivated equivalent — same bioactives, no wild-harvest ethical concern.',
+          'Cordyceps sinensis, known as keedajadi, is a rare medicinal fungus traditionally found on the high Himalayan and Tibetan plateau, and prized for centuries for stamina and energy.',
         study: {
           citation: 'Chen S. et al., J. Altern. Complement. Med., 2010',
           finding:
@@ -726,7 +726,7 @@ const LABEL_DATA = {
     ],
     supplementFacts: {
       servingSize: '1 scoop (10g)',
-      servingsPerContainer: 30,
+      servingsPerContainer: 25,
       caloriesPerServing: 5,
       rows: [
         { name: 'Sodium (from Himalayan Pink Salt)', amount: '160mg', dv: '7%', indent: false },
@@ -930,9 +930,9 @@ export default function LabelPage({ productId }) {
         {/* Trust badges */}
         <section className="grid grid-cols-2 gap-3">
           {[
-            { icon: '🧪', label: 'Third-Party Lab Tested', sub: 'COA on request' },
-            { icon: '🚫', label: 'No Banned Substances', sub: 'WADA compliant' },
-            { icon: '🌿', label: '100% Ayurvedic', sub: 'AYUSH registered' },
+            { icon: '🧪', label: 'Third-Party Lab Tested', sub: 'Every batch' },
+            { icon: '🚫', label: 'No Steroids or Stimulants', sub: 'Ayurvedic proprietary medicine' },
+            { icon: '🌿', label: '100% Ayurvedic', sub: 'Mfg. Lic. AL946M' },
             { icon: '🇮🇳', label: 'Made in India', sub: 'GMP facility' },
           ].map(({ icon, label, sub }) => (
             <div key={label} className="bg-bone/3 border border-bone/8 rounded-xl p-3 text-center">
@@ -981,7 +981,7 @@ export default function LabelPage({ productId }) {
         <div className="text-[10px] text-bone/30 leading-relaxed">
           Primal Nutrition India · Authentic Ayurvedic Supplements<br />
           primalnutrition.in · support@primalnutrition.in<br />
-          <span className="text-amber/40">This label is digitally verified. Counterfeit products will not load this page.</span>
+          <span className="text-amber/40">Product details provided by Primal Nutrition.</span>
         </div>
       </div>
     </div>

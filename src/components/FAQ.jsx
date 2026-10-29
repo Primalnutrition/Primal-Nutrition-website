@@ -5,7 +5,7 @@ import { useState } from 'react'
 const faqs = [
   {
     q: 'What exactly is T-Rex?',
-    a: "T-Rex is India's first 7-in-1 Natural Liquid — a Strength and Testosterone Booster combining Himalayan Shilajit with six clinically-studied Ayurvedic herbs (Ashwagandha, Arjun Chal, Gokhru, Draksha, Safed Musli, Kath Badam) in a single 500ml hazelnut-flavored liquid. 100% Ayurvedic. No artificial sweetener, non-GMO, no hidden blends, no chemicals, no stimulants, no color or dye.",
+    a: "T-REX is a 7-in-1 natural liquid combining Himalayan Shilajit with six clinically-studied Ayurvedic herbs (Ashwagandha, Arjun Chal, Gokhru, Draksha, Safed Musli, Kath Badam) in a single 500ml hazelnut-flavored liquid. 100% Ayurvedic. No artificial sweetener, non-GMO, no hidden blends, no chemicals, no stimulants, no color or dye.",
   },
   {
     q: 'How do I take it? Dosage?',
@@ -41,7 +41,7 @@ const faqs = [
   },
   {
     q: 'Shipping + payment?',
-    a: 'Free pan-India shipping. Pay online (UPI, card, netbanking) and save ₹200, or choose cash on delivery with a ₹99 convenience charge. No-contact shipping standard.',
+    a: 'Free pan-India shipping. Pay online (UPI, card, netbanking) and save ₹200, or choose cash on delivery at no extra charge. No-contact shipping standard.',
   },
   {
     q: 'Can I stack T-Rex with other supplements?',

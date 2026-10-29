@@ -24,6 +24,7 @@ const DealerPage = lazy(() => import('./components/DealerPage.jsx'))
 const ShilajitGuide = lazy(() => import('./components/ShilajitGuide.jsx'))
 const LabelPage = lazy(() => import('./components/LabelPage.jsx'))
 const ProductInfoPage = lazy(() => import('./components/ProductInfoPage.jsx'))
+const PolicyPage = lazy(() => import('./components/PolicyPage.jsx'))
 
 function HomePage() {
   const { navigate } = usePage()
@@ -121,6 +122,7 @@ function PageBody() {
   if (page === 'shilajit-guide') return guarded(<ShilajitGuide />)
   if (page === 'label') return guarded(<LabelPage productId={productId} />)
   if (page === 'product-info') return guarded(<ProductInfoPage productId={productId} />)
+  if (['shipping', 'privacy', 'terms', 'contact', 'about'].includes(page)) return guarded(<PolicyPage which={page} />)
   return <HomePage />
 }
 

@@ -490,13 +490,15 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
               {lineItems.map((l, i) => (
                 <div key={`${l.productId}-${l.variantId}-${i}`} className="flex gap-3 p-3 rounded-xl border border-bone/10 bg-ink/40">
-                  <div className={`flex-shrink-0 w-16 h-16 rounded-lg bg-gradient-to-br ${l.product.accent} flex items-center justify-center font-display font-black text-ink/70 text-2xl`}>
-                    {l.product.name[0]}
-                  </div>
+                  {l.product.image ? (
+                    <img src={l.product.image} alt={l.product.name} className="flex-shrink-0 w-16 h-16 rounded-lg object-cover bg-ink-800" loading="lazy" />
+                  ) : (
+                    <div className={`flex-shrink-0 w-16 h-16 rounded-lg bg-gradient-to-br ${l.product.accent} flex items-center justify-center font-display font-black text-ink/70 text-2xl`}>{l.product.name[0]}</div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="font-semibold leading-tight">{l.product.name}</div>
-                      <button onClick={() => removeItem(i)} aria-label="Remove" className="text-bone/40 hover:text-rust transition shrink-0">
+                      <button onClick={() => removeItem(i)} aria-label="Remove" className="text-bone/40 hover:text-rust transition shrink-0 p-2 -m-2">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 3h6"/></svg>
                       </button>
                     </div>
@@ -538,7 +540,7 @@ export default function CartDrawer() {
               </div>
               <div className="text-[11px] uppercase tracking-widest text-bone/40 flex items-center gap-2">
                 <svg className="w-3 h-3 text-forest" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                Free shipping over ₹1000 · 3rd party tested
+                Free delivery · Third-party tested
               </div>
               <button
                 onClick={() => {
@@ -599,7 +601,7 @@ function QtyStepper({ qty, onChange }) {
         onClick={() => onChange(qty - 1)}
         disabled={qty <= 1}
         aria-label="Decrease quantity"
-        className="w-7 h-7 flex items-center justify-center text-bone/60 hover:text-amber disabled:opacity-30 transition"
+        className="w-9 h-9 flex items-center justify-center text-bone/60 hover:text-amber disabled:opacity-30 transition"
       >−</button>
       <span className="px-2 min-w-[1.5rem] text-center font-medium tabular-nums">{qty}</span>
       <button
