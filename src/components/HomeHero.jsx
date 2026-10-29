@@ -7,7 +7,27 @@ import { usePage } from '../context/RouterContext.jsx'
    (~1030×1526, product low, open sky on top), each as avif/webp/jpg. */
 const SLIDES = [
   {
+    base: '/home/hero-speed',
+    tone: 'dark',                 // white text over a dark wash
+    eyebrow: 'Primal Nutrition',
+    title: ['Built for the men', 'India forgot to make.'],
+    sub: 'Rare herbs, sourced at origin. Lab-tested. Made for Indian men.',
+    cta: 'Shop the range',
+    to: { scroll: 'range' },
+  },
+  {
+    base: '/home/hero-range',
+    tone: 'dark',
+    align: 'center',
+    eyebrow: 'The Rare Herb Series',
+    title: ['Sourced from the wild.', 'Built for performance.'],
+    sub: 'Tongkat Ali, Royal Jelly, Black Maca, Cordyceps and more.',
+    cta: 'Explore the range',
+    to: { page: 'shop' },
+  },
+  {
     base: '/home/hero-trex',
+    tone: 'light',                // dark text over a white wash
     eyebrow: 'T-REX Liquid',
     title: ['Strength from the', 'roof of the world.'],
     sub: 'Himalayan Shilajit and six Ayurvedic herbs, in one daily shot.',
@@ -16,6 +36,7 @@ const SLIDES = [
   },
   {
     base: '/home/hero-tongkat',
+    tone: 'light',
     eyebrow: 'Tongkat Ali',
     title: ['Born in the', 'rainforest.'],
     sub: 'Wild-harvested Malaysian root, concentrated 100:1.',
@@ -23,20 +44,19 @@ const SLIDES = [
     to: { page: 'product', id: 'trex-tongkat' },
   },
   {
-    base: '/home/hero-cordyceps',
-    eyebrow: 'Cordyceps',
-    title: ['Thrives where', 'the air runs thin.'],
-    sub: 'The high-altitude mushroom for stamina and endurance.',
-    cta: 'Shop Cordyceps',
-    to: { page: 'product', id: 'trex-cordyceps' },
-  },
-  {
-    base: '/home/hero-maca',
-    eyebrow: 'Black Maca',
-    title: ['Grown at', '4,000 metres.'],
-    sub: 'Andean black maca for strength, drive and stamina.',
-    cta: 'Shop Black Maca',
-    to: { page: 'product', id: 'trex-maca' },
+    base: '/home/hero-sprint',
+    tone: 'light',
+    eyebrow: 'Strength · Stamina · Drive',
+    title: ['Built to', 'perform.'],
+    sub: 'Ayurvedic strength support for men who train hard.',
+    cta: 'Shop T-REX',
+    to: { page: 'product', id: 'trex-liquid' },
+    callouts: [
+      { label: 'Strength', style: { left: '62%', top: '18%' } },
+      { label: 'Drive', style: { left: '86%', top: '30%' } },
+      { label: 'Stamina', style: { left: '52%', top: '56%' } },
+      { label: 'Recovery', style: { left: '70%', top: '72%' } },
+    ],
   },
 ]
 
@@ -84,7 +104,10 @@ export default function HomeHero() {
     touchX.current = null
   }
 
-  const onCta = (to) => navigate(to.page, to.id ? { id: to.id } : undefined)
+  const onCta = (to) => {
+    if (to.scroll) document.getElementById(to.scroll)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    else navigate(to.page, to.id ? { id: to.id } : undefined)
+  }
 
   return (
     <section
@@ -104,18 +127,37 @@ export default function HomeHero() {
           aria-hidden={i !== active}
         >
           <SlideImage base={s.base} eager={i === 0} />
-          {/* Soft light wash on the text side only, so the photo stays bright */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/10 to-transparent md:bg-gradient-to-r md:from-white/55 md:via-white/10" />
-          <div className="container-x relative h-full flex flex-col justify-start pt-10 md:justify-center md:pt-0">
-            <div className="max-w-md lg:max-w-xl">
-              <div className="eyebrow mb-4 text-amber">{s.eyebrow}</div>
-              <h1 className="font-display font-black text-ink text-[2.4rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-4">
-                {s.title[0]}<br /><span className="text-amber">{s.title[1]}</span>
+          {/* Wash on the text side only, so the photo stays vivid */}
+          <div className={`absolute inset-0 ${
+            s.align === 'center'
+              ? 'bg-ink/35'
+              : s.tone === 'dark'
+                ? 'bg-gradient-to-b from-ink/55 via-ink/10 to-transparent md:bg-gradient-to-r md:from-ink/65 md:via-ink/15'
+                : 'bg-gradient-to-b from-white/60 via-white/10 to-transparent md:bg-gradient-to-r md:from-white/55 md:via-white/10'
+          }`} />
+          <div className={`container-x relative h-full flex flex-col ${
+            s.align === 'center' ? 'justify-center items-center text-center' : 'justify-start pt-10 md:justify-center md:pt-0'
+          }`}>
+            <div className={s.align === 'center' ? 'max-w-xl' : 'max-w-md lg:max-w-xl'}>
+              <div className={`eyebrow mb-4 ${s.tone === 'dark' ? 'text-white/85' : 'text-amber'}`}>{s.eyebrow}</div>
+              <h1 className={`font-display font-black text-[2.4rem] sm:text-6xl lg:text-7xl tracking-tightest leading-[0.98] mb-4 ${s.tone === 'dark' ? 'text-white' : 'text-ink'}`}>
+                {s.title[0]}<br /><span className={s.tone === 'dark' ? 'text-white/90 italic font-medium' : 'text-amber'}>{s.title[1]}</span>
               </h1>
-              <p className="text-base lg:text-lg text-ink/75 leading-relaxed max-w-sm lg:max-w-md mb-6 lg:mb-8">{s.sub}</p>
+              <p className={`text-base lg:text-lg leading-relaxed mb-6 lg:mb-8 ${s.align === 'center' ? 'mx-auto max-w-md' : 'max-w-sm lg:max-w-md'} ${s.tone === 'dark' ? 'text-white/85' : 'text-ink/75'}`}>{s.sub}</p>
               <button onClick={() => onCta(s.to)} className="btn-primary">{s.cta}</button>
             </div>
           </div>
+          {/* Benefit callouts (desktop) — plain labels, no invented numbers */}
+          {s.callouts && i === active && (
+            <div aria-hidden="true" className="hidden lg:block absolute inset-0 pointer-events-none">
+              {s.callouts.map((c) => (
+                <div key={c.label} style={c.style} className="absolute flex items-center gap-2">
+                  <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full rounded-full bg-amber/60 animate-ping" /><span className="relative inline-flex h-3 w-3 rounded-full bg-amber" /></span>
+                  <span className="font-brand text-[11px] uppercase tracking-[0.22em] text-ink/80 bg-white/70 backdrop-blur px-2 py-1 rounded">{c.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
 
