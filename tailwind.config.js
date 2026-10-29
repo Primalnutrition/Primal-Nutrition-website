@@ -29,6 +29,8 @@ export default {
       fontFamily: {
         /* Display + stencil = Bebas Neue (industrial label aesthetic) */
         display: ['"Bebas Neue"', 'Impact', 'sans-serif'],
+        /* Sporty condensed (home hero banners) */
+        sport: ['"Barlow Condensed"', '"Bebas Neue"', 'Impact', 'sans-serif'],
         stencil: ['"Bebas Neue"', 'Impact', 'sans-serif'],
         /* Wordmark = Sora (geometric brand) */
         brand: ['Sora', 'Inter', 'system-ui', 'sans-serif'],

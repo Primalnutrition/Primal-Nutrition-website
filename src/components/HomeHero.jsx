@@ -139,12 +139,12 @@ export default function HomeHero() {
             s.align === 'center' ? 'justify-center items-center text-center' : 'justify-start pt-10 md:justify-center md:pt-0'
           }`}>
             <div className={s.align === 'center' ? 'max-w-xl' : 'max-w-md lg:max-w-xl'}>
-              <div className={`eyebrow mb-5 text-[13px] ${s.tone === 'dark' ? 'text-white/85' : 'text-amber'}`}>{s.eyebrow}</div>
-              <h1 className={`font-display font-black text-[2.9rem] sm:text-7xl lg:text-[5.5rem] tracking-[0.015em] leading-[1.02] mb-5 ${s.tone === 'dark' ? 'text-white' : 'text-ink'}`}>
-                {s.title[0]}<br /><span className={s.tone === 'dark' ? 'text-white/90 italic font-medium' : 'text-amber'}>{s.title[1]}</span>
+              <div className={`eyebrow font-sport font-semibold mb-5 text-[15px] lg:text-base tracking-[0.28em] ${s.tone === 'dark' ? 'text-white/85' : 'text-amber'}`}>{s.eyebrow}</div>
+              <h1 className={`font-sport font-extrabold uppercase ${Math.max(...s.title.map((t) => t.length)) > 14 ? 'text-[2.6rem] sm:text-7xl lg:text-[5.75rem]' : 'text-[3.6rem] sm:text-8xl lg:text-[7rem]'} tracking-[0.01em] leading-[0.95] mb-5 ${s.tone === 'dark' ? 'text-white' : 'text-ink'}`}>
+                {s.title[0]}<br /><span className={s.tone === 'dark' ? 'text-white/90 italic font-bold' : 'text-amber italic font-bold'}>{s.title[1]}</span>
               </h1>
-              <p className={`text-lg lg:text-xl leading-relaxed mb-7 lg:mb-9 ${s.align === 'center' ? 'mx-auto max-w-md' : 'max-w-sm lg:max-w-md'} ${s.tone === 'dark' ? 'text-white/85' : 'text-ink/75'}`}>{s.sub}</p>
-              <button onClick={() => onCta(s.to)} className="btn-primary">{s.cta}</button>
+              <p className={`font-sport font-medium text-xl lg:text-2xl tracking-wide leading-snug mb-7 lg:mb-9 ${s.align === 'center' ? 'mx-auto max-w-md' : 'max-w-sm lg:max-w-md'} ${s.tone === 'dark' ? 'text-white/85' : 'text-ink/75'}`}>{s.sub}</p>
+              <button onClick={() => onCta(s.to)} className="btn-primary font-sport font-bold uppercase tracking-[0.12em] text-lg">{s.cta}</button>
             </div>
           </div>
           {/* Benefit callouts (desktop) — plain labels, no invented numbers */}

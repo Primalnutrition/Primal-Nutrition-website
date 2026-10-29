@@ -435,6 +435,14 @@ export default function ProductDetail({ productId }) {
                 )
               })}
             </div>
+            {product.id === 'trex-liquid' && (
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                <button onClick={() => navigate('shilajit-guide')} className="btn-ghost text-sm">
+                  Read the Shilajit purity guide →
+                </button>
+                <span className="text-[13px] text-bone/50">How our Shilajit is collected, purified over 15 days, and how to spot fake.</span>
+              </div>
+            )}
           </div>
         </section>
       )}
