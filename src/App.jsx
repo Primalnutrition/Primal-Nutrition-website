@@ -10,6 +10,7 @@ import HomeApproach from './components/HomeApproach.jsx'
 import HomeRange from './components/HomeRange.jsx'
 import HomeStory from './components/HomeStory.jsx'
 import HomeReviews from './components/HomeReviews.jsx'
+import HomeManufacturing from './components/HomeManufacturing.jsx'
 import Founder from './components/Founder.jsx'
 import FAQ, { homeFaqs } from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
@@ -45,14 +46,7 @@ function HomePage() {
           body="Shilajit from the high Himalayas. Tongkat Ali from Malaysian rainforests. Black Maca from the Peruvian Andes. We go to the origin, because that is where each herb is at its most potent."
           cta={{ label: 'Read the Shilajit guide', onClick: () => navigate('shilajit-guide') }}
         />
-        <HomeStory
-          img="/home/story-factory.jpg"
-          side="right"
-          eyebrow="Made the clean way"
-          title={['Ancient recipes.', 'Clean manufacturing.']}
-          body="Made in a GMP-certified facility in Siliguri, West Bengal, by a family with more than 60 years in Ayurvedic manufacturing. Every batch is tested by an independent lab before it ships."
-          cta={{ label: 'See the lab reports', onClick: () => navigate('product-info', { id: 'trex-liquid' }) }}
-        />
+        <HomeManufacturing />
         <HomeReviews />
         <Founder compact />
         <FAQ items={homeFaqs} limit={6} compact />
