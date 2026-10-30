@@ -19,6 +19,7 @@ const REELS = [
   { id: 'dealer-4', dealer: true },
   { id: 'dealer-5', dealer: true },
   { id: 'dealer-6', dealer: true },
+  { id: 'dealer-7', dealer: true },
 ]
 
 function Reel({ reel, active, onVisible, hideChip }) {

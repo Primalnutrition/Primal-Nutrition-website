@@ -142,7 +142,7 @@ Business Type: ${form.type}`
 
       {/* Store videos */}
       <HomeReels
-        ids={['dealer-1', 'dealer-2', 'dealer-3', 'dealer-4', 'dealer-5', 'dealer-6']}
+        ids={['dealer-1', 'dealer-2', 'dealer-3', 'dealer-4', 'dealer-5', 'dealer-6', 'dealer-7']}
         eyebrow="In stores"
         title={['Primal on', 'the shop floor.']}
         hideChips
