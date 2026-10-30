@@ -15,8 +15,8 @@ const STATS = [
 const WHY = [
   { icon: 'shield', title: 'Licensed & lab tested', body: 'Made under Mfg. Lic. AL946M, with independent lab testing on every batch.' },
   { icon: 'leaf', title: 'A full rare-herb range', body: 'Eight products: T-REX, Tongkat Ali, Black Maca, Korean Ginseng, Cordyceps and more.' },
-  { icon: 'peak', title: 'Pan-India network', body: '1000+ partners across all 28 states already stock Primal.' },
-  { icon: 'bolt', title: 'Quick to start', body: 'Apply below and we reply on WhatsApp within 24 hours.' },
+  { icon: 'peak', title: 'Trusted nationwide', body: '1000+ retailers, gyms and distributors across all 28 states stock Primal.' },
+  { icon: 'user', title: 'Pan-India sales team', body: 'A dedicated sales team supports our partners across India, from the first order to every re-stock.' },
 ]
 const STEPS = [
   ['01', 'Apply below', 'Fill in the short form. It opens on WhatsApp.'],
@@ -76,7 +76,7 @@ Business Type: ${form.type}`
             <span className="text-shimmer">PRIMAL DEALER.</span>
           </h1>
           <p className="text-lg text-bone/70 max-w-2xl leading-relaxed">
-            Carrying Primal in your gym, store, or distribution network? Apply below. We respond within 24 hours via WhatsApp.
+            Join a nationwide network of retailers, gyms and distributors who trust Primal. Apply below and our partnerships team will reach out on WhatsApp within 24 hours.
           </p>
           <button
             onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
@@ -152,10 +152,13 @@ Business Type: ${form.type}`
       <section className="py-16 lg:py-24 bg-ink-800/30">
         <div className="container-x">
           <div className="max-w-2xl mb-10">
-            <div className="eyebrow mb-5">Why stock Primal</div>
+            <div className="eyebrow mb-5">Why partners choose Primal</div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
-              Easy to stock.<br /><span className="text-shimmer">Easy to sell.</span>
+              Trusted across India.<br /><span className="text-shimmer">Earned shelf by shelf.</span>
             </h2>
+            <p className="text-lg text-bone/70 leading-relaxed mt-4">
+              Retailers, distributors, gyms and customers across India trust Primal, and our partners keep growing with us.
+            </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
             {WHY.map((w) => (
