@@ -8,6 +8,7 @@ import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
 import Picture from './Picture.jsx'
 import IngredientShowcase from './IngredientShowcase.jsx'
+import HomeReels from './HomeReels.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import LabTested from './LabTested.jsx'
@@ -458,6 +459,11 @@ export default function ProductDetail({ productId }) {
 
       {/* ── What's inside (ingredients showcase) ──────────── */}
       <IngredientShowcase product={product} />
+
+      {/* ── T-REX videos ── */}
+      {product.id === 'trex-liquid' && (
+        <HomeReels ids={['hand', 'brand-film', 'stack-creator', 'interview', 'dad-secret', 'stack-36']} eyebrow="Watch" title={['T-REX', 'in action.']} currentId="trex-liquid" />
+      )}
 
       {/* ── Evidence ──────────────────────────────────────── */}
       {pdp?.evidence?.length > 0 && (

@@ -6,6 +6,7 @@ import { productById } from '../data/products.js'
    (muted); tap a card to switch its sound on. Files are 720p, loaded lazily. */
 const REELS = [
   { id: 'brand-film', to: { page: 'product', id: 'trex-liquid' } },
+  { id: 'hand', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'stack-creator', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'interview', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'dad-secret', to: { page: 'product', id: 'trex-liquid' } },
@@ -13,7 +14,7 @@ const REELS = [
   { id: 'stack-36', to: { page: 'stacks' } },
 ]
 
-function Reel({ reel, active, onVisible }) {
+function Reel({ reel, active, onVisible, hideChip }) {
   const { navigate } = usePage()
   const box = useRef(null)
   const video = useRef(null)
@@ -59,7 +60,7 @@ function Reel({ reel, active, onVisible }) {
           {sound ? '🔊' : '🔇'}
         </span>
       </div>
-      <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-bone/10 bg-ink-800/40 px-3 py-2.5">
+      {!hideChip && <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-bone/10 bg-ink-800/40 px-3 py-2.5">
         <div className="leading-tight min-w-0">
           <div className="font-display font-bold text-sm truncate">{label}</div>
           <div className="text-[11px] text-bone/50">{price}</div>
@@ -68,12 +69,15 @@ function Reel({ reel, active, onVisible }) {
           onClick={() => navigate(reel.to.page, reel.to.id ? { id: reel.to.id } : undefined)}
           className="shrink-0 px-3.5 py-1.5 rounded-full bg-amber text-ink text-[11px] font-brand font-bold uppercase tracking-widest"
         >Shop</button>
-      </div>
+      </div>}
     </div>
   )
 }
 
-export default function HomeReels() {
+/* Defaults are the homepage row; the T-REX page passes its own ids and copy,
+   and hides the Shop chip for the page it is already on. */
+export default function HomeReels({ ids, eyebrow = 'Watch', title = ['Real routines.', 'Real results.'], currentId }) {
+  const reels = ids ? ids.map((id) => REELS.find((r) => r.id === id)).filter(Boolean) : REELS
   const [activeId, setActiveId] = useState(null)
   const row = useRef(null)
   const scroll = (dir) => {
@@ -86,9 +90,9 @@ export default function HomeReels() {
       <div className="container-x">
         <div className="flex items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <div className="eyebrow mb-5">Watch</div>
+            <div className="eyebrow mb-5">{eyebrow}</div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
-              Real routines.<br /><span className="text-shimmer">Real results.</span>
+              {title[0]}<br /><span className="text-shimmer">{title[1]}</span>
             </h2>
           </div>
           <div className="hidden md:flex gap-2">
@@ -98,7 +102,7 @@ export default function HomeReels() {
         </div>
       </div>
       <div ref={row} className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 sm:px-6 lg:px-10 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {REELS.map((r) => <Reel key={r.id} reel={r} active={activeId === r.id} onVisible={setActiveId} />)}
+        {reels.map((r) => <Reel key={r.id} reel={r} active={activeId === r.id} onVisible={setActiveId} hideChip={r.to.id === currentId} />)}
       </div>
     </section>
   )
