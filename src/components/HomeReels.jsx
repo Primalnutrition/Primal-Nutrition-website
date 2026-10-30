@@ -5,6 +5,7 @@ import { productById } from '../data/products.js'
 /* Short vertical videos right after the range. Only the card in view plays
    (muted); tap a card to switch its sound on. Files are 720p, loaded lazily. */
 const REELS = [
+  { id: 'brand-film', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'stack-creator', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'interview', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'dad-secret', to: { page: 'product', id: 'trex-liquid' } },
