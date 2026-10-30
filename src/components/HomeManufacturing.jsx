@@ -1,11 +1,9 @@
 import { usePage } from '../context/RouterContext.jsx'
 import Picture from './Picture.jsx'
 
-/* Homepage teaser for the Manufacturing page: a short brief, a 2×2 glimpse
+/* Homepage teaser for the Manufacturing page: a short brief, a glimpse
    of the photos (no captions), and a "Know more" button. */
 const IMAGES = [
-  '/manufacturing/tanks.jpg',
-  '/manufacturing/floor.jpg',
   '/manufacturing/warehouse-qc.jpg',
   '/manufacturing/warehouse-stock.jpg',
 ]

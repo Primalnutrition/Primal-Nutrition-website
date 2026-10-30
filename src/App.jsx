@@ -8,6 +8,7 @@ import HomeHero from './components/HomeHero.jsx'
 import HomeProblems from './components/HomeProblems.jsx'
 import HomeApproach from './components/HomeApproach.jsx'
 import HomeRange from './components/HomeRange.jsx'
+import HomeReels from './components/HomeReels.jsx'
 import HomeStory from './components/HomeStory.jsx'
 import HomeReviews from './components/HomeReviews.jsx'
 import HomeManufacturing from './components/HomeManufacturing.jsx'
@@ -36,6 +37,7 @@ function HomePage() {
         <HomeHero />
         <TrustStrip />
         <HomeRange />
+        <HomeReels />
         <HomeProblems />
         <HomeApproach />
         <HomeStory

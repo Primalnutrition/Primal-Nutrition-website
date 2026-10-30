@@ -149,20 +149,50 @@ const HERO = {
   'trex-liver': '/products/herbs/liver.jpg',
 }
 
-function FeaturedHerb({ h, src }) {
+/* "Sourced from" photo shown beside the herb photo on single-herb products */
+const ORIGIN = {
+  'trex-cordyceps': { src: '/products/origin/cordyceps-tile.jpg', caption: 'Himalayan & Tibetan plateau' },
+  'trex-royal-jelly': { src: '/products/origin/royaljelly-tile.jpg', caption: 'Forest hives, India' },
+  'trex-maca': { src: '/products/origin/maca-tile.jpg', caption: 'Junín, Peru · 4,100 m' },
+  'trex-ginseng': { src: '/products/origin/ginseng-tile.jpg', caption: 'Mountains of Korea' },
+  'trex-tongkat': { src: '/products/origin/tongkat-tile.jpg', caption: 'Malaysian rainforest' },
+}
+
+function FeaturedHerb({ h, src, origin }) {
+  const text = (
+    <>
+      <div className="text-[10px] uppercase tracking-widest text-amber font-brand mb-3">{h.role}</div>
+      <div className="font-display text-2xl lg:text-3xl uppercase tracking-tight text-bone leading-tight">{h.name}</div>
+      <div className="font-stencil text-gradient-primal text-3xl leading-none mt-2 mb-2">{h.dose}</div>
+      <div className="text-[10px] uppercase tracking-widest text-bone/40 italic font-brand mb-5">{h.sanskrit} · {h.botanical}</div>
+      <p className="text-[15px] text-bone/70 leading-relaxed mb-5">{h.detail}</p>
+      <div className="pt-4 border-t border-bone/10 text-[10px] uppercase tracking-widest text-bone/45 font-brand">Sourced · {h.source}</div>
+    </>
+  )
+  if (origin) {
+    return (
+      <div className="sm:col-span-2 rounded-2xl border border-bone/10 hover:border-amber/30 transition bg-ink-800/40 overflow-hidden">
+        <div className="grid grid-cols-2 gap-1">
+          <div className="aspect-[4/5] relative">
+            <Picture src={src} alt={h.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+          </div>
+          <div className="aspect-[4/5] relative">
+            <Picture src={origin.src} alt={origin.caption} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-x-2 bottom-2 px-3 py-2 rounded-xl bg-ink/60 backdrop-blur text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-bone/90 font-brand leading-snug">
+              Sourced from · {origin.caption}
+            </div>
+          </div>
+        </div>
+        <div className="p-6 lg:p-8">{text}</div>
+      </div>
+    )
+  }
   return (
     <div className="sm:col-span-2 rounded-2xl border border-bone/10 hover:border-amber/30 transition bg-ink-800/40 overflow-hidden grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <div className="aspect-[4/5] md:aspect-auto md:min-h-[420px] relative">
         <Picture src={src} alt={h.name} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
       </div>
-      <div className="p-6 lg:p-8 flex flex-col justify-center">
-        <div className="text-[10px] uppercase tracking-widest text-amber font-brand mb-3">{h.role}</div>
-        <div className="font-display text-2xl lg:text-3xl uppercase tracking-tight text-bone leading-tight">{h.name}</div>
-        <div className="font-stencil text-gradient-primal text-3xl leading-none mt-2 mb-2">{h.dose}</div>
-        <div className="text-[10px] uppercase tracking-widest text-bone/40 italic font-brand mb-5">{h.sanskrit} · {h.botanical}</div>
-        <p className="text-[15px] text-bone/70 leading-relaxed mb-5">{h.detail}</p>
-        <div className="pt-4 border-t border-bone/10 text-[10px] uppercase tracking-widest text-bone/45 font-brand">Sourced · {h.source}</div>
-      </div>
+      <div className="p-6 lg:p-8 flex flex-col justify-center">{text}</div>
     </div>
   )
 }
@@ -191,7 +221,7 @@ export default function IngredientShowcase({ product }) {
         <div className="grid lg:grid-cols-12 gap-6">
           {/* Ingredient cards — expand on tap */}
           <div data-reveal-stagger className="lg:col-span-8 grid sm:grid-cols-2 gap-4 self-start">
-            {featured && <FeaturedHerb h={data.items[0]} src={hero} />}
+            {featured && <FeaturedHerb h={data.items[0]} src={hero} origin={ORIGIN[product.id]} />}
             {hero && !featured && (
               <div className="sm:col-span-2 rounded-2xl overflow-hidden aspect-[2/1] relative">
                 <Picture src={hero} alt="Classical Ayurvedic herbs" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
