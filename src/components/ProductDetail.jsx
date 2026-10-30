@@ -854,7 +854,7 @@ function ForgeBand({ product }) {
       {band.origin ? (
         <>
           {/* Real origin photo: keep it vivid, darken only the text side */}
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/10 to-ink/30 md:bg-gradient-to-r md:from-ink/80 md:via-ink/25 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/60 to-ink/45 md:bg-gradient-to-r md:from-ink/85 md:via-ink/35 md:to-transparent" />
           <div className="absolute bottom-4 right-4 md:right-6 px-3 py-1.5 rounded-full bg-ink/60 backdrop-blur text-[10px] uppercase tracking-[0.22em] text-bone/85 font-brand">{band.origin.caption}</div>
         </>
       ) : (
@@ -869,7 +869,7 @@ function ForgeBand({ product }) {
       {/* Copy */}
       <div className="container-x relative h-full flex items-center">
         <div className="max-w-xl">
-          <div className="eyebrow mb-5 text-amber">
+          <div className={`eyebrow mb-5 ${band.origin ? 'text-white' : 'text-amber'}`}>
             <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
             {band.eyebrow}
           </div>
