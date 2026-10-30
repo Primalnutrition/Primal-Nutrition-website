@@ -12,6 +12,13 @@ const REELS = [
   { id: 'dad-secret', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'ginseng', to: { page: 'product', id: 'trex-ginseng' } },
   { id: 'stack-36', to: { page: 'stacks' } },
+  // Retailer videos for the dealer page only (no product chip)
+  { id: 'dealer-1', dealer: true },
+  { id: 'dealer-2', dealer: true },
+  { id: 'dealer-3', dealer: true },
+  { id: 'dealer-4', dealer: true },
+  { id: 'dealer-5', dealer: true },
+  { id: 'dealer-6', dealer: true },
 ]
 
 function Reel({ reel, active, onVisible, hideChip }) {
@@ -42,7 +49,7 @@ function Reel({ reel, active, onVisible, hideChip }) {
     if (active) v.play().catch(() => {})
   }
 
-  const product = reel.to.id ? productById(reel.to.id) : null
+  const product = reel.to?.id ? productById(reel.to.id) : null
   const label = product ? product.name : 'The stacks'
   const price = product ? `₹${product.variants[0].price.toLocaleString('en-IN')}` : 'Save more'
 
@@ -76,8 +83,8 @@ function Reel({ reel, active, onVisible, hideChip }) {
 
 /* Defaults are the homepage row; the T-REX page passes its own ids and copy,
    and hides the Shop chip for the page it is already on. */
-export default function HomeReels({ ids, eyebrow = 'Watch', title = ['Real routines.', 'Real results.'], currentId }) {
-  const reels = ids ? ids.map((id) => REELS.find((r) => r.id === id)).filter(Boolean) : REELS
+export default function HomeReels({ ids, eyebrow = 'Watch', title = ['Real routines.', 'Real results.'], currentId, hideChips }) {
+  const reels = ids ? ids.map((id) => REELS.find((r) => r.id === id)).filter(Boolean) : REELS.filter((r) => !r.dealer)
   const [activeId, setActiveId] = useState(null)
   const row = useRef(null)
   const scroll = (dir) => {
@@ -102,7 +109,7 @@ export default function HomeReels({ ids, eyebrow = 'Watch', title = ['Real routi
         </div>
       </div>
       <div ref={row} className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 sm:px-6 lg:px-10 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {reels.map((r) => <Reel key={r.id} reel={r} active={activeId === r.id} onVisible={setActiveId} hideChip={r.to.id === currentId} />)}
+        {reels.map((r) => <Reel key={r.id} reel={r} active={activeId === r.id} onVisible={setActiveId} hideChip={hideChips || r.to?.id === currentId} />)}
       </div>
     </section>
   )

@@ -1,6 +1,38 @@
 import { useState } from 'react'
 import { usePage } from '../context/RouterContext.jsx'
 import Footer from './Footer.jsx'
+import Picture from './Picture.jsx'
+import HomeReels from './HomeReels.jsx'
+import IndiaStateMap from './IndiaStateMap.jsx'
+import { BENEFIT_ICONS } from '../lib/benefitIcons.jsx'
+
+const STATS = [
+  ['1000+', 'Stores & retailers'],
+  ['28', 'States across India'],
+  ['AL946M', 'Licensed Ayurvedic manufacturer'],
+  ['Every batch', 'Lab tested'],
+]
+const WHY = [
+  { icon: 'shield', title: 'Licensed & lab tested', body: 'Made under Mfg. Lic. AL946M, with independent lab testing on every batch.' },
+  { icon: 'leaf', title: 'A full rare-herb range', body: 'Eight products: T-REX, Tongkat Ali, Black Maca, Korean Ginseng, Cordyceps and more.' },
+  { icon: 'peak', title: 'Pan-India network', body: '1000+ partners across all 28 states already stock Primal.' },
+  { icon: 'bolt', title: 'Quick to start', body: 'Apply below and we reply on WhatsApp within 24 hours.' },
+]
+const STEPS = [
+  ['01', 'Apply below', 'Fill in the short form. It opens on WhatsApp.'],
+  ['02', 'We call you', 'Our team replies within 24 hours.'],
+  ['03', 'Your first order ships', 'Stock your shelves and start selling.'],
+]
+
+function IconTile({ name }) {
+  return (
+    <span className="w-12 h-12 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-amber" aria-hidden>
+        {BENEFIT_ICONS[name]}
+      </svg>
+    </span>
+  )
+}
 
 export default function DealerPage() {
   const { navigate } = usePage()
@@ -46,10 +78,119 @@ Business Type: ${form.type}`
           <p className="text-lg text-bone/70 max-w-2xl leading-relaxed">
             Carrying Primal in your gym, store, or distribution network? Apply below. We respond within 24 hours via WhatsApp.
           </p>
+          <button
+            onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="btn-primary mt-8"
+          >Apply now ↓</button>
         </div>
       </section>
 
+
+      {/* Network numbers */}
+      <section className="py-10 border-b border-bone/10">
+        <div className="container-x grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {STATS.map(([n, l]) => (
+            <div key={l} className="p-5 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.06] via-ink-800/60 to-ink text-center">
+              <div className="font-display font-bold text-3xl lg:text-4xl text-shimmer leading-none mb-2">{n}</div>
+              <div className="text-[11px] uppercase tracking-widest text-bone/60 font-brand">{l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Map */}
       <section className="py-16 lg:py-24">
+        <div className="container-x grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="max-w-lg">
+            <div className="eyebrow mb-5">Our network</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-6">
+              Stocked across<br /><span className="text-shimmer">India.</span>
+            </h2>
+            <p className="text-lg text-bone/70 leading-relaxed mb-6">
+              1000+ gyms, supplement stores and retailers across all 28 states stock Primal.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {['Retailers', 'Gyms', 'Distributors'].map((c) => (
+                <span key={c} className="px-4 py-2 rounded-full border border-amber/30 bg-amber/5 text-[11px] uppercase tracking-widest text-bone/85 font-brand font-semibold">
+                  <span className="text-amber mr-1.5">✓</span>{c}
+                </span>
+              ))}
+            </div>
+          </div>
+          <IndiaStateMap />
+        </div>
+      </section>
+
+      {/* Store photos */}
+      <section className="py-16 lg:py-24 bg-ink-800/30">
+        <div className="container-x">
+          <div className="max-w-2xl mb-10">
+            <div className="eyebrow mb-5">From our retail partners</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
+              Trusted on<br /><span className="text-shimmer">store shelves.</span>
+            </h2>
+          </div>
+          <div className="columns-2 lg:columns-3 gap-3 lg:gap-4">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <div key={n} className="mb-3 lg:mb-4 break-inside-avoid rounded-2xl overflow-hidden">
+                <Picture src={`/dealer/store-${n}.jpg`} alt="Primal T-REX at a partner store" loading="lazy" decoding="async" className="w-full h-auto block" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Store videos */}
+      <HomeReels
+        ids={['dealer-1', 'dealer-2', 'dealer-3', 'dealer-4', 'dealer-5', 'dealer-6']}
+        eyebrow="In stores"
+        title={['Primal on', 'the shop floor.']}
+        hideChips
+      />
+
+      {/* Why stock Primal */}
+      <section className="py-16 lg:py-24 bg-ink-800/30">
+        <div className="container-x">
+          <div className="max-w-2xl mb-10">
+            <div className="eyebrow mb-5">Why stock Primal</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
+              Easy to stock.<br /><span className="text-shimmer">Easy to sell.</span>
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+            {WHY.map((w) => (
+              <div key={w.title} className="p-6 rounded-2xl border border-bone/10 bg-ink-800/60">
+                <IconTile name={w.icon} />
+                <h3 className="font-display text-xl mt-4 mb-2">{w.title}</h3>
+                <p className="text-bone/65 text-[15px] leading-relaxed">{w.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 lg:py-24">
+        <div className="container-x">
+          <div className="max-w-2xl mb-10">
+            <div className="eyebrow mb-5">How it works</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
+              Three steps to<br /><span className="text-shimmer">your first order.</span>
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
+            {STEPS.map(([n, t, b]) => (
+              <div key={n} className="p-6 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.06] via-ink-800/60 to-ink">
+                <div className="font-display text-5xl text-amber/80 leading-none mb-3">{n}</div>
+                <h3 className="font-display text-xl mb-2">{t}</h3>
+                <p className="text-bone/65 text-[15px] leading-relaxed">{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="apply" className="py-16 lg:py-24 scroll-mt-24">
         <div className="container-x max-w-3xl">
           <form onSubmit={handleSubmit} className="space-y-6 bg-ink-800/40 border border-bone/10 rounded-3xl p-8 lg:p-10">
             <div className="grid sm:grid-cols-2 gap-5">
