@@ -462,7 +462,7 @@ export default function ProductDetail({ productId }) {
 
       {/* ── T-REX videos ── */}
       {product.id === 'trex-liquid' && (
-        <HomeReels ids={['hand', 'brand-film', 'stack-creator', 'interview', 'dad-secret', 'stack-36']} eyebrow="Watch" title={['T-REX', 'in action.']} currentId="trex-liquid" />
+        <HomeReels ids={['hand', 'customer-ad', 'brand-film', 'stack-creator', 'interview', 'dad-secret', 'stack-36']} eyebrow="Watch" title={['T-REX', 'in action.']} currentId="trex-liquid" />
       )}
 
       {/* ── Evidence ──────────────────────────────────────── */}

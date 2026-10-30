@@ -131,7 +131,7 @@ Business Type: ${form.type}`
             </h2>
           </div>
           <div className="columns-2 lg:columns-3 gap-3 lg:gap-4">
-            {[1, 2, 3, 4, 5].map((n) => (
+            {[1, 2, 3, 4, 5, 6].map((n) => (
               <div key={n} className="mb-3 lg:mb-4 break-inside-avoid rounded-2xl overflow-hidden">
                 <Picture src={`/dealer/store-${n}.jpg`} alt="Primal T-REX at a partner store" loading="lazy" decoding="async" className="w-full h-auto block" />
               </div>
