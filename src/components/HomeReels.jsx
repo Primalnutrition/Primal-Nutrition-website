@@ -7,12 +7,14 @@ import { productById } from '../data/products.js'
 const REELS = [
   { id: 'brand-film', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'customer-ad', to: { page: 'product', id: 'trex-liquid' } },
+  { id: 'gym-ritual', to: { page: 'product', id: 'trex-liquid' } },
+  { id: 'match-day', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'hand', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'stack-creator', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'interview', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'dad-secret', to: { page: 'product', id: 'trex-liquid' } },
   { id: 'ginseng', to: { page: 'product', id: 'trex-ginseng' } },
-  { id: 'stack-36', to: { page: 'stacks' } },
+  { id: 'stack-36', to: { page: 'stacks' }, shopAll: true },
   // Retailer videos for the dealer page only (no product chip)
   { id: 'dealer-1', dealer: true },
   { id: 'dealer-2', dealer: true },
@@ -79,6 +81,7 @@ function Reel({ reel, active, onVisible, hideChip }) {
           className="shrink-0 px-3.5 py-1.5 rounded-full bg-amber text-ink text-[11px] font-brand font-bold uppercase tracking-widest"
         >Shop</button>
       </div>}
+      {reel.shopAll && <button onClick={() => navigate('shop')} className="btn-primary w-full mt-3 justify-center text-sm">Shop all products →</button>}
     </div>
   )
 }
