@@ -28,6 +28,7 @@ const LabelPage = lazy(() => import('./components/LabelPage.jsx'))
 const ProductInfoPage = lazy(() => import('./components/ProductInfoPage.jsx'))
 const PolicyPage = lazy(() => import('./components/PolicyPage.jsx'))
 const ManufacturingPage = lazy(() => import('./components/ManufacturingPage.jsx'))
+const AthletesPage = lazy(() => import('./components/AthletesPage.jsx'))
 
 function HomePage() {
   const { navigate } = usePage()
@@ -120,6 +121,7 @@ function PageBody() {
   if (page === 'label') return guarded(<LabelPage productId={productId} />)
   if (page === 'product-info') return guarded(<ProductInfoPage productId={productId} />)
   if (page === 'manufacturing') return guarded(<ManufacturingPage />)
+  if (page === 'athletes') return guarded(<AthletesPage />)
   if (['shipping', 'privacy', 'terms', 'contact', 'about'].includes(page)) return guarded(<PolicyPage which={page} />)
   return <HomePage />
 }

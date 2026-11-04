@@ -45,6 +45,7 @@ export default function Footer() {
               <a href="#/manufacturing">Our Manufacturing</a>
               <a href="#/shop">Our Products</a>
               <a href="#/dealer">Wholesale</a>
+              <a href="#/athletes">T-REX Athletes</a>
               <a href="#/about">About us</a>
             </Col>
           </div>
