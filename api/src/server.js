@@ -20,10 +20,12 @@ import webhooksRouter from './routes/webhooks.js'
 import authRouter from './routes/auth.js'
 import cronRouter from './routes/cron.js'
 import subscribeRouter from './routes/subscribe.js'
+import creatorsRouter from './routes/creators.js'
 import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
 import adminChatRouter from './routes/admin/chat.js'
+import adminCreatorsRouter from './routes/admin/creators.js'
 import adminAdsRouter from './routes/admin/ads.js'
 
 // ─── Package version for health endpoint ──────────────────────────────────────
@@ -100,6 +102,7 @@ app.use('/api/products', productsRouter)
 app.use('/api/checkout', checkoutRouter)
 app.use('/api/webhooks', webhooksRouter)
 app.use('/api/subscribe', subscribeRouter)
+app.use('/api/creators', creatorsRouter)
 
 // ─── Admin OTP login (public — issues session tokens) ─────────────────────────
 app.use('/auth', authRouter)
@@ -113,6 +116,7 @@ app.use('/api/admin/customers', adminCustomersRouter)
 app.use('/api/admin/orders', adminOrdersRouter)
 app.use('/api/admin/analytics', adminAnalyticsRouter)
 app.use('/api/admin/chat', adminChatRouter)
+app.use('/api/admin/creators', adminCreatorsRouter)
 app.use('/api/admin/ads', adminAdsRouter)
 
 // ─── 404 + error handlers — MUST be last ──────────────────────────────────────
