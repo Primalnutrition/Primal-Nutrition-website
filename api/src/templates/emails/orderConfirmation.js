@@ -121,6 +121,15 @@ export function buildOrderConfirmationHtml({ customerName, orderNumber, totalInr
           </td>
         </tr>
         <tr>
+          <td style="padding:0 32px 32px 32px;">
+            <div style="background-color:#101010;border:1px solid #1f1f1f;border-radius:4px;padding:20px;text-align:center;">
+              <p style="margin:0 0 6px 0;font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.25em;color:${RED};text-transform:uppercase;font-weight:700;">T-REX Athletes</p>
+              <p style="margin:0 0 12px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:${BONE};">Train, run or ride? Join the pack — a community of everyday athletes who show up and share the grind.</p>
+              <a href="https://primalnutrition.in/#/athletes" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:0.1em;color:${RED};text-transform:uppercase;font-weight:700;text-decoration:none;">Join the pack &rarr;</a>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td style="padding:0 24px;">
             <div style="height:1px;background-color:#1a1a1a;"></div>
           </td>
@@ -168,6 +177,10 @@ TOTAL: ${formatInr(totalInr)}
 Your tracking updates will be shared with you shortly.
 
 Until then — Train harder. Recover smarter. Perform stronger.
+
+T-REX ATHLETES
+Train, run or ride? Join the pack, a community of everyday athletes who show up and share the grind:
+https://primalnutrition.in/#/athletes
 
 ---
 THE POWER TO PERFORM
