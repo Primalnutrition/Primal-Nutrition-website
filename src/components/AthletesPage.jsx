@@ -4,24 +4,20 @@ import Footer from './Footer.jsx'
 import HomeReels from './HomeReels.jsx'
 import { api } from '../lib/api.js'
 
-/* T-REX Athletes: barter program for small fitness creators.
-   We send a free bottle; they post honest content about their routine. */
+/* T-REX Athletes: community page for everyday athletes who create content.
+   Terms are shared privately after review. */
 const SPORTS = ['Gym / Strength', 'Running', 'Marathon', 'Cycling', 'CrossFit / HYROX', 'Calisthenics', 'Combat sports', 'Other sport']
 
-const GET = [
-  ['Free T-REX', 'A full 500 ml bottle of T-REX, shipped free to your door.'],
-  ['Featured on our page', 'The best videos are reshared on @primalnutritiontrex, credited to you.'],
-  ['Long-term partnership', 'Creators whose content performs can join our paid partner roster.'],
+const PILLARS = [
+  ['Show up.', 'Consistency over everything. The quiet reps add up.'],
+  ['Share the grind.', 'Your routine might be the push someone else needed today.'],
+  ['Rise together.', 'A community of athletes who lift each other, on and off the field.'],
 ]
-const GIVE = [
-  ['1 Reel', 'Your real routine with T-REX: training, running, riding, match day.'],
-  ['2 Stories', 'Unboxing or your first shot, tagging @primalnutritiontrex.'],
-  ['Within 14 days', 'Posted within 14 days of delivery, labelled as a paid partnership.'],
-]
+const GRINDS = ['Gym', 'Running', 'Marathon', 'Cycling', 'CrossFit / HYROX', 'Calisthenics', 'Combat sports']
 const STEPS = [
-  ['01', 'Apply below', 'Two minutes. Tell us about your sport and your page.'],
-  ['02', 'We review', 'Our team checks your profile and confirms on WhatsApp or email.'],
-  ['03', 'T-REX ships', 'Your bottle arrives. Train, create, tag us.'],
+  ['01', 'Tell us your story', 'Who you are, how you train, where you share it.'],
+  ['02', 'We get to know you', 'Our team reaches out personally on WhatsApp or email.'],
+  ['03', 'Train as one', 'Welcome to T-REX Athletes.'],
 ]
 
 const EMPTY = {
@@ -69,20 +65,35 @@ export default function AthletesPage() {
             <span className="text-shimmer">T-REX ATHLETE.</span>
           </h1>
           <p className="text-lg text-bone/70 max-w-2xl leading-relaxed">
-            You train hard and share it. We send you T-REX free. Post your real routine with it and grow with a brand that backs everyday athletes.
+            For the ones who show up before sunrise, chase one more kilometre and never skip the last set. T-REX Athletes is a community of everyday men who train for themselves — and share it to push others forward.
           </p>
           <button
             onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
             className="btn-primary mt-8"
-          >Apply now ↓</button>
+          >Join the pack ↓</button>
         </div>
       </section>
 
-      {/* What you get / what we ask */}
+      {/* Manifesto */}
       <section className="py-16 lg:py-24">
-        <div className="container-x grid lg:grid-cols-2 gap-10 lg:gap-16">
-          <Block eyebrow="What you get" title={['Free T-REX,', 'shipped to you.']} items={GET} />
-          <Block eyebrow="What we ask" title={['Real content,', 'your way.']} items={GIVE} />
+        <div className="container-x">
+          <div className="max-w-3xl mb-10">
+            <div className="eyebrow mb-5">Why we exist</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-6">
+              Strength isn't built<br /><span className="text-shimmer">on stage.</span>
+            </h2>
+            <p className="text-lg text-bone/70 leading-relaxed">
+              It's built at 5 AM in a half-empty gym. On empty roads before the city wakes up. In the last kilometre when your legs say stop. We started T-REX for the men who do the work when nobody's watching — and we want to stand beside the ones who share that journey.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
+            {PILLARS.map(([t, b]) => (
+              <div key={t} className="p-6 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.06] via-ink-800/60 to-ink">
+                <h3 className="font-display text-2xl mb-2">{t}</h3>
+                <p className="text-bone/65 text-[15px] leading-relaxed">{b}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -94,23 +105,20 @@ export default function AthletesPage() {
         hideChips
       />
 
-      {/* Who it's for */}
+      {/* Every kind of grind */}
       <section className="py-16 lg:py-24 bg-ink-800/30">
         <div className="container-x max-w-3xl">
-          <div className="eyebrow mb-5">Who we're looking for</div>
+          <div className="eyebrow mb-5">For every athlete</div>
           <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-6">
-            Everyday athletes.<br /><span className="text-shimmer">Not just big pages.</span>
+            Every kind of grind.<br /><span className="text-shimmer">One pack.</span>
           </h2>
-          <ul className="space-y-3 text-bone/75 text-[17px] leading-relaxed">
-            {[
-              'Men who post gym, running, cycling, marathon or sports content',
-              'Public Instagram account with 2,000+ followers',
-              'Posting regularly, with real engagement from your audience',
-              'Based in India',
-            ].map((t) => (
-              <li key={t} className="flex gap-3"><span className="text-amber mt-0.5">✓</span><span>{t}</span></li>
+          <div className="flex flex-wrap gap-2">
+            {GRINDS.map((c) => (
+              <span key={c} className="px-4 py-2 rounded-full border border-amber/30 bg-amber/5 text-[11px] uppercase tracking-widest text-bone/85 font-brand font-semibold">
+                <span className="text-amber mr-1.5">✓</span>{c}
+              </span>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
 
@@ -120,7 +128,7 @@ export default function AthletesPage() {
           <div className="max-w-2xl mb-10">
             <div className="eyebrow mb-5">How it works</div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
-              Three steps to<br /><span className="text-shimmer">your first bottle.</span>
+              Three steps to<br /><span className="text-shimmer">the pack.</span>
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
@@ -137,11 +145,17 @@ export default function AthletesPage() {
 
       <section id="apply" className="py-16 lg:py-24 scroll-mt-24">
         <div className="container-x max-w-3xl">
+          <div className="mb-8">
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-3">
+              Tell us <span className="text-shimmer">your story.</span>
+            </h2>
+            <p className="text-bone/65 text-lg">Every athlete in the pack started with a message like this.</p>
+          </div>
           {state.done ? (
             <div className="bg-ink-800/40 border border-amber/30 rounded-3xl p-8 lg:p-10 text-center">
               <div className="font-display text-4xl text-shimmer mb-4">Application received.</div>
               <p className="text-bone/70 text-lg leading-relaxed mb-8">
-                Thanks, {form.name.split(' ')[0]}. Our team will review @{form.handle.replace(/^@/, '')} and get back to you on WhatsApp or email.
+                Thanks, {form.name.split(' ')[0]}. We'll get to know @{form.handle.replace(/^@/, '')} and reach out personally on WhatsApp or email.
               </p>
               <button onClick={() => navigate('product', { id: 'trex-liquid' })} className="btn-primary">See T-REX →</button>
             </div>
@@ -194,8 +208,8 @@ export default function AthletesPage() {
               </Field>
             </div>
 
-            <Field label="Why T-REX? (optional)">
-              <textarea rows={3} value={form.whyUs} onChange={update('whyUs')} className="form-input" placeholder="Tell us about your training and your page." />
+            <Field label="Your story (optional)">
+              <textarea rows={3} value={form.whyUs} onChange={update('whyUs')} className="form-input" placeholder="How you train, what drives you, what you share." />
             </Field>
 
             {/* Honeypot: hidden from people, bots fill it */}
@@ -204,19 +218,18 @@ export default function AthletesPage() {
             <label className="flex gap-3 items-start text-sm text-bone/65 leading-relaxed cursor-pointer">
               <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-1 accent-[rgb(var(--c-amber))]" />
               <span>
-                If selected, I'll post 1 Reel and 2 Stories within 14 days of delivery, label them as a paid partnership, and
-                Primal Nutrition may reshare my content and use it in its ads with credit to me.
+                I'm happy for Primal Nutrition to contact me about T-REX Athletes and to reshare content I create featuring T-REX, with credit to me.
               </span>
             </label>
 
             {state.error && <p className="text-sm text-red-400">{state.error}</p>}
 
             <button type="submit" disabled={state.sending} className="btn-primary w-full !py-4 text-base disabled:opacity-60">
-              {state.sending ? 'Sending…' : 'Apply to T-REX Athletes'}
+              {state.sending ? 'Sending…' : 'Join the pack'}
             </button>
 
             <p className="text-[11px] uppercase tracking-widest text-bone/40 text-center font-brand">
-              Limited spots each month · We reply on WhatsApp or email
+              We read every story · Our team replies personally
             </p>
           </form>
           )}
@@ -241,25 +254,6 @@ export default function AthletesPage() {
         select.form-input { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23F5F1E8' fill-opacity='0.5'><path d='M5 7l5 6 5-6H5z'/></svg>"); background-repeat: no-repeat; background-position: right 12px center; }
       `}</style>
     </>
-  )
-}
-
-function Block({ eyebrow, title, items }) {
-  return (
-    <div>
-      <div className="eyebrow mb-5">{eyebrow}</div>
-      <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-8">
-        {title[0]}<br /><span className="text-shimmer">{title[1]}</span>
-      </h2>
-      <div className="space-y-3">
-        {items.map(([t, b]) => (
-          <div key={t} className="p-5 rounded-2xl border border-bone/10 bg-ink-800/60">
-            <h3 className="font-display text-xl mb-1">{t}</h3>
-            <p className="text-bone/65 text-[15px] leading-relaxed">{b}</p>
-          </div>
-        ))}
-      </div>
-    </div>
   )
 }
 
