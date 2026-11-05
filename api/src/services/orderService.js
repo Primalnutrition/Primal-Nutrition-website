@@ -548,6 +548,7 @@ export async function getOrderById(id) {
   const items = (data.order_items ?? []).map((it) => ({
     id: it.id,
     product_id: it.product?.id ?? null,
+    product_slug: it.product?.slug ?? null,
     product_name: it.product_name_snapshot ?? it.product?.name ?? null,
     product_image: it.product?.image ?? null,
     variant_id: it.variant?.id ?? null,
