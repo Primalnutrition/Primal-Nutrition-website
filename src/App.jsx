@@ -17,6 +17,7 @@ import FAQ, { homeFaqs } from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
 import Footer from './components/Footer.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
+import CartNudge from './components/CartNudge.jsx'
 import Toast from './components/Toast.jsx'
 
 const ShopPage = lazy(() => import('./components/ShopPage.jsx'))
@@ -189,6 +190,7 @@ function AppShell() {
       <PageBody />
       <StickyCTA />
       <CartDrawer />
+      <CartNudge />
       <Toast />
     </div>
   )
