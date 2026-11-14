@@ -24,6 +24,7 @@ import ScrollProgress from './components/ScrollProgress.jsx'
 import CursorOrb from './components/CursorOrb.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
 import PromoPopup from './components/PromoPopup.jsx'
+import CartNudge from './components/CartNudge.jsx'
 import Toast from './components/Toast.jsx'
 
 const ShopPage = lazy(() => import('./components/ShopPage.jsx'))
@@ -212,6 +213,7 @@ function AppShell() {
       <StickyCTA />
       <CartDrawer />
       <PromoPopup />
+      <CartNudge />
       <Toast />
     </div>
   )
