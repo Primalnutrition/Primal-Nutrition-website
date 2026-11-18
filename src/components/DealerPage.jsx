@@ -5,6 +5,8 @@ import Picture from './Picture.jsx'
 import HomeReels from './HomeReels.jsx'
 import IndiaStateMap from './IndiaStateMap.jsx'
 import { BENEFIT_ICONS } from '../lib/benefitIcons.jsx'
+import { api } from '../lib/api.js'
+import { track, getCookie } from '../lib/metaPixel.js'
 
 const STATS = [
   ['1000+', 'Stores & retailers'],
@@ -54,7 +56,23 @@ Email: ${form.email}
 Monthly Purchase Volume: ${form.volume}
 Business Type: ${form.type}`
     const url = `https://wa.me/917838026415?text=${encodeURIComponent(text)}`
+    // Open WhatsApp first (synchronously) so popup blockers allow it.
     window.open(url, '_blank')
+
+    // Meta pixel Lead event, so Ads Manager can count dealer leads per ad.
+    track('Lead', { content_name: 'dealer_application', content_category: form.type, lead_type: 'b2b_dealer' })
+
+    // Save the lead even if they never press send in WhatsApp. Fire-and-forget.
+    // Params may sit in the real query or after the hash (#/dealer?fbclid=...).
+    const qs = new URLSearchParams(window.location.search + '&' + (window.location.hash.split('?')[1] || ''))
+    api.post('/api/dealers/lead', {
+      ...form,
+      phone: form.phone.replace(/\D/g, '').slice(-10),
+      utmSource: qs.get('utm_source') || '',
+      utmCampaign: qs.get('utm_campaign') || '',
+      utmContent: qs.get('utm_content') || '',
+      fbclid: qs.get('fbclid') || getCookie('_fbc') || '',
+    }).catch(() => {})
   }
 
   return (

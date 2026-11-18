@@ -21,6 +21,7 @@ import authRouter from './routes/auth.js'
 import cronRouter from './routes/cron.js'
 import subscribeRouter from './routes/subscribe.js'
 import creatorsRouter from './routes/creators.js'
+import dealersRouter from './routes/dealers.js'
 import adminCustomersRouter from './routes/admin/customers.js'
 import adminOrdersRouter from './routes/admin/orders.js'
 import adminAnalyticsRouter from './routes/admin/analytics.js'
@@ -102,6 +103,7 @@ app.use('/api/checkout', checkoutRouter)
 app.use('/api/webhooks', webhooksRouter)
 app.use('/api/subscribe', subscribeRouter)
 app.use('/api/creators', creatorsRouter)
+app.use('/api/dealers', dealersRouter)
 
 // ─── Admin OTP login (public — issues session tokens) ─────────────────────────
 app.use('/auth', authRouter)
