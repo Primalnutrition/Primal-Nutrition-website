@@ -12,6 +12,7 @@ import HomeReels from './HomeReels.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import LabTested from './LabTested.jsx'
+import ProblemStory from './ProblemStory.jsx'
 import { track } from '../lib/metaPixel.js'
 
 // "50 servings" / "30 days" → per-day price string, e.g. "₹40/day"
@@ -28,6 +29,7 @@ export default function ProductDetail({ productId }) {
   const { addToCart, openCart } = useCart()
   const { navigate } = usePage()
   const [variantId, setVariantId] = useState(product?.variants[0]?.id)
+  const [showAllReviews, setShowAllReviews] = useState(false)
   const [adding, setAdding] = useState(false)
 
   // Scroll to top when product changes
@@ -109,6 +111,72 @@ export default function ProductDetail({ productId }) {
     setTimeout(openCart, 250)
   }
 
+  // Reviews render in one of two slots: early (right after "What's inside")
+  // when pdp.reviewsEarly is set, otherwise in their usual place lower down.
+  const allReviews = pdp?.reviews || []
+  const shownReviews = showAllReviews ? allReviews : allReviews.slice(0, 6)
+  const reviewsSection = allReviews.length > 0 ? (
+      <section id="pdp-reviews" className="py-24 bg-gradient-to-b from-ink-800/30 to-ink scroll-mt-20">
+        <div className="container-x">
+          <div className="max-w-2xl mb-8">
+            <div className="eyebrow mb-5">Customer reviews</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
+              Real men. Real results.
+            </h2>
+          </div>
+          {pdp.reviewPhotos?.length > 0 && (
+            <div className="mb-10">
+              <div className="text-[10px] uppercase tracking-[0.25em] text-bone/45 font-brand font-semibold mb-3">From our customers</div>
+              <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {pdp.reviewPhotos.map((src) => (
+                  <div key={src} className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden border border-bone/15">
+                    <Picture src={src} alt="Customer photo of T-REX" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {shownReviews.map((r) => (
+              <article key={r.name} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/40 flex flex-col">
+                {r.rating > 0 && (
+                  <div className="flex items-center gap-1 text-amber mb-3">
+                    {Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}
+                    {Array.from({ length: 5 - r.rating }).map((_, i) => <span key={i} className="text-bone/15">★</span>)}
+                  </div>
+                )}
+                {r.title && <h3 className="font-display font-semibold text-lg leading-snug mb-3">"{r.title}"</h3>}
+                <p className="text-bone/65 text-[14px] leading-relaxed flex-1 mb-5">{r.title ? r.body : `“${r.body}”`}</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-bone/5">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber/40 to-rust/30 flex items-center justify-center font-display font-bold text-bone text-sm">
+                    {r.name[0]}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.name}</div>
+                    <div className="text-[11px] text-bone/40">{r.source || [r.city, r.age].filter(Boolean).join(' · ')}</div>
+                  </div>
+                  {r.rating > 0 && (
+                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-forest/80">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+                      Verified
+                    </div>
+                  )}
+                </div>
+                {r.time && <div className="text-[10px] uppercase tracking-widest text-bone/30 mt-2">{r.time}</div>}
+              </article>
+            ))}
+          </div>
+          {allReviews.length > 6 && (
+            <div className="mt-8 text-center">
+              <button type="button" onClick={() => setShowAllReviews((v) => !v)} className="btn-ghost text-sm">
+                {showAllReviews ? 'Show fewer reviews' : `Show all ${allReviews.length} reviews`}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+  ) : null
+
   return (
     <>
       {/* ── Hero ──────────────────────────────────────────── */}
@@ -171,10 +239,10 @@ export default function ProductDetail({ productId }) {
                     {'★'.repeat(5)}
                   </span>
                   <span className="text-sm font-semibold text-bone">
-                    {(pdp.reviews.reduce((s, r) => s + r.rating, 0) / pdp.reviews.length).toFixed(1)}
+                    {(() => { const rated = pdp.reviews.filter((r) => r.rating > 0); return rated.length ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(1) : '' })()}
                   </span>
                   <span className="text-[11px] uppercase tracking-widest text-bone/50 group-hover:text-amber transition underline underline-offset-4 decoration-bone/25">
-                    {pdp.reviews.length} verified review{pdp.reviews.length > 1 ? 's' : ''}
+                    {pdp.reviews.length} customer review{pdp.reviews.length > 1 ? 's' : ''}
                   </span>
                 </button>
               )}
@@ -333,14 +401,90 @@ export default function ProductDetail({ productId }) {
         </div>
       </section>
 
-      {/* ── Benefits first: ad traffic needs to know what it does before anything else ── */}
-      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} heading={pdp.benefitsHeading} />}
+      {/* ── Problem story first (hook → day on low → signs), then benefits read as the answer ── */}
+      {pdp?.problem?.signs && (
+        <ProblemStory
+          problem={pdp.problem}
+          onCta={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        />
+      )}
+
+      {/* ── Benefits: ad traffic needs to know what it does early ── */}
+      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} heading={pdp.benefitsHeading} image={pdp.benefitsImage} imageAlt={pdp.benefitsImageAlt} />}
+
+      {/* ── Mid-page buy: no scrolling back up after reading the benefits ── */}
+      {pdp?.midCta && variant && (
+        <section className="pb-20">
+          <div className="container-x">
+            <div className="rounded-3xl border border-amber/30 bg-gradient-to-r from-amber/[0.12] via-ink-800/60 to-ink p-6 lg:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5 md:gap-8">
+              {pdp.midCta.image && (
+                <div className="rounded-2xl overflow-hidden border border-bone/10 w-full max-w-sm mx-auto md:mx-0 md:w-56 shrink-0">
+                  <Picture
+                    src={pdp.midCta.image}
+                    alt={pdp.midCta.imageAlt || ''}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                </div>
+              )}
+              <div className="md:flex-1">
+                <div className="font-display text-2xl lg:text-3xl font-bold tracking-tightest leading-tight">{pdp.midCta.title}</div>
+                {pdp.midCta.sub && <p className="text-bone/60 text-sm mt-2 leading-relaxed">{pdp.midCta.sub}</p>}
+              </div>
+              <button type="button" onClick={handleAdd} className="btn-primary whitespace-nowrap">
+                {pdp.midCta.button || 'Add to cart'} · ₹{variant.price.toLocaleString('en-IN')}
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
 
-      {/* ── Problem ───────────────────────────────────────── */}
-      {pdp?.problem && (
+      {/* ── Problem (with image + everyday situations) ───── */}
+      {pdp?.problem?.image && !pdp.problem.signs && (
+        <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
+          <div className="container-x grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="rounded-3xl overflow-hidden border border-bone/10">
+              <Picture
+                src={pdp.problem.image}
+                alt={pdp.problem.imageAlt || ''}
+                loading="lazy"
+                decoding="async"
+                className="w-full aspect-[4/5] object-cover"
+              />
+            </div>
+            <div>
+              <div className="eyebrow mb-5">The Problem</div>
+              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05] mb-6">
+                {pdp.problem.title}
+              </h2>
+              <p className="text-lg text-bone/70 leading-relaxed mb-8">{pdp.problem.body}</p>
+              {pdp.problem.situations?.length > 0 && (
+                <ul className="divide-y divide-bone/10 border-y border-bone/10">
+                  {pdp.problem.situations.map((s, i) => (
+                    <li key={s.h} className="flex gap-5 py-4">
+                      <span className="font-display font-bold text-amber text-sm pt-0.5 tabular-nums">0{i + 1}</span>
+                      <div>
+                        <div className="font-semibold text-bone">{s.h}</div>
+                        <div className="text-bone/60 text-[15px] leading-relaxed">{s.b}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {pdp.problem.closing && (
+                <p className="mt-7 pl-5 border-l-2 border-amber/60 text-bone/70 leading-relaxed">{pdp.problem.closing}</p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Problem (text only) ───────────────────────────── */}
+      {pdp?.problem && !pdp.problem.image && !pdp.problem.signs && (
         <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
           <div className="container-x max-w-4xl">
             <div className="eyebrow mb-5">The Problem</div>
@@ -451,7 +595,18 @@ export default function ProductDetail({ productId }) {
       {/* ── Protocol, early placement (right after the mechanism) ── */}
       {pdp?.protocol?.early && (
         <section className="pb-24">
-          <div className="container-x max-w-3xl">
+          <div className={pdp.protocol.image ? 'container-x grid lg:grid-cols-2 gap-12 lg:gap-16 items-center' : 'container-x max-w-3xl'}>
+            {pdp.protocol.image && (
+              <div className="rounded-3xl overflow-hidden border border-bone/10 lg:order-2">
+                <Picture
+                  src={pdp.protocol.image}
+                  alt={pdp.protocol.imageAlt || ''}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+              </div>
+            )}
             <ProtocolSteps protocol={pdp.protocol} />
           </div>
         </section>
@@ -460,9 +615,43 @@ export default function ProductDetail({ productId }) {
       {/* ── What's inside (ingredients showcase) ──────────── */}
       <IngredientShowcase product={product} />
 
+      {/* ── Reviews, early slot: proof right after the ingredients ── */}
+      {pdp?.reviewsEarly && reviewsSection}
+
       {/* ── T-REX videos ── */}
       {product.id === 'trex-liquid' && (
         <HomeReels ids={['hand', 'customer-ad', 'gym-ritual', 'match-day', 'brand-film', 'stack-creator', 'interview', 'dad-secret', 'stack-36']} eyebrow="Watch" title={['T-REX', 'in action.']} currentId="trex-liquid" />
+      )}
+
+      {/* ── Lifestyle image grid ──────────────────────────── */}
+      {pdp?.lifestyle?.items?.length > 0 && (
+        <section className="py-24">
+          <div className="container-x">
+            <div className="max-w-2xl mb-12">
+              <div className="eyebrow mb-5">{pdp.lifestyle.eyebrow}</div>
+              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
+                {pdp.lifestyle.title?.[0]}{' '}
+                <span className="italic font-medium text-amber-light">{pdp.lifestyle.title?.[1]}</span>
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {pdp.lifestyle.items.map((it) => (
+                <figure key={it.src} className="group relative rounded-2xl overflow-hidden border border-bone/10">
+                  <Picture
+                    src={it.src}
+                    alt={it.alt || ''}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
+                  <figcaption className="absolute inset-x-0 bottom-0 px-4 pb-3 pt-10 bg-gradient-to-t from-black/75 to-transparent text-[11px] uppercase tracking-[0.2em] text-bone/90">
+                    {it.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* ── Evidence ──────────────────────────────────────── */}
@@ -645,45 +834,8 @@ export default function ProductDetail({ productId }) {
         </section>
       )}
 
-      {/* ── Reviews ──────────────────────────────────────── */}
-      {pdp?.reviews?.length > 0 && (
-        <section id="pdp-reviews" className="py-24 bg-gradient-to-b from-ink-800/30 to-ink">
-          <div className="container-x">
-            <div className="max-w-2xl mb-10">
-              <div className="eyebrow mb-5">Verified buyers</div>
-              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
-                Real men. Real results.
-              </h2>
-            </div>
-            <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {pdp.reviews.map((r) => (
-                <article key={r.name} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/40 flex flex-col">
-                  <div className="flex items-center gap-1 text-amber mb-3">
-                    {Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}
-                    {Array.from({ length: 5 - r.rating }).map((_, i) => <span key={i} className="text-bone/15">★</span>)}
-                  </div>
-                  <h3 className="font-display font-semibold text-lg leading-snug mb-3">"{r.title}"</h3>
-                  <p className="text-bone/65 text-[14px] leading-relaxed flex-1 mb-5">{r.body}</p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-bone/5">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber/40 to-rust/30 flex items-center justify-center font-display font-bold text-bone text-sm">
-                      {r.name[0]}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{r.name}</div>
-                      <div className="text-[11px] text-bone/40">{r.city} · {r.age}</div>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-forest/80">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                      Verified
-                    </div>
-                  </div>
-                  <div className="text-[10px] uppercase tracking-widest text-bone/30 mt-2">{r.time}</div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ── Reviews (late slot; T-REX shows them earlier) ── */}
+      {!pdp?.reviewsEarly && reviewsSection}
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       {pdp?.faq?.length > 0 && (
@@ -1005,9 +1157,25 @@ function BenefitIcon({ name, className }) {
   )
 }
 
-function BenefitsSection({ benefits, timeline, heading = 'What T-REX does for you.' }) {
+function BenefitsSection({ benefits, timeline, heading = 'What T-REX does for you.', image, imageAlt }) {
+  const cards = (
+    <div data-reveal-stagger className={`grid grid-cols-2 ${image ? '' : 'lg:grid-cols-3'} gap-4 lg:gap-5`}>
+      {benefits.map((b) => (
+        <div
+          key={b.title}
+          className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
+        >
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
+            <BenefitIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
+          </div>
+          <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
+          <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
+        </div>
+      ))}
+    </div>
+  )
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section id="benefits" className="relative py-24 overflow-hidden scroll-mt-20">
       <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
       <div className="container-x relative">
         <div className="max-w-2xl mb-12">
@@ -1016,20 +1184,15 @@ function BenefitsSection({ benefits, timeline, heading = 'What T-REX does for yo
             {heading}
           </h2>
         </div>
-        <div data-reveal-stagger className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-          {benefits.map((b) => (
-            <div
-              key={b.title}
-              className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
-            >
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
-                <BenefitIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
-              </div>
-              <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
-              <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
+        {image ? (
+          /* Optional poster beside the cards on desktop, below them on mobile. */
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+            <div className="lg:col-span-2">{cards}</div>
+            <div className="rounded-3xl overflow-hidden border border-bone/10 max-w-md mx-auto w-full lg:max-w-none lg:sticky lg:top-24">
+              <Picture src={image} alt={imageAlt || ''} loading="lazy" decoding="async" className="w-full aspect-[4/5] object-cover" />
             </div>
-          ))}
-        </div>
+          </div>
+        ) : cards}
         {timeline?.length > 0 && (
           <div className="mt-10 rounded-2xl border border-bone/10 bg-ink-800/40 p-5 lg:p-6">
             <div className="text-[10px] uppercase tracking-[0.25em] text-amber font-brand font-bold mb-4">What to expect</div>

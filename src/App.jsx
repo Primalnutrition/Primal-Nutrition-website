@@ -185,7 +185,9 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-ink text-bone overflow-hidden relative">
+    <div className="min-h-screen bg-ink text-bone overflow-x-clip relative">
+      {/* overflow-x-clip, not overflow-hidden: hidden still lets the browser
+          scroll this box sideways (the gallery dots did, shifting the page). */}
       <Header />
       <PageBody />
       <StickyCTA />

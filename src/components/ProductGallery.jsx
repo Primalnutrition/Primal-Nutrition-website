@@ -92,6 +92,11 @@ export default function ProductGallery({ product }) {
   }
 
   const many = images.length > 1
+  const notes = product.pdp?.galleryNotes
+  const note = notes ? (notes[images[active]] || notes.default) : null
+  // Slides with their own note carry a headline printed in the top corners of
+  // the picture, so the corner tags would sit on top of it. Hide them there.
+  const ownHeadline = !!(notes && notes[images[active]])
 
   return (
     <div>
@@ -169,17 +174,46 @@ export default function ProductGallery({ product }) {
         )}
 
         {/* Category chip */}
+        {!ownHeadline && (
         <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.2em] text-bone bg-ink/80 backdrop-blur-md rounded-full px-2.5 py-1 font-brand font-semibold border border-bone/10 z-10">
           {product.categoryLabel}
         </div>
+        )}
 
         {/* Badge */}
-        {product.badge && (
+        {product.badge && !ownHeadline && (
           <div className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] text-ink bg-amber rounded-full px-2.5 py-1 font-brand font-bold z-10">
             {product.badge}
           </div>
         )}
       </div>
+
+      {/* Caption card — optional per-image product message (pdp.galleryNotes).
+          Sits under the image so the product is never covered, and swaps as
+          you swipe. Fixed min-height so the page does not jump between slides. */}
+      {note && (
+        <div
+          aria-live="polite"
+          className="mt-3 rounded-2xl border border-bone/10 bg-ink-800/60 px-5 py-4 min-h-[172px]"
+        >
+          <div className="text-[10px] uppercase tracking-[0.2em] text-amber font-brand font-semibold mb-1.5">
+            {note.eyebrow}
+          </div>
+          <div className="font-display text-xl font-bold tracking-tightest leading-tight mb-3">
+            {note.title}
+          </div>
+          <ul className="space-y-1.5">
+            {note.points.map((p) => (
+              <li key={p} className="flex items-start gap-2.5 text-[14px] text-bone/75 leading-snug">
+                <svg viewBox="0 0 16 16" className="w-4 h-4 mt-px shrink-0 text-amber" fill="none" aria-hidden>
+                  <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Dots — the swipe affordance on small screens, where seven thumbnails
           in a row are too small to be a usable target. */}
