@@ -3,26 +3,21 @@ import { CartProvider } from './context/CartContext.jsx'
 import { RouterProvider, usePage } from './context/RouterContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import Header from './components/Header.jsx'
-import Hero from './components/Hero.jsx'
-import BannerCarousel from './components/BannerCarousel.jsx'
 import TrustStrip from './components/TrustStrip.jsx'
-import Problem from './components/Problem.jsx'
-import ProductDeepDive from './components/ProductDeepDive.jsx'
-import Ingredients from './components/Ingredients.jsx'
-import LabTested from './components/LabTested.jsx'
-import Comparison from './components/Comparison.jsx'
-import Results from './components/Results.jsx'
+import HomeHero from './components/HomeHero.jsx'
+import HomeProblems from './components/HomeProblems.jsx'
+import HomeApproach from './components/HomeApproach.jsx'
+import HomeRange from './components/HomeRange.jsx'
+import HomeReels from './components/HomeReels.jsx'
+import HomeStory from './components/HomeStory.jsx'
+import HomeReviews from './components/HomeReviews.jsx'
+import HomeManufacturing from './components/HomeManufacturing.jsx'
 import Founder from './components/Founder.jsx'
-import Reviews from './components/Reviews.jsx'
-import RareHerbBanner from './components/RareHerbBanner.jsx'
-import PromoBanner from './components/PromoBanner.jsx'
-import Bundle from './components/Bundle.jsx'
-import FAQ from './components/FAQ.jsx'
+import FAQ, { homeFaqs } from './components/FAQ.jsx'
 import StickyCTA from './components/StickyCTA.jsx'
 import Footer from './components/Footer.jsx'
-import ScrollProgress from './components/ScrollProgress.jsx'
-import CursorOrb from './components/CursorOrb.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
+import CartNudge from './components/CartNudge.jsx'
 import Toast from './components/Toast.jsx'
 
 const ShopPage = lazy(() => import('./components/ShopPage.jsx'))
@@ -32,49 +27,33 @@ const DealerPage = lazy(() => import('./components/DealerPage.jsx'))
 const ShilajitGuide = lazy(() => import('./components/ShilajitGuide.jsx'))
 const LabelPage = lazy(() => import('./components/LabelPage.jsx'))
 const ProductInfoPage = lazy(() => import('./components/ProductInfoPage.jsx'))
+const PolicyPage = lazy(() => import('./components/PolicyPage.jsx'))
+const ManufacturingPage = lazy(() => import('./components/ManufacturingPage.jsx'))
+const AthletesPage = lazy(() => import('./components/AthletesPage.jsx'))
 
 function HomePage() {
+  const { navigate } = usePage()
   return (
     <>
       <main>
-        <BannerCarousel />
-        <Hero />
+        <HomeHero />
         <TrustStrip />
-        <PromoBanner
-          base="/brand/promo-hero"
-          href="#bundle"
-          ariaLabel="Buy T-Rex — India's first 7-in-1 natural liquid"
-          alt="T-Rex — India's First 7-in-1 Natural Liquid. Himalayan Shilajit + 6 Ayurvedic herbs. Buy now — ₹1,999."
+        <HomeRange />
+        <HomeReels />
+        <HomeProblems />
+        <HomeApproach />
+        <HomeStory
+          img="/home/story-source.jpg"
+          side="left"
+          eyebrow="From the source"
+          title={['Every herb, from', 'where it grows best.']}
+          body="Shilajit from the high Himalayas. Tongkat Ali from Malaysian rainforests. Black Maca from the Peruvian Andes. We go to the origin, because that is where each herb is at its most potent."
+          cta={{ label: 'Read the Shilajit guide', onClick: () => navigate('shilajit-guide') }}
         />
-        <Problem />
-        <PromoBanner
-          base="/brand/promo-dangerous"
-          href="#/shop"
-          ariaLabel="Shop T-Rex — for men who choose to be dangerous"
-          alt="T-Rex — 7-in-1 Natural Liquid. For men who choose to be dangerous. 12,400+ verified buyers."
-        />
-        <ProductDeepDive />
-        <Ingredients />
-        <PromoBanner
-          base="/brand/promo-sourcing"
-          href="#/shilajit-guide"
-          ariaLabel="Read the Shilajit Purity Guide — sourced from the rarest corners of the earth"
-          alt="T-Rex — Sourced from the rarest corners of the earth."
-        />
-        <LabTested />
-        <Results />
-        <Comparison />
-        <Founder />
-        <Reviews />
-        <PromoBanner
-          base="/brand/promo-androgens"
-          href="#/shop"
-          ariaLabel="Explore the Rare Herb Series — Royal Jelly, Tongkat Ali, Black Maca"
-          alt="Nature's Most Potent Androgens — Royal Jelly, Tongkat Ali, Black Maca. Explore the Rare Herb Series."
-        />
-        <RareHerbBanner />
-        <Bundle />
-        <FAQ />
+        <HomeManufacturing />
+        <HomeReviews />
+        <Founder compact />
+        <FAQ items={homeFaqs} limit={6} compact />
       </main>
       <Footer />
     </>
@@ -135,13 +114,16 @@ function PageBody() {
       <Suspense fallback={fallback}>{node}</Suspense>
     </ChunkLoadBoundary>
   )
-  if (page === 'product') return guarded(<ProductDetail productId={productId} />)
+  if (page === 'product') return guarded(<ProductDetail key={productId} productId={productId} />)
   if (page === 'shop') return guarded(<ShopPage />)
   if (page === 'stacks') return guarded(<StacksPage />)
   if (page === 'dealer') return guarded(<DealerPage />)
   if (page === 'shilajit-guide') return guarded(<ShilajitGuide />)
   if (page === 'label') return guarded(<LabelPage productId={productId} />)
   if (page === 'product-info') return guarded(<ProductInfoPage productId={productId} />)
+  if (page === 'manufacturing') return guarded(<ManufacturingPage />)
+  if (page === 'athletes') return guarded(<AthletesPage />)
+  if (['shipping', 'privacy', 'terms', 'contact', 'about'].includes(page)) return guarded(<PolicyPage which={page} />)
   return <HomePage />
 }
 
@@ -203,13 +185,14 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-ink text-bone overflow-hidden relative">
-      <ScrollProgress />
-      <CursorOrb />
+    <div className="min-h-screen bg-ink text-bone overflow-x-clip relative">
+      {/* overflow-x-clip, not overflow-hidden: hidden still lets the browser
+          scroll this box sideways (the gallery dots did, shifting the page). */}
       <Header />
       <PageBody />
       <StickyCTA />
       <CartDrawer />
+      <CartNudge />
       <Toast />
     </div>
   )

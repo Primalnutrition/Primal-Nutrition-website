@@ -14,7 +14,7 @@ export default function Footer() {
               <PrimalLogo className="h-16 w-auto" />
             </div>
             <p className="text-bone/60 max-w-md text-[15px] leading-relaxed mb-6">
-              India's first 7-in-1 Natural Performance Liquid. We bring Ayurveda into modern sports nutrition — the way our ancestors made it, scientifically validated, free from chemicals.
+              Ayurvedic strength and vitality for Indian men. Rare herbs, sourced at origin and made the traditional way, in a clean, GMP-certified facility.
             </p>
             <p className="text-bone/45 text-sm italic mb-6">
               "The answer always lies in nature, in the food we eat and the places we train."
@@ -33,18 +33,20 @@ export default function Footer() {
             </Col>
             <Col title="Learn">
               <a href="#/shilajit-guide">Shilajit Purity Guide</a>
-              <a href="#/product/trex-liquid">Ingredient sourcing</a>
+              <a href="#/manufacturing">Ingredient sourcing</a>
               <a href="#/shop">Adaptogen series</a>
             </Col>
-            <Col title="Support">
-              <a href="https://wa.me/917838026415">WhatsApp +91-7838026415</a>
-              <a href="mailto:salesmanager@primalnutrition.in">salesmanager@primalnutrition.in</a>
-              <a href="#/dealer">Become a Dealer</a>
+            <Col title="Help">
+              <a href="#/contact">Contact us</a>
+              <a href="#/shipping">Shipping &amp; delivery</a>
+              <a href="#/contact">Returns &amp; refunds</a>
             </Col>
             <Col title="Company">
-              <a href="#/shilajit-guide">Manufacturing</a>
+              <a href="#/manufacturing">Our Manufacturing</a>
               <a href="#/shop">Our Products</a>
               <a href="#/dealer">Wholesale</a>
+              <a href="#/athletes">T-REX Athletes</a>
+              <a href="#/about">About us</a>
             </Col>
           </div>
         </div>
@@ -80,11 +82,9 @@ export default function Footer() {
         <div className="border-t border-bone/10 pt-8 mb-8 flex flex-wrap items-center justify-center gap-6 text-[11px] uppercase tracking-widest text-bone/40">
           <span>Banned Substance Free</span>
           <Dot />
-          <span>ISO 22000</span>
+          <span>Mfg. Lic. AL946M</span>
           <Dot />
-          <span>GMP Certified</span>
-          <Dot />
-          <span>HDR</span>
+          <span>FSSAI 13326998000382</span>
           <Dot />
           <span>Made in India</span>
         </div>
@@ -94,10 +94,11 @@ export default function Footer() {
             © {new Date().getFullYear()} Primal Nutrition · A unit of Jiyo Ayurveda Pvt. Ltd. All rights reserved.
           </div>
           <div className="flex items-center gap-5 text-[11px] text-bone/40">
-            <a href="#" className="hover:text-amber">Privacy</a>
-            <a href="#" className="hover:text-amber">Terms</a>
-            <a href="#" className="hover:text-amber">Shipping</a>
-            <a href="#" className="hover:text-amber">Refunds</a>
+            <a href="#/privacy" className="hover:text-amber py-2">Privacy</a>
+            <a href="#/terms" className="hover:text-amber py-2">Terms</a>
+            <a href="#/shipping" className="hover:text-amber py-2">Shipping</a>
+            <a href="#/contact" className="hover:text-amber py-2">Returns &amp; refunds</a>
+            <a href="#/about" className="hover:text-amber py-2">About</a>
           </div>
         </div>
 

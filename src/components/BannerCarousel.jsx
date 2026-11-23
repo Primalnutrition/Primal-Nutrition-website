@@ -1,20 +1,50 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-// mobPos: best object-position for each banner's mobile composition
-//   banner-01: text left → object-left
-//   banner-02: text left → object-left
-//   banner-03: 3 centred bottles (581×815 mobile — centered crop shows all 3)
-//   banner-04: text centred top → object-left
-//   banner-05: large text fills left edge → object-left
+// Each banner ships as mob/dsk crops in avif + webp + png. The <picture>
+// below picks one file per slide: the browser matches `media` first, then
+// takes the first `type` it can decode. Previously this component rendered
+// two <img> tags per slide (one hidden per breakpoint) pointing at the PNGs
+// only, so a phone downloaded both crops at full PNG weight — 2.77 MB before
+// first paint, against 0.04 MB for the AVIF it actually needed.
+//
+// `pos` carries both breakpoints' object-position as one literal string so
+// Tailwind's scanner still sees the class names.
+//   banner-01/02/04/05: text sits at the left edge → object-left
+//   banner-03: 3 centred bottles → object-center on mobile
 const BANNERS = [
-  { dsk: '/banners/banner-01-dsk.png', mob: '/banners/banner-01-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 1' },
-  { dsk: '/banners/banner-02-dsk.png', mob: '/banners/banner-02-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 2' },
-  { dsk: '/banners/banner-03-dsk.png', mob: '/banners/banner-03-mob.png', mobPos: 'object-center', dskPos: 'object-left', alt: 'Primal Nutrition — Banner 3' },
-  { dsk: '/banners/banner-04-dsk.png', mob: '/banners/banner-04-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 4' },
-  { dsk: '/banners/banner-05-dsk.png', mob: '/banners/banner-05-mob.png', mobPos: 'object-left',   dskPos: 'object-left', alt: 'Primal Nutrition — Banner 5' },
+  { base: 'banner-01', pos: 'object-left md:object-left',   alt: 'Primal Nutrition — Banner 1' },
+  { base: 'banner-02', pos: 'object-left md:object-left',   alt: 'Primal Nutrition — Banner 2' },
+  { base: 'banner-03', pos: 'object-center md:object-left', alt: 'Primal Nutrition — Banner 3' },
+  { base: 'banner-04', pos: 'object-left md:object-left',   alt: 'Primal Nutrition — Banner 4' },
+  { base: 'banner-05', pos: 'object-left md:object-left',   alt: 'Primal Nutrition — Banner 5' },
 ]
 
+// Matches Tailwind's md breakpoint (768px) used by the spacers below.
+const MOB = '(max-width: 767px)'
+
 const AUTO_MS = 4500
+
+function BannerImage({ banner, eager }) {
+  const { base, pos, alt } = banner
+  return (
+    <picture>
+      <source media={MOB} type="image/avif" srcSet={`/banners/${base}-mob.avif`} />
+      <source media={MOB} type="image/webp" srcSet={`/banners/${base}-mob.webp`} />
+      <source media={MOB} srcSet={`/banners/${base}-mob.png`} />
+      <source type="image/avif" srcSet={`/banners/${base}-dsk.avif`} />
+      <source type="image/webp" srcSet={`/banners/${base}-dsk.webp`} />
+      <img
+        src={`/banners/${base}-dsk.png`}
+        alt={alt}
+        className={`w-full h-full object-cover ${pos}`}
+        loading={eager ? 'eager' : 'lazy'}
+        // lowercase: React 18 passes unknown attributes through only in this form
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </picture>
+  )
+}
 
 export default function BannerCarousel() {
   const [active, setActive] = useState(0)
@@ -56,39 +86,23 @@ export default function BannerCarousel() {
       <div className="relative w-full">
         {/*
           Spacers — invisible, define container height for each breakpoint.
-          Mobile: fixed 9:16 aspect ratio (matches banner-01/02/04-mob natural ratio).
-          Desktop: banner-01-dsk natural aspect ratio sets the height.
+          Mobile: 9:16. Desktop: banner-01-dsk's natural 1914×822 ratio.
+          Both are pure CSS; the desktop spacer used to render a real <img>
+          of banner-01-dsk purely to reserve height.
         */}
         <div aria-hidden="true" className="aspect-[9/16] block md:hidden" />
-        <div aria-hidden="true" className="invisible hidden md:block">
-          <img src={BANNERS[0].dsk} alt="" className="w-full" />
-        </div>
+        <div aria-hidden="true" className="aspect-[1914/822] hidden md:block" />
 
         {/* All slides absolutely positioned, crossfade via opacity */}
         {BANNERS.map((b, i) => (
           <div
-            key={i}
+            key={b.base}
             className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
               i === active ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
             aria-hidden={i !== active}
           >
-            {/* Mobile image — per-banner object-position */}
-            <img
-              src={b.mob}
-              alt={b.alt}
-              className={`w-full h-full object-cover ${b.mobPos} block md:hidden`}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-            {/* Desktop image */}
-            <img
-              src={b.dsk}
-              alt={b.alt}
-              className={`w-full h-full object-cover ${b.dskPos} hidden md:block`}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
+            <BannerImage banner={b} eager={i === 0} />
           </div>
         ))}
       </div>
@@ -111,9 +125,9 @@ export default function BannerCarousel() {
 
       {/* Dot indicators */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-        {BANNERS.map((_, i) => (
+        {BANNERS.map((b, i) => (
           <button
-            key={i}
+            key={b.base}
             onClick={() => { go(i); restart() }}
             aria-label={`Go to banner ${i + 1}`}
             className={`rounded-full transition-all duration-300 ${

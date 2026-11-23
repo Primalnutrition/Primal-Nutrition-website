@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { track } from '../lib/metaPixel.js'
+import { productById } from '../data/products.js'
 
 const RouterContext = createContext(null)
 
-const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info'])
+const PAGES = new Set(['home', 'shop', 'stacks', 'dealer', 'shilajit-guide', 'label', 'product-info', 'shipping', 'privacy', 'terms', 'contact', 'about', 'manufacturing', 'athletes'])
 
 function readRoute() {
   if (typeof window === 'undefined') return { page: 'home' }
@@ -13,6 +14,18 @@ function readRoute() {
   if (head === 'label') return { page: 'label', productId: sub || 'trex-liquid' }
   if (head === 'product-info') return { page: 'product-info', productId: sub || null }
   if (PAGES.has(head)) return { page: head }
+  // No hash: fall back to ?p= / ?page=. Ad platforms append their own tracking
+  // params (fbclid, utm_id, utm_term) to the end of the click URL, which lands
+  // them after the "#" and destroys the fragment — so a hash-only deep link
+  // silently drops every paid visitor on the homepage. A query param survives
+  // that, because appending to a query string is exactly what they expect.
+  if (segments.length === 0) {
+    const params = new URLSearchParams(window.location.search)
+    const productId = params.get('p')
+    if (productId) return { page: 'product', productId }
+    const page = params.get('page')
+    if (page && PAGES.has(page)) return { page }
+  }
   return { page: 'home' }
 }
 
@@ -36,9 +49,49 @@ export function RouterProvider({ children }) {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
+  // Rewrite a ?p= / ?page= entry to its canonical hash form once, on mount.
+  // Without this the param stays in location.search, and because navigate()
+  // preserves the search string, going Home would leave "?p=…" with an empty
+  // hash — so the next hashchange or reload would bounce the visitor back to
+  // the product page. Runs after attribution.js has already read the UTMs, and
+  // only deletes p/page, so the attribution parameters are left untouched.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (!params.has('p') && !params.has('page')) return
+    params.delete('p')
+    params.delete('page')
+    const search = params.toString()
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${search ? `?${search}` : ''}${buildHash(readRoute())}`,
+    )
+  }, [])
+
   useEffect(() => {
     if (firstRun.current) { firstRun.current = false; return }
     track('PageView')
+  }, [route])
+
+  // Per-route browser title + description (helps tabs, shares and search).
+  useEffect(() => {
+    const names = {
+      shop: 'Shop the range', stacks: 'Stacks', dealer: 'Become a dealer', 'shilajit-guide': 'Shilajit purity guide',
+      shipping: 'Shipping & delivery', privacy: 'Privacy policy', terms: 'Terms of use', contact: 'Contact us', about: 'About us', manufacturing: 'Our manufacturing', athletes: 'Become a T-REX Athlete',
+    }
+    const base = 'Primal Nutrition'
+    let title = `${base} — Ayurvedic strength and vitality for Indian men`
+    let desc = 'Rare herbs, sourced at origin and made the traditional way. T-REX Liquid, Tongkat Ali, Cordyceps, Black Maca and more. Free delivery, COD available.'
+    if (route.page === 'product' && route.productId) {
+      const prod = productById(route.productId)
+      title = `${prod ? prod.name : 'Product'} | ${base}`
+      desc = 'Ayurvedic strength and vitality from Primal Nutrition. Free delivery, COD available, every batch third-party tested.'
+    } else if (names[route.page]) {
+      title = `${names[route.page]} | ${base}`
+    }
+    document.title = title
+    const meta = document.querySelector('meta[name="description"]')
+    if (meta) meta.setAttribute('content', desc)
   }, [route])
 
   const navigate = useCallback((next, params = {}, { scroll = true } = {}) => {

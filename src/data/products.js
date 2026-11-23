@@ -25,6 +25,9 @@ export const products = [
     image: '/products/trex-v2-01.png',
     gallery: [
       '/products/trex-v2-01.png',
+      '/products/lux/trex-ad-duffle.jpg',
+      '/products/lux/trex-ad-desk.jpg',
+      '/products/lux/trex-ad-travel.jpg',
       '/products/trex-v2-02.png',
       '/products/trex-v2-03.png',
       '/products/trex-v2-04.png',
@@ -34,7 +37,7 @@ export const products = [
     ],
     name: 'T-Rex',
     subtitle: 'Strength & Testosterone Booster',
-    tagline: "India's First 7-in-1 Natural Liquid · Hazelnut",
+    tagline: "7-in-1 Natural Liquid · Hazelnut",
     category: 'liquid',
     categoryLabel: 'Liquid',
     tier: 'HERO',
@@ -56,35 +59,130 @@ export const products = [
       partner: 'Tongkat Ali',
     },
     pdp: {
-      heroClaim: "India's first 7-in-1 Natural Liquid — Himalayan Shilajit with six clinically-studied Ayurvedic herbs in hazelnut-flavored liquid form. 100% Ayurvedic. No chemicals. No stimulants. The way our ancestors made it.",
+      heroClaim: 'Ancient strength, made modern. Himalayan Shilajit and six Ayurvedic herbs in one daily hazelnut shot, for strength, stamina, testosterone support and drive. No caffeine, no crash.',
       metrics: [
-        { label: '7-in-1 Natural Formula', value: '7 Herbs' },
-        { label: 'Bottle size', value: '500 ml' },
-        { label: 'Daily dose · sublingual', value: '10 ml' },
-        { label: 'Cost per day (50 servings)', value: '₹40' },
+        { label: 'Ayurvedic formula', value: '7 Herbs' },
+        { label: 'Flavour', value: 'Hazelnut' },
+        { label: 'Daily dose', value: '10 ml' },
+        { label: 'Servings', value: '50' },
+        { label: 'Formula', value: 'Daily Vitality' },
       ],
+      // Caption card under the gallery, keyed by image. 'default' shows on every
+      // slide without its own note, so the card never collapses or jumps.
+      galleryNotes: {
+        default: {
+          eyebrow: 'T-REX · Strength & Testosterone Booster',
+          title: 'Ancient strength, made modern.',
+          points: ['Himalayan Shilajit + 6 Ayurvedic herbs', 'One 10 ml shot a day · 50 servings', 'No caffeine, no crash'],
+        },
+        '/products/lux/trex-ad-duffle.jpg': {
+          eyebrow: 'Strength · Stamina · Drive',
+          title: 'Built for the harder days.',
+          points: ['Supports healthy testosterone', 'Supports lean muscle & recovery', 'Steady energy, all day long'],
+        },
+        '/products/lux/trex-ad-desk.jpg': {
+          eyebrow: '7 Ayurvedic herbs',
+          title: 'Seven herbs. One shot.',
+          points: ['Himalayan Shilajit + Ashwagandha', 'Arjun, Gokhru, Draksha', 'Safed Musli & Kath Badam'],
+        },
+        '/products/lux/trex-ad-travel.jpg': {
+          eyebrow: 'The daily ritual',
+          title: '10 ml. Every morning.',
+          points: ['Straight, or into your coffee', '50 servings · about ₹40 a day', 'Free shipping · ₹200 off online'],
+        },
+      },
+      // Rich problem story (rendered by ProblemStory). Signs are framed as
+      // everyday experiences, never as a diagnosis; the note says so.
       problem: {
-        title: 'Chemical supplements broke a generation of Indian men.',
-        body: 'Synthetic boosters spike testosterone then crash it. Pre-workouts run on caffeine. "Proprietary blends" hide dust-sized doses. T-Rex busts the myths created by stimulant-based products — by going back to what worked for 5,000 years: Shilajit, Ashwagandha, Arjun, Gokhru, Draksha, Safed Musli, Kath Badam. Liquid-extracted by ancestral methods. Disclosed mg-by-mg.',
+        eyebrow: 'Sound familiar?',
+        title: ['Your testosterone', 'runs your day.'],
+        body: 'Most men blame work, stress or a bad week. Often there\u2019s a quieter reason underneath. Long hours, short sleep, constant stress, and for many men age too, can pull testosterone down. It rarely announces itself. It just shows up in your day.',
+        image: '/products/lux/trex-lux-grab.jpg',
+        imageAlt: 'A hand reaching for a takeaway coffee beside a T-REX bottle',
+        dayTitle: 'A day running on low',
+        day: [
+          { time: '7:00 AM', line: '“Bas paanch minute aur…”', b: 'Third snooze. Eight hours in bed, still waking up tired.' },
+          { time: '11:00 AM', line: '“Ek aur coffee chahiye.”', b: 'Cup number three, and the fog still hasn’t lifted.' },
+          { time: '4:00 PM', line: '“Bas aaj ka din nikal jaaye.”', b: 'The afternoon crash hits. Focus is gone.' },
+          { time: '7:30 PM', line: '“Gym? Aaj nahi yaar.”', b: 'Too drained to train. Again.' },
+          { time: '11:30 PM', line: '“Neend kyun nahi aa rahi?”', b: 'Exhausted all day, wide awake at night.' },
+        ],
+        signsTitle: 'Common signs men notice',
+        signsHint: 'Tap the ones that sound like you.',
+        signs: [
+          { icon: 'bolt', title: 'Low energy', quote: 'Kitna bhi so lo, dopahar tak thak jaata hoon.' },
+          { icon: 'flame', title: 'Low drive', quote: 'Kuch karne ka mann hi nahi karta.' },
+          { icon: 'dumbbell', title: 'Can’t build muscle', quote: 'Mahino se wahi weight, wahi body.' },
+          { icon: 'arm', title: 'Slow recovery', quote: 'Ek leg day, aur teen din dard.' },
+          { icon: 'scale', title: 'Stubborn belly', quote: 'Diet poori, phir bhi pet kam nahi hota.' },
+          { icon: 'brain', title: 'Brain fog', quote: 'Ek hi email teen baar padhna padta hai.' },
+          { icon: 'moon', title: 'Poor sleep', quote: 'Din bhar thakaan, raat ko neend nahi.' },
+          { icon: 'heart', title: 'Short fuse', quote: 'Choti si baat pe gussa aa jaata hai.' },
+        ],
+        result: {
+          few: 'A couple of these? Worth paying attention to.',
+          many: 'That’s {n} of 8. T-REX was made for days like these.',
+        },
+        hookImage: '/products/lux/trex-ad-golf.jpg',
+        hookImageAlt: 'Play your strongest game. T-REX bottle and box beside a golf bag',
+        bandImage: '/products/lux/trex-lux-ice.jpg',
+        bandImageAlt: 'T-REX bottle resting on ice with a steel jigger',
+        bridge: 'You don’t have to accept running on low.',
+        cta: 'See what T-REX does',
       },
       mechanism: {
-        title: 'How the 7-in-1 works',
+        eyebrow: 'The T-REX answer',
+        title: 'Ancient Himalayan strength, made a daily ritual.',
         steps: [
-          { h: 'Liquid bioavailability', b: 'Shilajit is fully absorbed by the body only in its liquid form. Capsules and powders lose 40–60% of actives to first-pass liver metabolism. We chose the harder, costlier liquid route because it is the only one that delivers.' },
-          { h: 'Ancestral extraction', b: 'Our Shilajit is collected from the highest Himalayan points by local villagers, then liquid-extracted using the multi-step process our ancestors used — a process most manufacturers refuse because it is lengthy and costly.' },
-          { h: '7 herbs working together', b: 'Ashwagandha calms cortisol. Arjun protects the heart and lifts VO₂. Gokhru drives libido. Safed Musli boosts testosterone. Draksha speeds recovery. Kath Badam raises LDL (T building block). Shilajit ties it all together.' },
+          { h: 'Liquid, not pills', b: 'One smooth 10 ml shot. Easy to take, and mixes into coffee, milk or a shake.' },
+          { h: 'Made the traditional way', b: 'Himalayan Shilajit, purified the slow Ayurvedic way. It takes longer and costs more, so nothing is cut short.' },
+          { h: '7 herbs, one daily habit', b: 'Ashwagandha for calm energy. Safed Musli and Gokhru for drive. Arjun for stamina. Draksha for recovery. Shilajit ties it together.' },
         ],
       },
       evidence: [
         { study: 'Biswas T.K. et al., Andrologia 2010', finding: 'Processed Shilajit 100mg × 2/day × 90 days — significant improvement in sperm count, motility, serum testosterone, and FSH.', source: 'Andrologia' },
-        { study: 'Charaka Samhita, c. 200 BC', finding: '"No curable disease in the universe is not effectively cured by Shilajit when administered at the appropriate times." Known as "Destroyer of Weakness."', source: 'Ancient Ayurvedic text' },
+        { study: 'Charaka Samhita, c. 200 BC', finding: 'Shilajit is described as a rasayana, a rejuvenating tonic, and has been prized in Ayurveda for strength and vitality for centuries. Traditionally known as the "Destroyer of Weakness."', source: 'Ancient Ayurvedic text' },
         { study: 'Ashwagandha extract studies, multiple', finding: 'Anxiety-relieving effects as powerful as common antidepressants, without side effects. Regenerates nerve cells (Japanese university research). Balances thyroid + adrenals.', source: 'Ayurvedic clinical literature' },
       ],
       protocol: {
-        when: 'Morning, before food.',
-        how: '10ml sublingual for daily use — or 15ml twice daily as printed on the label, with milk or other beverages.',
-        withWhat: 'Shake well before use. Best with warm milk for traditional preparation, or a chase of warm water + honey.',
-        cycle: 'Daily for sustained benefit. Best results across 8–12 weeks of consistent use.',
+        early: true,
+        image: '/products/lux/trex-lux-ritual.jpg',
+        imageAlt: 'T-REX bottle beside an iced coffee being poured',
+        eyebrow: 'The daily ritual',
+        title: 'One shot. Every morning.',
+        labels: ['When', 'How much', 'How', 'How long'],
+        when: 'Every morning.',
+        how: 'One 10 ml shot. Want more? Take a second 10 ml shot later in the day.',
+        withWhat: 'Take it straight, or mix it into your coffee or your favourite beverage. Shake well before use.',
+        cycle: 'Every day. Best results with 8–12 weeks of daily use.',
+      },
+      reviewsEarly: true,
+      reviewPhotos: [
+        '/products/reviews/trex-customer-1.jpg',
+        '/products/reviews/trex-customer-2.jpg',
+        '/products/reviews/trex-customer-3.jpg',
+        '/products/reviews/trex-customer-4.jpg',
+      ],
+      benefitsImage: '/products/lux/trex-ad-routine.jpg',
+      benefitsImageAlt: 'Part of the routine. T-REX on a bathroom shelf with grooming essentials',
+      midCta: {
+        image: '/products/lux/trex-ad-pour.jpg',
+        imageAlt: '10 ml every morning. T-REX poured from a steel measure',
+        title: 'Ready to stop running on low?',
+        sub: 'One 10 ml shot a day · Pay online and save ₹200 · Free shipping · Cash on delivery available',
+        button: 'Start your ritual',
+      },
+      lifestyle: {
+        eyebrow: 'Built for your world',
+        title: ['Packed for', 'strength.'],
+        items: [
+          { src: '/products/lux/trex-lux-duffle.jpg', caption: 'The gym bag', alt: 'T-REX bottle and box beside a leather duffle bag' },
+          { src: '/products/lux/trex-lux-golf.jpg', caption: 'The weekend round', alt: 'T-REX bottle and box in front of a golf bag' },
+          { src: '/products/lux/trex-lux-travel.jpg', caption: 'The business trip', alt: 'T-REX bottle and box on a carry-on suitcase with passport' },
+          { src: '/products/lux/trex-lux-grab.jpg', caption: 'The morning grab', alt: 'T-REX bottle in a coffee carrier' },
+          { src: '/products/lux/trex-lux-vanity.jpg', caption: 'The daily routine', alt: 'T-REX bottle on a glass shelf with grooming essentials' },
+          { src: '/products/lux/trex-lux-ice.jpg', caption: 'The cold start', alt: 'T-REX bottle on ice with a steel jigger' },
+        ],
       },
       whoFor: [
         'High performance men',
@@ -93,27 +191,52 @@ export const products = [
         'Want a natural path before pharmaceuticals',
       ],
       whoNotFor: [
-        'Under 16',
+        'Under 18',
         'Currently on TRT',
         'On blood thinners or BP medication without doctor consultation',
         'Pregnancy (obvious)',
       ],
       stackWith: ['trex-tongkat', 'hydra-muscle'],
+      upsellStackId: 'testosterone',
+      benefits: [
+        { icon: 'male', title: 'Increased Testosterone', line: 'Helps increase natural testosterone, the Ayurvedic way.' },
+        { icon: 'arm', title: 'Strength & Endurance', line: 'More power in the gym, more stamina through the day.' },
+        { icon: 'bolt', title: 'All-Day Energy', line: 'Steady energy from morning to night. No caffeine, no crash.' },
+        { icon: 'flame', title: 'Drive, Mood & Vitality', line: 'Feel sharper, more motivated and more like yourself.' },
+        { icon: 'dumbbell', title: 'Lean Muscle & Recovery', line: 'Supports muscle building and faster recovery between workouts.' },
+        { icon: 'leaf', title: 'Stress & Sleep Balance', line: 'Ashwagandha helps you stay calm under pressure and sleep deeper.' },
+      ],
       timeline: [
-        { week: 'Week 1', what: 'Sleep deepens. Morning energy sharpens. Cortisol normalises.' },
-        { week: 'Week 4', what: 'Strength and stamina return. Recovery time drops between sessions.' },
-        { week: 'Week 8', what: 'Free testosterone and libido shifts measurable. Mood and drive stabilise.' },
-        { week: 'Week 12', what: 'New baseline established. The 5,000-year-old protocol, validated in your body.' },
+        { week: 'Week 1', icon: 'moon', what: 'Better sleep, steadier mornings.' },
+        { week: 'Week 2', icon: 'bolt', what: 'More energy through the day.' },
+        { week: 'Week 3', icon: 'arm', what: 'Strength and stamina pick up.' },
+        { week: 'Week 4', icon: 'flame', what: 'Drive and mood feel stronger.' },
       ],
       faq: [
         { q: 'Is this a steroid or stimulant?', a: 'No. T-Rex is an Ayurvedic Proprietary Medicine. Zero hormones, stimulants, or banned substances. Mfg. Lic. AL946M.' },
-        { q: 'Dosage?', a: 'Daily wellness dose: 10ml sublingual in the morning — one bottle lasts 50 days (≈₹40/day). Intensive phase, as printed on the label: 15ml twice daily with milk for short cycles, as directed by physician. Shake well before use.' },
+        { q: 'Dosage?', a: 'One 10 ml shot every morning: one bottle lasts 50 days (about ₹40/day). Want a higher dose? Take a second 10 ml shot later in the day. Shake well before use.' },
         { q: 'Why liquid?', a: 'Shilajit is fully absorbed only in liquid form. The ancestral process we use takes longer and costs more — and it is the only method that delivers full bioavailability.' },
       ],
       reviews: [
         { ...sharedReviewSeed[0], title: 'My morning is no longer a fight', body: 'Switched from a synthetic stack after 14 months. 6 weeks in: deeper sleep, heavier lifts, fasting energy back. Worth every rupee.', time: '2 weeks ago' },
         { ...sharedReviewSeed[5], title: 'TRT was on the table. Not anymore.', body: 'My T was 340. Doctor suggested TRT. Gave myself 90 days with Primal first. Retested at 510 last week.', time: '2 months ago' },
         { ...sharedReviewSeed[1], title: 'Father of two, slept 4hrs, was a zombie', body: 'I am not a supplement guy. I tried this only because of the Third-Party Lab report. It actually works.', time: '1 month ago' },
+        // Customer reviews from TREX-Product_Reviews (Nov 2026). No star ratings were given.
+        { name: 'Abhishek R.', source: 'Website purchase', body: 'Ordered directly from the Primal Nutrition website. Packaging looks premium and the bottle arrived properly packed. Still early for me to comment on long-term benefits, but the overall first impression is good.' },
+        { name: 'Rahul M.', source: 'Gym routine', body: 'Been into lifting for almost 5 years now. What interested me was the combination of shilajit, ashwagandha and musli. The liquid format is quite convenient compared to taking 3–4 different herbal capsules.' },
+        { name: 'Varun K.', source: 'Strength training', body: 'I follow a proper push pull legs routine and usually pay attention to everything I consume. Shilajit and ashwagandha were already on my list to try. Having them together in a liquid makes things simpler.' },
+        { name: 'Aditya N.', source: 'Fitness enthusiast', body: 'I’ve tried a fair number of sports nutrition products over the years. This one stands out because it’s more Ayurveda-focused than most gym supplements. It’s refreshing to see a different format instead of another capsule.' },
+        { name: 'Sahil A.', source: 'Short feedback', body: 'Taste is surprisingly nice. Doesn’t feel like drinking a typical Ayurvedic tonic. Good packaging too.' },
+        { name: 'Karan S.', source: 'Local supplement store', body: 'Saw this at my nearby supplement store while picking up whey. The shopkeeper explained the ingredients and I liked the concept. Was expecting a very strong herbal taste but the hazelnut flavour is actually quite decent.' },
+        { name: 'Ankit V.', source: 'Website purchase', body: 'Purchased through primalnutrition.in. Website ordering was simple. I personally prefer liquid supplements, so the format was a big reason for choosing this over regular tablets.' },
+        { name: 'Nikhil D.', source: 'Casual feedback', body: 'Not bad at all. Thought it would be bitter because of the herbs. Flavour is much better than expected. Bottle looks good too.' },
+        { name: 'Saurabh J.', source: 'Website purchase', body: 'Found T-REX online while looking for shilajit-based products. What made me consider it was the ingredient list and the fact that it’s a liquid. The hazelnut flavour is an unusual but interesting touch.' },
+        { name: 'Deepak P.', source: 'Local store purchase', body: 'My regular supplement shop had this on the counter. Hadn’t heard much about the brand before, so I checked the ingredients online. Quite a different product compared to the usual capsules in this category.' },
+        { name: 'Yash P.', source: 'Local supplement store', body: 'Picked this up from a supplement store near my gym. The combination is interesting, especially for someone who already uses traditional herbal products. A smaller bottle option would be nice for travelling.' },
+        { name: 'Mohit G.', source: 'Experienced lifter', body: 'One thing I’ve learnt after years of training is that sleep, diet and consistency matter far more than any supplement. I like that T-REX has traditional herbal ingredients, but I’d treat it as an addition to my routine, not a replacement for the basics.' },
+        { name: 'Rishabh T.', source: 'Training and recovery', body: 'I train 5 days a week and recovery is something I always focus on. The ashwagandha and shilajit combination caught my attention. Would be interesting to see more research on this exact formulation and its effects on active people.' },
+        { name: 'Harsh B.', source: 'Testosterone awareness', body: 'A lot of supplements claim to boost testosterone, but I don’t believe you can judge hormone levels just by how you feel in the gym. I appreciate the detailed ingredient information. Would like to see clinical testing on the finished product as well.' },
+        { name: 'Rohit C.', source: 'Long-term supplement perspective', body: 'For me, any supplement needs to fit into a consistent routine. I wouldn’t expect dramatic changes in strength or testosterone overnight. The combination of herbs in T-REX is appealing, and I’d be interested in seeing long-term customer feedback and independent lab results.' },
       ],
     },
   },
@@ -136,13 +259,13 @@ export const products = [
     ],
     name: 'Korean Panax Ginseng',
     subtitle: 'Energy · Cognition · Vitality',
-    tagline: 'Standardized ginsenoside extract',
+    tagline: "Korean Panax root extract",
     category: 'adaptogen',
     categoryLabel: 'Adaptogen',
     tier: 'SPECIALIST',
     accent: 'from-rust to-amber',
     bottleType: 'capsule',
-    description: 'Korean Panax — the most-studied ginseng for male energy, focus, and libido.',
+    description: "Korean Panax Ginseng for steady energy, sharper focus and drive.",
     variants: [{ id: 'gin-60', label: '60 capsules', sub: '30 days', price: 1800 }],
     mckinsey: {
       who: 'Cognitive performance + libido seekers',
@@ -152,50 +275,153 @@ export const products = [
       partner: 'Cordyceps',
     },
     pdp: {
-      heroClaim: 'The most-studied ginseng in the world. Standardized to ginsenosides Rg1 + Rb1 — the bioactives that actually drive cognition, libido, and HPA-axis balance.',
+      heroClaim: "The king of herbs, from the mountains of Korea. 1,000 mg of Korean Panax Ginseng for steady energy, sharper focus and drive. Two capsules a day.",
       metrics: [
-        { label: 'Ginsenoside %', value: '5% std.' },
-        { label: 'Capsules', value: '60' },
-        { label: 'Days', value: '30' },
-        { label: 'Best for', value: 'Brain + libido' },
+        {
+          "label": "Per serving",
+          "value": "1,000 mg"
+        },
+        {
+          "label": "Daily dose",
+          "value": "2 caps"
+        },
+        {
+          "label": "Days per bottle",
+          "value": "30"
+        },
+        {
+          "label": "True Korean ginseng",
+          "value": "Panax"
+        },
+        {
+          "label": "Steady energy",
+          "value": "No caffeine"
+        }
       ],
       problem: {
-        title: 'Ginseng is the most counterfeited adaptogen on Amazon.',
-        body: 'Most "ginseng" capsules sold in India contain Indian ginseng (a different plant), or are non-standardized — meaning you have no idea how much actual ginsenoside is inside. Our Korean Panax is sourced from 6-year-aged roots and standardized to 5% ginsenosides.',
+        "title": "Busy mind. Empty tank.",
+        "body": "Long days, late nights and a 3 PM fog that coffee can't fix. Korean ginseng has been Asia's answer to mental and physical fatigue for over 2,000 years."
       },
       mechanism: {
-        title: 'What ginsenosides actually do',
-        steps: [
-          { h: 'Cognitive', b: 'Rb1 + Rg1 cross the blood-brain barrier, support acetylcholine and dopamine signaling.' },
-          { h: 'Libido', b: 'Korean ginseng increases nitric oxide and supports erectile function via cGMP pathway.' },
-          { h: 'Adaptogen', b: 'Modulates HPA axis — sharpens response to acute stress without burning out.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Korean Ginseng works",
+        "steps": [
+          {
+            "h": "True Panax, not a substitute",
+            "b": "Many 'ginseng' products are actually Indian ginseng (ashwagandha), a different plant. Ours is genuine Korean Panax root."
+          },
+          {
+            "h": "Steady, not wired",
+            "b": "An adaptogen gives energy that lasts the day, with no caffeine spike and no crash."
+          },
+          {
+            "h": "Mind and body",
+            "b": "Sharper focus at work, more stamina in the gym, and the drive to match."
+          }
+        ]
       },
       evidence: [
-        { study: 'Choi Y.D. et al., Asian Journal of Andrology 2013', finding: 'Korean red ginseng improved erectile function scores in 60% of subjects with mild ED.', source: 'doi:10.1038/aja.2012.137' },
-        { study: 'Reay J.L. et al., Psychopharmacology 2005', finding: 'Panax ginseng improved cognitive performance + mood in healthy young adults.', source: 'PMID 15876775' },
+        {
+          "study": "Reay J.L. et al., Psychopharmacology 2005",
+          "finding": "Panax ginseng improved cognitive performance and mood in healthy young adults.",
+          "source": "PMID 15876775"
+        }
       ],
       protocol: {
-        when: 'Morning.',
-        how: '1 capsule with water.',
-        withWhat: 'With or without food. Pair with T-Rex for compounded effect.',
-        cycle: '8 weeks on, 2 weeks off.',
+        "early": true,
+        "eyebrow": "Daily focus, made simple",
+        "title": "Two capsules. Every morning.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "After breakfast.",
+        "how": "2 capsules (1,000 mg).",
+        "withWhat": "With a glass of water.",
+        "cycle": "Daily. Best results with 8 weeks on, then 2 weeks off."
       },
       whoFor: [
-        'Men with cognitive fatigue / brain fog',
-        'Anyone with mild libido decline',
-        'Adaptogen stack-builders',
+        "Men with long, mentally demanding days",
+        "Anyone with a 3 PM energy dip",
+        "Men who want focus and drive without caffeine"
       ],
       whoNotFor: [
-        'On blood pressure medication',
-        'On blood thinners',
-        'Pregnant or breastfeeding',
+        "Under 18",
+        "On blood pressure, blood-thinner or diabetes medication, without a doctor's advice",
+        "Pregnant or breastfeeding"
+      ],
+      benefitsHeading: "What Korean Ginseng does for you.",
+      benefits: [
+        {
+          "icon": "bolt",
+          "title": "Peak Performance",
+          "line": "Energy that holds up from morning to night."
+        },
+        {
+          "icon": "brain",
+          "title": "Focus & Cognition",
+          "line": "Clearer thinking and sharper concentration."
+        },
+        {
+          "icon": "arm",
+          "title": "Recovery & Testosterone Support",
+          "line": "Helps you bounce back and supports natural testosterone."
+        },
+        {
+          "icon": "shield",
+          "title": "Immune Defence",
+          "line": "Supports your body's natural defences."
+        },
+        {
+          "icon": "flame",
+          "title": "Energy & Stamina",
+          "line": "Steady drive through long days. No crash."
+        },
+        {
+          "icon": "male",
+          "title": "Drive & Vitality",
+          "line": "Feel more motivated and more like yourself."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "bolt",
+          "what": "Steadier energy through the day."
+        },
+        {
+          "week": "Week 2",
+          "icon": "brain",
+          "what": "Clearer focus at work."
+        },
+        {
+          "week": "Week 3",
+          "icon": "dumbbell",
+          "what": "More stamina in your workouts."
+        },
+        {
+          "week": "Week 4",
+          "icon": "flame",
+          "what": "Drive and recovery feel stronger."
+        }
+      ],
+      faq: [
+        {
+          "q": "Is this Indian ginseng or Korean?",
+          "a": "Korean Panax ginseng. Indian ginseng is ashwagandha, a completely different plant."
+        },
+        {
+          "q": "How do I take it?",
+          "a": "Take 2 capsules after breakfast with water, every day. Best results come with 8 weeks of use, then a 2-week break."
+        },
+        {
+          "q": "Will it feel like caffeine?",
+          "a": "No. Ginseng gives steady energy without a spike or a crash."
+        }
       ],
       stackWith: ['trex-cordyceps', 'trex-liquid'],
-      faq: [
-        { q: 'Is this Indian ginseng or Korean?', a: 'Korean (Panax). Indian ginseng = ashwagandha, totally different plant.' },
-        { q: 'Will I feel it the first day?', a: 'Some men do. Most need 5–10 days for sustained effect.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[3], title: 'Sharper afternoons', body: '3pm slump is the worst. Two weeks in, the slump is gone. Will repurchase.', time: '4 days ago' },
       ],
@@ -210,19 +436,20 @@ export const products = [
     image: '/products/cordyceps-v2-01.png',
     gallery: [
       '/products/cordyceps-v2-01.png',
+      '/products/cordyceps-nature.jpg',
       '/products/cordyceps-v2-02.png',
       '/products/cordyceps-v2-03.png',
       '/products/cordyceps-v2-04.png',
     ],
     name: 'Cordyceps',
-    subtitle: 'VO₂ Max · Stamina',
-    tagline: 'Cordyceps sinensis 10:1 extract',
+    subtitle: "Stamina · Oxygen · Energy",
+    tagline: "Cordyceps sinensis 10:1 extract",
     category: 'adaptogen',
     categoryLabel: 'Adaptogen',
     tier: 'SPECIALIST',
     accent: 'from-amber-dark to-forest',
     bottleType: 'capsule',
-    description: 'For endurance athletes and high-altitude warriors. Mushroom-derived ATP fuel.',
+    description: "The rare high-altitude fungus for stamina and clean energy.",
     variants: [{ id: 'cord-60', label: '60 capsules', sub: '30 days', price: 1800 }],
     mckinsey: {
       who: 'Endurance athletes, climbers, runners',
@@ -232,49 +459,154 @@ export const products = [
       partner: 'Hydra Muscle',
     },
     pdp: {
-      heroClaim: 'The mushroom that climbs Everest. Cordyceps sinensis 10:1 extract — standardized for adenosine, the direct building block of ATP and cellular energy.',
+      heroClaim: "The rare medicinal fungus of the high Himalayas, known as keedajadi. Cordyceps sinensis, concentrated 10:1, for stamina, oxygen use and clean energy. No stimulants.",
       metrics: [
-        { label: 'Extract ratio', value: '10:1' },
-        { label: 'VO₂ max lift (literature)', value: '+7%' },
-        { label: 'Best for', value: 'Endurance' },
-        { label: 'Time to effect', value: '14 days' },
+        {
+          "label": "Extract strength",
+          "value": "10:1"
+        },
+        {
+          "label": "Per serving",
+          "value": "1,000 mg"
+        },
+        {
+          "label": "Daily dose",
+          "value": "2 caps"
+        },
+        {
+          "label": "Days per bottle",
+          "value": "30"
+        },
+        {
+          "label": "Clean energy",
+          "value": "No stimulants"
+        }
       ],
       problem: {
-        title: 'Most endurance supplements are just caffeine in disguise.',
-        body: "Pre-workouts blast you with stimulants — useful for 90 minutes, useless past 2 hours. If you ride, run, swim, climb, or train CrossFit-long, you need ATP support that lasts. Cordyceps doesn't stimulate — it expands your cellular fuel ceiling.",
+        "title": "Gassed out before the workout ends?",
+        "body": "Pre-workouts spike you for an hour, then drop you. Cordyceps works differently. It supports how your body makes and uses energy, so your stamina lasts the whole session."
       },
       mechanism: {
-        title: 'Why Sherpas have used this for centuries',
-        steps: [
-          { h: 'Adenosine pathway', b: 'Cordyceps sinensis contains adenosine — a direct building block of ATP — supporting mitochondrial energy production at the cellular level.' },
-          { h: 'Oxygen efficiency', b: 'Improves VO₂ max and oxygen uptake, particularly noticeable at sustained intensity.' },
-          { h: 'No stim crash', b: 'Cordyceps is non-stimulant — no jitters, no crash, no tolerance build.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Cordyceps works",
+        "steps": [
+          {
+            "h": "Rare by nature",
+            "b": "Cordyceps sinensis grows on the high Himalayan and Tibetan plateau, where it has been prized for centuries as keedajadi."
+          },
+          {
+            "h": "Concentrated 10:1",
+            "b": "1,000 mg of extract per serving, made from 10,000 mg of raw material. A small capsule with serious strength."
+          },
+          {
+            "h": "Energy without a crash",
+            "b": "It supports your body's own energy and oxygen use. No jitters, no tolerance."
+          }
+        ]
       },
       evidence: [
-        { study: 'Chen S. et al., Journal of Alternative Med. 2010', finding: 'Cordyceps supplementation × 6 weeks: VO₂ max +7%, ventilatory threshold +10.5% in active adults.', source: 'PMID 20524422' },
+        {
+          "study": "Chen S. et al., Journal of Alternative Med. 2010",
+          "finding": "Cordyceps for 6 weeks improved VO₂ max and ventilatory threshold in active adults.",
+          "source": "PMID 20524422"
+        }
       ],
       protocol: {
-        when: '30–60 minutes pre-training.',
-        how: '1 capsule with water.',
-        withWhat: 'Pair with Hydra Muscle on heavy training days.',
-        cycle: '8–12 weeks on, 2 weeks off.',
+        "early": true,
+        "eyebrow": "Daily stamina, made simple",
+        "title": "Two capsules. Every morning.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "After breakfast.",
+        "how": "2 capsules (1,000 mg).",
+        "withWhat": "With a glass of water. On heavy training days, take them 30–60 minutes before training.",
+        "cycle": "Daily. Best results with 8–12 weeks on, then 2 weeks off."
       },
       whoFor: [
-        'Endurance athletes',
-        'CrossFit / long-format training',
-        'High-altitude hikers, climbers',
-        'Anyone hitting a VO₂ ceiling',
+        "Gym-goers who run out of steam",
+        "Runners, cyclists and long-session athletes",
+        "Trekkers and anyone who works at altitude",
+        "Men who want energy without stimulants"
       ],
       whoNotFor: [
-        'Pure strength athletes (look at Tongkat or Maca)',
-        'Those on immunosuppressants',
+        "Under 18",
+        "On immunosuppressant medication, without a doctor's advice",
+        "Pregnant or breastfeeding"
+      ],
+      benefitsHeading: "What Cordyceps does for you.",
+      benefits: [
+        {
+          "icon": "arm",
+          "title": "Explosive Strength",
+          "line": "More power when you push."
+        },
+        {
+          "icon": "bolt",
+          "title": "VO₂ Max & Efficiency",
+          "line": "Use oxygen and energy better when you work hard."
+        },
+        {
+          "icon": "flame",
+          "title": "ATP Production",
+          "line": "Supports the cellular fuel your muscles burn."
+        },
+        {
+          "icon": "drop",
+          "title": "Nutrient & Fat Use",
+          "line": "Helps your body make more of what you eat."
+        },
+        {
+          "icon": "dumbbell",
+          "title": "Endurance",
+          "line": "Stay strong late into a session."
+        },
+        {
+          "icon": "leaf",
+          "title": "Recovery",
+          "line": "Bounce back faster between workouts."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "bolt",
+          "what": "Cleaner, steadier energy."
+        },
+        {
+          "week": "Week 2",
+          "icon": "dumbbell",
+          "what": "You last longer in sessions."
+        },
+        {
+          "week": "Week 3",
+          "icon": "flame",
+          "what": "Breathing feels easier on cardio."
+        },
+        {
+          "week": "Week 4",
+          "icon": "arm",
+          "what": "Stamina and strength feel stronger."
+        }
+      ],
+      faq: [
+        {
+          "q": "What is Cordyceps sinensis?",
+          "a": "A rare medicinal fungus traditionally found at high altitude in the Himalayas and Tibet, known as keedajadi. It is not the fungus from the video game."
+        },
+        {
+          "q": "Will it stimulate me like caffeine?",
+          "a": "No. Cordyceps is not a stimulant. You feel it as steadier energy and better stamina, not a buzz."
+        },
+        {
+          "q": "How do I take it?",
+          "a": "2 capsules after breakfast with water, every day. On heavy training days you can take them 30–60 minutes before training."
+        }
       ],
       stackWith: ['hydra-muscle', 'trex-ginseng'],
-      faq: [
-        { q: 'Is this the "zombie" Cordyceps from The Last of Us?', a: 'Different genus entirely. The game\'s fungus is Ophiocordyceps unilateralis — an insect parasite. Ours is Cordyceps sinensis — the rare Himalayan species Sherpas have used for centuries.' },
-        { q: 'Will it stimulate me like caffeine?', a: 'No. Cordyceps is non-stimulant. You feel it as expanded ceiling, not a buzz.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[1], title: 'Marathon PB after 6 weeks', body: 'Was plateaued at 4:12 marathon for 2 years. Cordyceps stack + tempo training = 3:54 last month.', time: '3 weeks ago' },
       ],
@@ -289,6 +621,7 @@ export const products = [
     image: '/products/tongkat-v2-01.png',
     gallery: [
       '/products/tongkat-v2-01.png',
+      '/products/tongkat-nature.jpg',
       '/products/tongkat-v2-02.png',
       '/products/tongkat-v2-03.png',
       '/products/tongkat-v2-04.jpeg',
@@ -314,23 +647,25 @@ export const products = [
       partner: 'T-Rex Liquid',
     },
     pdp: {
-      heroClaim: 'The most direct T-supporting adaptogen in nature. Standardized to 2% eurycomanone — the molecule clinical trials use.',
+      heroClaim: 'The legendary root of the Malaysian rainforest. Wild-harvested Tongkat Ali, concentrated 100:1, for strength, drive and stamina. Two capsules a day.',
       metrics: [
-        { label: 'Eurycomanone', value: '2% std.' },
-        { label: 'Per serving', value: '1,000mg' },
-        { label: 'Best for', value: 'Plateaued lifters' },
-        { label: 'Time to effect', value: '21 days' },
+        { label: 'Extract', value: '100:1' },
+        { label: 'Per serving', value: '1,000 mg' },
+        { label: 'Daily dose', value: '2 caps' },
+        { label: 'Days per bottle', value: '30' },
+        { label: 'Malaysian root', value: 'Wild-harvested' },
       ],
       problem: {
-        title: "You've been training hard for 8 months and your lifts haven't moved.",
-        body: "When natural recovery and progressive overload stop working, the problem is rarely your program — it's your hormonal baseline. Tongkat Ali (Eurycoma longifolia) is the most direct, evidence-based natural intervention for free testosterone support.",
+        title: 'Where did your fire go?',
+        body: 'Same gym. Same effort. Less drive, less strength, less you. After 30, testosterone drops a little every year, and most men just call it getting older. Tongkat Ali is how the men of the Malaysian rainforest have fought back for centuries.',
       },
       mechanism: {
-        title: 'Why it works where other "T-boosters" fail',
+        eyebrow: 'The Primal difference',
+        title: 'Why Tongkat Ali works',
         steps: [
-          { h: 'Releases bound T', b: 'Tongkat reduces SHBG (sex hormone binding globulin) — freeing up bound testosterone that was unavailable.' },
-          { h: 'Standardized dose', b: '2% eurycomanone = lab-verified concentration. Generic tongkat without this number is essentially a coin flip.' },
-          { h: 'Compounds with T-Rex', b: 'T-Rex provides the foundational adaptogenic stack. Tongkat adds direct T-release support on top.' },
+          { h: '100:1 concentrated', b: '1,000 mg of extract, made from 1,00,000 mg of raw root. A small capsule with serious strength.' },
+          { h: 'Wild-harvested root', b: 'Only mature rainforest roots, 5 to 7 years old, when their active compounds peak.' },
+          { h: 'Frees up your testosterone', b: 'Tongkat Ali helps release testosterone your body already makes but cannot use.' },
         ],
       },
       evidence: [
@@ -338,19 +673,39 @@ export const products = [
         { study: 'Henkel R.R. et al., Phytotherapy Research 2014', finding: 'Tongkat Ali in physically active seniors: T uplift + muscular force +20%.', source: 'doi:10.1002/ptr.5017' },
       ],
       protocol: {
-        when: 'Morning.',
-        how: '1 capsule with water.',
-        withWhat: 'Best paired with T-Rex Liquid for compounded effect.',
-        cycle: '8 weeks on, 2 weeks off.',
+        early: true,
+        eyebrow: 'Daily strength, made simple',
+        title: 'Two capsules. Every morning.',
+        labels: ['When', 'How much', 'How', 'How long'],
+        when: 'After breakfast.',
+        how: '2 capsules (1,000 mg extract).',
+        withWhat: 'Swallow with a glass of water.',
+        cycle: 'Daily. Best results with 8 weeks on, then 2 weeks off.',
       },
       whoFor: [
-        'Lifters plateaued for 6+ months',
-        'Men over 35 with low-normal T',
-        'Anyone already on T-Rex looking for next layer',
+        'Lifters who have stopped progressing',
+        'Men over 30 who want their drive back',
+        'Anyone already on T-REX looking for the next layer',
       ],
       whoNotFor: [
+        'Under 18',
         'Men with hormone-sensitive cancers (history)',
         'Currently on TRT',
+      ],
+      benefitsHeading: 'What Tongkat Ali does for you.',
+      benefits: [
+        { icon: 'male', title: 'Healthy Testosterone', line: 'Supports your natural free-testosterone levels.' },
+        { icon: 'arm', title: 'Strength & Power', line: 'Push harder in the gym and break through plateaus.' },
+        { icon: 'flame', title: 'Drive & Libido', line: 'Bring back the desire and confidence you remember.' },
+        { icon: 'bolt', title: 'Energy & Stamina', line: 'Steady energy through long days. No stimulants.' },
+        { icon: 'leaf', title: 'Stress Balance', line: "Helps keep cortisol in check, so stress doesn't steal your edge." },
+        { icon: 'dumbbell', title: 'Lean Muscle & Recovery', line: 'Recover faster between sessions.' },
+      ],
+      timeline: [
+        { week: 'Week 1', icon: 'bolt', what: 'Steadier energy through the day.' },
+        { week: 'Week 2', icon: 'moon', what: 'Better mood and focus.' },
+        { week: 'Week 3', icon: 'flame', what: 'Your drive picks up.' },
+        { week: 'Week 4', icon: 'arm', what: 'Strength and stamina feel stronger.' },
       ],
       stackWith: ['trex-liquid', 'trex-maca'],
       faq: [
@@ -379,14 +734,14 @@ export const products = [
       '/products/royal-jelly-v2-07.jpeg',
     ],
     name: 'Royal Jelly',
-    subtitle: 'Myogenesis · Vigour',
-    tagline: 'Bee-derived androgenic support',
+    subtitle: "Muscle · Vigour",
+    tagline: "Pure royal jelly",
     category: 'adaptogen',
     categoryLabel: 'Adaptogen',
     tier: 'SPECIALIST',
     accent: 'from-amber-light to-amber-dark',
     bottleType: 'capsule',
-    description: 'Royal jelly for muscle protein synthesis and androgenic support. Not vegan.',
+    description: "Pure royal jelly for lean muscle, vitality and recovery. Not vegan.",
     variants: [{ id: 'rj-60', label: '60 capsules', sub: '30 days', price: 1800 }],
     mckinsey: {
       who: 'Muscle-building athletes who can eat animal-source',
@@ -396,48 +751,154 @@ export const products = [
       partner: 'T-Rex Liquid',
     },
     pdp: {
-      heroClaim: 'The substance that turns a worker bee into a queen — same compounds that drive androgenic differentiation in mammals.',
+      heroClaim: "The food that turns a worker bee into a queen. 1,000 mg of pure royal jelly for lean muscle, vitality and recovery. Two capsules a day.",
       metrics: [
-        { label: '10-HDA std.', value: '5%' },
-        { label: 'Capsules', value: '60' },
-        { label: 'Best for', value: 'Hypertrophy' },
-        { label: 'Vegan', value: 'No' },
+        {
+          "label": "Per serving",
+          "value": "1,000 mg"
+        },
+        {
+          "label": "Daily dose",
+          "value": "2 caps"
+        },
+        {
+          "label": "Days per bottle",
+          "value": "30"
+        },
+        {
+          "label": "Pure royal jelly",
+          "value": "Bee-made"
+        },
+        {
+          "label": "Suitable for vegans",
+          "value": "No"
+        }
       ],
       problem: {
-        title: 'You train. Recovery is the limiting factor.',
-        body: "Muscle isn't built in the gym — it's built between sessions. Royal jelly contains 10-hydroxy-2-decenoic acid (10-HDA), shown in animal models to support androgen receptor expression and muscle protein synthesis pathways.",
+        "title": "Training hard. Recovering slow?",
+        "body": "Muscle is built between sessions, not during them. Royal jelly is one of nature's richest foods, packed with protein, amino acids and B vitamins, and it is what bees feed their queen."
       },
       mechanism: {
-        title: 'What 10-HDA does',
-        steps: [
-          { h: 'Androgen receptor support', b: 'Animal studies show 10-HDA upregulates AR expression — making the testosterone you already have more effective.' },
-          { h: 'Protein synthesis', b: 'Compounds in royal jelly support mTOR pathway activation, accelerating recovery between training sessions.' },
-          { h: 'Energy + libido', b: 'Anecdotally, men report higher daily vigour and libido within 2 weeks.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Royal Jelly works",
+        "steps": [
+          {
+            "h": "Made by bees, for a queen",
+            "b": "Worker bees make royal jelly to feed one queen. It is rich in protein, amino acids and B vitamins."
+          },
+          {
+            "h": "Built for recovery",
+            "b": "Supports lean muscle growth and repair between workouts."
+          },
+          {
+            "h": "Daily vigour",
+            "b": "Many men notice more energy and drive within a few weeks."
+          }
+        ]
       },
       evidence: [
-        { study: 'Morita H. et al., Endocrine Journal 2012', finding: '10-HDA from royal jelly: increased AR expression in mammalian muscle cells in vitro.', source: 'PMID 22573102' },
+        {
+          "study": "Morita H. et al., Endocrine Journal 2012",
+          "finding": "A compound from royal jelly increased androgen-receptor activity in muscle cells in the lab.",
+          "source": "PMID 22573102"
+        }
       ],
       protocol: {
-        when: 'Morning.',
-        how: '1 capsule with water.',
-        withWhat: 'Best stacked with T-Rex for compounded androgenic support.',
-        cycle: '8 weeks on, 2 weeks off.',
+        "early": true,
+        "eyebrow": "Daily recovery, made simple",
+        "title": "Two capsules. Every morning.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "After breakfast.",
+        "how": "2 capsules (1,000 mg).",
+        "withWhat": "With a glass of water.",
+        "cycle": "Daily. Best results with 8 weeks on, then 2 weeks off."
       },
       whoFor: [
-        'Lifters in hypertrophy phase',
-        'Athletes in heavy training blocks',
-        'Anyone who eats animal products',
+        "Lifters building lean muscle",
+        "Men in heavy training blocks",
+        "Anyone who wants more daily vigour"
       ],
       whoNotFor: [
-        'Strict vegans (royal jelly is bee-derived)',
-        'Anyone with bee or pollen allergies',
+        "Under 18",
+        "Strict vegans (royal jelly is made by bees)",
+        "Bee, pollen or honey allergy",
+        "Asthma, without a doctor's advice"
+      ],
+      benefitsHeading: "What Royal Jelly does for you.",
+      benefits: [
+        {
+          "icon": "dumbbell",
+          "title": "Lean Muscle Growth",
+          "line": "Supports muscle building and repair."
+        },
+        {
+          "icon": "flame",
+          "title": "Vitality & Libido",
+          "line": "Supports sexual vitality, desire and performance."
+        },
+        {
+          "icon": "bolt",
+          "title": "Cellular Energy",
+          "line": "Supports energy at the cell level."
+        },
+        {
+          "icon": "arm",
+          "title": "Recovery",
+          "line": "Helps you recover between sessions."
+        },
+        {
+          "icon": "male",
+          "title": "Daily Vigour",
+          "line": "Feel stronger and more energetic day to day."
+        },
+        {
+          "icon": "shield",
+          "title": "Nutrient-Dense",
+          "line": "Protein, amino acids and B vitamins in one."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "bolt",
+          "what": "More daily energy."
+        },
+        {
+          "week": "Week 2",
+          "icon": "leaf",
+          "what": "Better recovery between workouts."
+        },
+        {
+          "week": "Week 3",
+          "icon": "arm",
+          "what": "Strength starts to pick up."
+        },
+        {
+          "week": "Week 4",
+          "icon": "flame",
+          "what": "Vigour and drive feel stronger."
+        }
+      ],
+      faq: [
+        {
+          "q": "Is royal jelly vegan?",
+          "a": "No. It is made by bees. If you are vegan, look at Tongkat Ali, Black Maca or Cordyceps instead."
+        },
+        {
+          "q": "Who should avoid it?",
+          "a": "Anyone with a bee, pollen or honey allergy, and people with asthma unless a doctor says it is fine."
+        },
+        {
+          "q": "How do I take it?",
+          "a": "2 capsules after breakfast with water, every day."
+        }
       ],
       stackWith: ['trex-liquid', 'trex-tongkat', 'hydra-muscle'],
-      faq: [
-        { q: 'Is royal jelly vegan?', a: 'No. It is bee-derived. If you are vegan, look at Tongkat, Maca, or Cordyceps instead.' },
-        { q: 'Bee allergy?', a: 'Avoid. Royal jelly can trigger severe allergic reactions in bee-sensitive individuals.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[4], title: 'Recovery between sessions', body: 'Was training 5x. Now I can do 6x without burning out. Quietly impressive.', time: '2 weeks ago' },
       ],
@@ -452,6 +913,7 @@ export const products = [
     image: '/products/maca-v2-01.png',
     gallery: [
       '/products/maca-v2-01.png',
+      '/products/maca-nature.jpg',
       '/products/maca-v2-02.png',
       '/products/maca-v2-03.png',
       '/products/maca-v2-04.jpeg',
@@ -460,14 +922,14 @@ export const products = [
       '/products/maca-v2-07.jpeg',
     ],
     name: 'Black Maca',
-    subtitle: 'Strength · Recovery · Stamina',
-    tagline: 'Peruvian black maca root',
+    subtitle: "Strength · Stamina · Drive",
+    tagline: "Peruvian black maca root",
     category: 'adaptogen',
     categoryLabel: 'Adaptogen',
     tier: 'SPECIALIST',
     accent: 'from-ink-700 to-amber-dark',
     bottleType: 'capsule',
-    description: 'Strongest maca variant for male energy, endurance, and recovery.',
+    description: "Black maca from the Peruvian Andes for strength, stamina and drive.",
     variants: [{ id: 'maca-60', label: '60 capsules', sub: '30 days', price: 1800 }],
     mckinsey: {
       who: 'Stamina + libido + mood',
@@ -477,48 +939,153 @@ export const products = [
       partner: 'Tongkat Ali',
     },
     pdp: {
-      heroClaim: 'Of the three maca colors, only black maca shows male-specific effects in clinical trials. Sourced from Junín, Peru at 4,100m altitude.',
+      heroClaim: "The Andean root grown high on the Junín plateau in Peru. Black maca, concentrated 10:1, for strength, stamina and drive. Two capsules a day.",
       metrics: [
-        { label: 'Sourced from', value: 'Junín, Peru' },
-        { label: 'Altitude', value: '4,100m' },
-        { label: 'Best for', value: 'Stamina + mood' },
-        { label: 'Vegan', value: 'Yes' },
+        {
+          "label": "Extract strength",
+          "value": "10:1"
+        },
+        {
+          "label": "Per serving",
+          "value": "1,000 mg"
+        },
+        {
+          "label": "Daily dose",
+          "value": "2 caps"
+        },
+        {
+          "label": "Days per bottle",
+          "value": "30"
+        },
+        {
+          "label": "Grown at",
+          "value": "4,100 m"
+        }
       ],
       problem: {
-        title: 'Most "maca" is the cheap yellow variant.',
-        body: "Yellow maca is the most common — and the least studied. Black maca is the variant clinical trials use, particularly for male sexual desire, sperm parameters, and physical endurance. We import only Junín-sourced black maca from cooperative-certified farms.",
+        "title": "Low drive. Low energy. Low mood?",
+        "body": "Stress and long days quietly drain your drive. Black maca, the rarest of the three maca colours, has been eaten in the Andes for strength and stamina for over 2,000 years."
       },
       mechanism: {
-        title: 'Why black, not yellow',
-        steps: [
-          { h: 'Macamides + macaenes', b: 'Black maca has the highest concentration of these signature compounds — linked to libido and endurance effects.' },
-          { h: 'Non-hormonal', b: 'Maca does not directly increase testosterone or estrogen — it works on the hypothalamus and central nervous system.' },
-          { h: 'Mood + stamina', b: 'Self-reported energy and mood improvements in 50%+ of clinical trial participants.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Black Maca works",
+        "steps": [
+          {
+            "h": "Black, not yellow",
+            "b": "Most maca sold is the common yellow kind. Black is the rarer root, the one prized for men."
+          },
+          {
+            "h": "Grown at 4,100 metres",
+            "b": "It grows on Peru's Junín plateau, where thin air and cold make the root potent."
+          },
+          {
+            "h": "Balance, not a hormone",
+            "b": "Black maca supports natural hormone balance. It is not a hormone and not a steroid."
+          }
+        ]
       },
       evidence: [
-        { study: 'Gonzales G.F. et al., Andrologia 2002', finding: 'Maca 1500–3000 mg × 12 weeks: improved sexual desire in 40–60% of men, independent of mood or T levels.', source: 'doi:10.1046/j.1439-0272.2002.00519.x' },
+        {
+          "study": "Gonzales G.F. et al., Andrologia 2002",
+          "finding": "Maca for 12 weeks improved sexual desire in men, independent of mood or testosterone levels.",
+          "source": "doi:10.1046/j.1439-0272.2002.00519.x"
+        }
       ],
       protocol: {
-        when: 'Morning or pre-workout.',
-        how: '1 capsule with water.',
-        withWhat: 'Tongkat for T-focused stack; with Cordyceps for endurance stack.',
-        cycle: '8–12 weeks, then 2 weeks off.',
+        "early": true,
+        "eyebrow": "Daily drive, made simple",
+        "title": "Two capsules. Every morning.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "After breakfast.",
+        "how": "2 capsules (1,000 mg).",
+        "withWhat": "With a glass of water.",
+        "cycle": "Daily. Best results with 8–12 weeks on, then 2 weeks off."
       },
       whoFor: [
-        'Men with mood + libido concerns',
-        'Endurance athletes (alternative to Cordyceps)',
-        'Vegans (maca is plant-based)',
+        "Men whose drive and mood have dipped",
+        "Lifters who want more intensity and faster repair",
+        "Vegans (maca is plant-based)"
       ],
       whoNotFor: [
-        'Anyone allergic to cruciferous vegetables',
-        'On thyroid medication (consult doctor)',
+        "Under 18",
+        "On thyroid medication, without a doctor's advice",
+        "Pregnant or breastfeeding"
+      ],
+      benefitsHeading: "What Black Maca does for you.",
+      benefits: [
+        {
+          "icon": "arm",
+          "title": "Muscle Size & Strength",
+          "line": "Supports muscle growth and strength."
+        },
+        {
+          "icon": "bolt",
+          "title": "Drive & Workout Intensity",
+          "line": "Sharper mental drive and harder training."
+        },
+        {
+          "icon": "scale",
+          "title": "Natural Hormone Balance",
+          "line": "Supports your body's own balance, naturally."
+        },
+        {
+          "icon": "leaf",
+          "title": "Stress & Repair",
+          "line": "Helps reduce stress and speeds up post-training repair."
+        },
+        {
+          "icon": "dumbbell",
+          "title": "Stamina",
+          "line": "Energy that lasts the whole day."
+        },
+        {
+          "icon": "flame",
+          "title": "Libido",
+          "line": "Supports desire and sexual vitality."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "leaf",
+          "what": "Steadier mood."
+        },
+        {
+          "week": "Week 2",
+          "icon": "bolt",
+          "what": "More energy through the day."
+        },
+        {
+          "week": "Week 3",
+          "icon": "flame",
+          "what": "Your drive picks up."
+        },
+        {
+          "week": "Week 4",
+          "icon": "arm",
+          "what": "Strength and stamina feel stronger."
+        }
+      ],
+      faq: [
+        {
+          "q": "Black, red or yellow maca?",
+          "a": "Black is the rarest and the one prized for men. Red is mostly for women and yellow is the common type. We only use black."
+        },
+        {
+          "q": "Is it a hormone or a steroid?",
+          "a": "No. Black maca is a plant root. It supports your natural hormone balance and does not contain hormones."
+        },
+        {
+          "q": "How do I take it?",
+          "a": "2 capsules after breakfast with water, every day."
+        }
       ],
       stackWith: ['trex-tongkat', 'trex-cordyceps'],
-      faq: [
-        { q: 'Black vs red vs yellow maca?', a: 'Black: best for male energy and libido. Red: female hormonal support. Yellow: generic. We sell only black.' },
-        { q: 'Will it raise my testosterone?', a: 'No — maca is non-hormonal. It works on CNS pathways, not the endocrine system directly.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[5], title: 'Mood + stamina, both lifted', body: 'Did not expect mood improvement. But after 3 weeks, I just felt steadier — at work and at home.', time: '5 weeks ago' },
       ],
@@ -542,14 +1109,14 @@ export const products = [
       '/products/liver-v2-08.jpeg',
     ],
     name: 'Liver Detox',
-    subtitle: 'Cleanse · Repair',
-    tagline: 'Milk thistle + glutathione precursors',
+    subtitle: "Cleanse · Absorb · Renew",
+    tagline: "The scrubber for your liver",
     category: 'adaptogen',
     categoryLabel: 'Recovery',
     tier: 'RECOVERY',
     accent: 'from-forest to-amber-dark',
     bottleType: 'capsule',
-    description: 'For the man who lifts hard and drinks occasionally. Repair what you punish.',
+    description: "A 13-herb Ayurvedic formula to support your liver and digestion.",
     variants: [{ id: 'liver-60', label: '60 capsules', sub: '30 days', price: 1800 }],
     mckinsey: {
       who: 'Hard-living lifter',
@@ -559,48 +1126,170 @@ export const products = [
       partner: 'T-Rex (mandatory if on cycle)',
     },
     pdp: {
-      heroClaim: "For the man who lifts hard, works hard, and occasionally lives hard. Milk thistle silymarin at 80% — the same dose used in clinical hepatoprotection trials.",
+      heroClaim: "The scrubber for your liver. 13 Ayurvedic herbs and milk thistle that help you detox, digest more and get more out of every meal. Two capsules a day.",
       metrics: [
-        { label: 'Silymarin std.', value: '80%' },
-        { label: 'Capsules', value: '60' },
-        { label: 'Cycle length', value: '14 days' },
-        { label: 'Best for', value: 'Quarterly reset' },
+        {
+          "label": "Ayurvedic herbs",
+          "value": "13"
+        },
+        {
+          "label": "Hero herb",
+          "value": "Milk thistle"
+        },
+        {
+          "label": "Daily dose",
+          "value": "2 caps"
+        },
+        {
+          "label": "Days per bottle",
+          "value": "30"
+        },
+        {
+          "label": "Ayurvedic",
+          "value": "Proprietary medicine"
+        }
       ],
       problem: {
-        title: 'Your liver processes everything — including your supplements.',
-        body: "If you train hard, eat processed food, drink socially, or take any oral supplements long-term, your liver carries the load. Liver Detox is a quarterly 14-day reset built on silymarin (milk thistle's active compound), glutathione precursors, and dandelion root.",
+        "title": "Heavy food. Late nights. Tired liver.",
+        "body": "Your liver handles everything you eat, drink and take, including your supplements. When it is overloaded, energy, digestion and recovery all suffer."
       },
       mechanism: {
-        title: 'How silymarin protects + repairs',
-        steps: [
-          { h: 'Membrane protection', b: 'Silymarin stabilises hepatocyte cell membranes, blocking toxin entry.' },
-          { h: 'Glutathione restoration', b: 'NAC + alpha-lipoic acid restore depleted glutathione — your body\'s primary detox antioxidant.' },
-          { h: 'Bile flow', b: 'Dandelion root and turmeric stimulate bile production, helping clear fat-soluble toxins.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Liver Detox works",
+        "steps": [
+          {
+            "h": "Classic liver herbs",
+            "b": "Kalmegh, Bhuiamla, Katki and Punarnava, used in Ayurveda for liver care for generations."
+          },
+          {
+            "h": "Plus milk thistle",
+            "b": "The best-known liver herb in the world, added to the classic blend at 100 mg."
+          },
+          {
+            "h": "Better absorption",
+            "b": "Pipul (long pepper) helps your body absorb the herbs and the protein you eat."
+          }
+        ]
       },
       evidence: [
-        { study: 'Abenavoli L. et al., Phytotherapy Research 2018', finding: 'Silymarin: significant hepatoprotection markers (ALT, AST) across multiple clinical settings.', source: 'doi:10.1002/ptr.6171' },
+        {
+          "study": "Abenavoli L. et al., Phytotherapy Research 2018",
+          "finding": "Milk thistle (silymarin) showed liver-protective effects across several clinical settings.",
+          "source": "doi:10.1002/ptr.6171"
+        }
       ],
       protocol: {
-        when: 'Morning + evening.',
-        how: '1 capsule AM, 1 capsule PM with food.',
-        withWhat: 'Plenty of water. Reduce alcohol during cycle.',
-        cycle: '14 days every quarter, or after any high-toxin period.',
+        "early": true,
+        "eyebrow": "Daily liver care, made simple",
+        "title": "Two capsules. Every morning.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "After breakfast.",
+        "how": "2 capsules.",
+        "withWhat": "With a glass of water.",
+        "cycle": "Daily for 30 days. Repeat after any heavy period."
       },
       whoFor: [
-        'Lifters running supplement stacks long-term',
-        'Anyone drinking socially',
-        'Quarterly health-reset believers',
+        "Men who eat out often",
+        "Anyone who drinks socially",
+        "Lifters on long supplement stacks",
+        "Anyone who wants lighter digestion"
       ],
       whoNotFor: [
-        'Active liver disease (consult doctor)',
-        'On medications metabolized by the liver',
+        "Under 18",
+        "Existing liver disease or on regular medication, without a doctor's advice",
+        "Pregnant or breastfeeding",
+        "Lactose intolerance (contains lactose)"
+      ],
+      benefitsHeading: "What Liver Detox does for you.",
+      benefits: [
+        {
+          "icon": "leaf",
+          "title": "A Scrubber for Your Liver",
+          "line": "Supports your liver's natural cleansing, every day."
+        },
+        {
+          "icon": "dumbbell",
+          "title": "Enhanced Protein Absorption",
+          "line": "Helps your body absorb and use the protein you eat."
+        },
+        {
+          "icon": "bolt",
+          "title": "Get More Out of Your Diet",
+          "line": "More of every meal goes to work for you."
+        },
+        {
+          "icon": "flame",
+          "title": "Absorb More, Digest More",
+          "line": "Bitter Ayurvedic herbs that support appetite and digestion."
+        },
+        {
+          "icon": "drop",
+          "title": "Detox Your Body",
+          "line": "Helps clear toxins and metabolic waste."
+        },
+        {
+          "icon": "shield",
+          "title": "Freshen Up Your Cells",
+          "line": "Supports cell renewal and regeneration."
+        },
+        {
+          "icon": "arm",
+          "title": "Metabolism & Energy",
+          "line": "Supports metabolism and steady daily energy."
+        },
+        {
+          "icon": "scale",
+          "title": "Lighter, Balanced Gut",
+          "line": "Feel lighter after heavy meals."
+        },
+        {
+          "icon": "heart",
+          "title": "Recover From the Weekend",
+          "line": "Support after late nights, rich food and social drinks."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "leaf",
+          "what": "Lighter digestion."
+        },
+        {
+          "week": "Week 2",
+          "icon": "bolt",
+          "what": "More daily energy."
+        },
+        {
+          "week": "Week 3",
+          "icon": "dumbbell",
+          "what": "Better appetite and absorption."
+        },
+        {
+          "week": "Week 4",
+          "icon": "scale",
+          "what": "You feel cleaner and lighter."
+        }
+      ],
+      faq: [
+        {
+          "q": "What is inside?",
+          "a": "13 Ayurvedic herbs (Giloy, Rohitak, Mutha, Katki, Daruharidra, Kule khara, Khetpapra, Bhuiamla, Pipul, Kalmegh, Chirata, Punarnava) plus milk thistle. Every dose is on the bottle."
+        },
+        {
+          "q": "Do I need this if I don't drink?",
+          "a": "It is not only for drinkers. Heavy food, long hours and long supplement use also load the liver."
+        },
+        {
+          "q": "Can I take it with T-REX?",
+          "a": "Yes. They work well together. Take 2 capsules after breakfast with water."
+        }
       ],
       stackWith: ['trex-liquid'],
-      faq: [
-        { q: 'Do I need this if I do not drink?', a: 'Less urgently — but if you take supplements year-round, a quarterly reset is sensible.' },
-        { q: 'Can I take this with T-Rex?', a: 'Yes. In fact, if you are running long T-Rex cycles, this is recommended every 90 days.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[2], title: 'My quarterly reset', body: 'Run a 14-day cycle every 3 months between training blocks. Feel cleaner afterward — bloodwork ALT/AST are stable.', time: '3 months ago' },
       ],
@@ -624,16 +1313,22 @@ export const products = [
       '/products/hydra-muscle/8.jpg',
     ],
     name: 'Hydra Muscle',
-    subtitle: 'Creatine + Electrolytes',
-    tagline: "India's first creatine + hydration formula",
+    subtitle: "Creatine · Hydration",
+    tagline: "Creatine + pink salt hydration",
     category: 'hydration',
     categoryLabel: 'Hydration',
     tier: 'PERFORMANCE',
     accent: 'from-amber-light to-amber',
     bottleType: 'tub',
     badge: 'New',
-    description: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes. Strawberry.',
-    variants: [{ id: 'hydra-1', label: '150g', sub: '30 servings · strawberry', price: 1200 }],
+    description: "3 g creatine with Himalayan pink salt, coconut water and magnesium. Salted strawberry.",
+    variants: [
+      { id: 'hydra-1', label: '250g', sub: '25 servings · salted strawberry', price: 1200 },
+      // Two tubs at the single-tub price. prepaidOnly because a BOGO shipped COD
+      // costs two units plus round-trip freight if it comes back as an RTO.
+      { id: 'hydra-2pk', label: 'Double Pack — 2 × 250g', sub: '50 servings · salted strawberry',
+        price: 1200, compareAt: 2400, save: 'Save ₹1,200', prepaidOnly: true, popular: true },
+    ],
     mckinsey: {
       who: 'Active training days',
       pain: 'Cramping, hydration, mid-set strength',
@@ -642,48 +1337,153 @@ export const products = [
       partner: 'Cordyceps',
     },
     pdp: {
-      heroClaim: '3g creatine monohydrate, himalayan pink salt, coconut water powder & 1500mg electrolytes, no artificial sweeteners. Built for Indian summer training — the only category where you sweat 1.5L per hour.',
+      heroClaim: "3 g pure creatine with Himalayan pink salt, coconut water and magnesium. Strength and hydration in one scoop. Salted strawberry.",
       metrics: [
-        { label: 'Creatine', value: '3g per serving' },
-        { label: 'Electrolytes', value: '1500mg blend' },
-        { label: 'Servings', value: '30' },
-        { label: 'Flavor', value: 'Strawberry' },
+        {
+          "label": "Creatine per scoop",
+          "value": "3 g"
+        },
+        {
+          "label": "Pure creatine",
+          "value": "99.9%"
+        },
+        {
+          "label": "Servings",
+          "value": "25"
+        },
+        {
+          "label": "Salted flavour",
+          "value": "Strawberry"
+        },
+        {
+          "label": "Sweetened with",
+          "value": "Stevia"
+        }
       ],
       problem: {
-        title: 'Indian gyms are hotter than your AC tells you.',
-        body: 'Most Indian lifters are chronically under-hydrated and under-electrolyted. Adding pure creatine to plain water gives you strength gains but no hydration support. Hydra Muscle is the first Indian formulation pairing 3g creatine monohydrate with himalayan pink salt, coconut water powder & 1500mg electrolytes.',
+        "title": "Cramping mid-set? Flat by rep eight?",
+        "body": "Indian heat drains water and salts fast. Creatine builds strength, and this one also brings the salts to keep you hydrated while you train."
       },
       mechanism: {
-        title: 'Why creatine + electrolytes together',
-        steps: [
-          { h: 'Creatine = strength', b: '3g daily monohydrate — clean, effective dose backed by sports science. 4-6 weeks for full saturation.' },
-          { h: 'Electrolytes = hydration', b: 'Sodium, potassium, magnesium, chloride — replace what Indian summer sessions burn.' },
-          { h: 'Together', b: 'Creatine pulls water into muscle cells. Electrolytes ensure that water actually exists in your system.' },
-        ],
+        "eyebrow": "The Primal difference",
+        "title": "Why Hydra Muscle works",
+        "steps": [
+          {
+            "h": "Creatine for strength",
+            "b": "3 g of 99.9% pure creatine monohydrate, the most researched supplement in sport."
+          },
+          {
+            "h": "Salts for hydration",
+            "b": "Himalayan pink salt, coconut water and magnesium replace what you sweat out."
+          },
+          {
+            "h": "Better together",
+            "b": "Creatine pulls water into your muscles. The salts make sure there is water to pull."
+          }
+        ]
       },
       evidence: [
-        { study: 'Kreider R.B. et al., JISSN 2017 position statement', finding: '5g creatine monohydrate daily: gold-standard for strength + lean mass. Most-studied supplement in history.', source: 'doi:10.1186/s12970-017-0173-z' },
+        {
+          "study": "Kreider R.B. et al., JISSN 2017 position statement",
+          "finding": "Creatine monohydrate is the gold-standard supplement for strength and lean mass, and the most-studied in history.",
+          "source": "doi:10.1186/s12970-017-0173-z"
+        }
       ],
       protocol: {
-        when: 'Pre or intra-workout.',
-        how: '1 scoop in 300–500ml water.',
-        withWhat: 'Sip across the session. On rest days, take in the morning.',
-        cycle: 'Daily, indefinitely.',
+        "early": true,
+        "eyebrow": "Daily strength, made simple",
+        "title": "One scoop. Every day.",
+        "labels": [
+          "When",
+          "How much",
+          "How",
+          "How long"
+        ],
+        "when": "Before or during your workout.",
+        "how": "1 scoop (10 g).",
+        "withWhat": "Mix in 300–500 ml of water and sip through the session. On rest days, take it in the morning.",
+        "cycle": "Daily."
       },
       whoFor: [
-        'Lifters and athletes training in heat',
-        'Anyone serious about strength progression',
-        'CrossFit, HIIT, sport training',
+        "Lifters and athletes who train in the heat",
+        "Anyone chasing strength gains",
+        "Gym-goers who cramp or tire early"
       ],
       whoNotFor: [
-        'Pure endurance-only athletes (creatine is less relevant)',
-        'Anyone with kidney issues (consult doctor)',
+        "Under 18",
+        "Kidney issues, without a doctor's advice",
+        "Pregnant or breastfeeding"
+      ],
+      benefitsHeading: "What Hydra Muscle does for you.",
+      benefits: [
+        {
+          "icon": "arm",
+          "title": "Strength & Power",
+          "line": "More force on your heaviest sets."
+        },
+        {
+          "icon": "drop",
+          "title": "Hydration",
+          "line": "Replaces water and salts lost in sweat."
+        },
+        {
+          "icon": "bolt",
+          "title": "Fewer Cramps",
+          "line": "Helps replace the salts you lose in hot sessions."
+        },
+        {
+          "icon": "leaf",
+          "title": "Recovery",
+          "line": "Supports faster recovery between workouts."
+        },
+        {
+          "icon": "dumbbell",
+          "title": "Muscle Fullness",
+          "line": "Creatine helps muscles hold more water and look fuller."
+        },
+        {
+          "icon": "flame",
+          "title": "Endurance",
+          "line": "Keep your output up through the last set."
+        }
+      ],
+      timeline: [
+        {
+          "week": "Week 1",
+          "icon": "drop",
+          "what": "Better hydration in workouts."
+        },
+        {
+          "week": "Week 2",
+          "icon": "bolt",
+          "what": "Fewer cramps."
+        },
+        {
+          "week": "Week 3",
+          "icon": "dumbbell",
+          "what": "A rep or two more per set."
+        },
+        {
+          "week": "Week 4",
+          "icon": "arm",
+          "what": "Strength and fullness start to show."
+        }
+      ],
+      faq: [
+        {
+          "q": "Do I need a loading phase?",
+          "a": "No. Taking 1 scoop daily fills your muscles in about 4 weeks, with no stomach upset."
+        },
+        {
+          "q": "Is creatine safe?",
+          "a": "It is the most-studied supplement in sport and is safe for healthy adults at this dose. Check with a doctor if you have kidney issues."
+        },
+        {
+          "q": "How do I take it?",
+          "a": "Mix 1 scoop (10 g) in 300–500 ml of water. Take it before or during your workout, or in the morning on rest days."
+        }
       ],
       stackWith: ['trex-cordyceps', 'trex-liquid'],
-      faq: [
-        { q: 'Do I need a loading phase?', a: 'No. Taking daily for 28 days saturates muscle creatine — same end state as loading, no GI distress.' },
-        { q: 'Is creatine safe?', a: 'Most-studied supplement in sports science. Safe for healthy adults at this dose, indefinitely. Consult doctor if kidney issues.' },
-      ],
       reviews: [
         { ...sharedReviewSeed[2], title: 'Finally an Indian creatine that hydrates', body: 'I used to mix creatine with electrolyte tablets separately. This is one scoop, better taste, same result. Done.', time: '1 month ago' },
       ],
@@ -700,7 +1500,6 @@ export const variantById = (productId, variantId) => {
 export const categories = [
   { id: 'all', label: 'Everything' },
   { id: 'liquid', label: 'Liquids' },
-  { id: 'daily', label: 'Daily' },
   { id: 'adaptogen', label: 'Adaptogens' },
   { id: 'hydration', label: 'Hydration' },
 ]

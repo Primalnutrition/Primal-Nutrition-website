@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { BENEFIT_ICONS } from '../lib/benefitIcons.jsx'
 import { useCart } from '../context/CartContext.jsx'
 import { usePage } from '../context/RouterContext.jsx'
 import { productById, products, tiers } from '../data/products.js'
@@ -7,9 +8,11 @@ import ProductVisual from './ProductVisual.jsx'
 import ProductGallery from './ProductGallery.jsx'
 import Picture from './Picture.jsx'
 import IngredientShowcase from './IngredientShowcase.jsx'
+import HomeReels from './HomeReels.jsx'
 import Footer from './Footer.jsx'
 import StickyProductCTA from './StickyProductCTA.jsx'
 import LabTested from './LabTested.jsx'
+import ProblemStory from './ProblemStory.jsx'
 import { track } from '../lib/metaPixel.js'
 
 // "50 servings" / "30 days" → per-day price string, e.g. "₹40/day"
@@ -26,6 +29,7 @@ export default function ProductDetail({ productId }) {
   const { addToCart, openCart } = useCart()
   const { navigate } = usePage()
   const [variantId, setVariantId] = useState(product?.variants[0]?.id)
+  const [showAllReviews, setShowAllReviews] = useState(false)
   const [adding, setAdding] = useState(false)
 
   // Scroll to top when product changes
@@ -86,9 +90,11 @@ export default function ProductDetail({ productId }) {
   // Bundle upsell — the best stack this product belongs to (highest discount,
   // then fewest extra products). The discount is real: the same stack matcher
   // runs in the cart and on the server, so the saving survives to Razorpay.
-  const upsellStack = stacks
-    .filter((s) => s.items.some((it) => it.productId === product.id))
-    .sort((a, b) => b.discount - a.discount || a.items.length - b.items.length)[0]
+  const upsellStack =
+    (pdp?.upsellStackId && stacks.find((s) => s.id === pdp.upsellStackId)) ||
+    stacks
+      .filter((s) => s.items.some((it) => it.productId === product.id))
+      .sort((a, b) => b.discount - a.discount || a.items.length - b.items.length)[0]
   const upsellPartners = (upsellStack?.items || [])
     .filter((it) => it.productId !== product.id)
     .map((it) => productById(it.productId))
@@ -104,6 +110,72 @@ export default function ProductDetail({ productId }) {
     upsellStack.items.forEach((it) => addToCart(it.productId, it.variantId, 1, false))
     setTimeout(openCart, 250)
   }
+
+  // Reviews render in one of two slots: early (right after "What's inside")
+  // when pdp.reviewsEarly is set, otherwise in their usual place lower down.
+  const allReviews = pdp?.reviews || []
+  const shownReviews = showAllReviews ? allReviews : allReviews.slice(0, 6)
+  const reviewsSection = allReviews.length > 0 ? (
+      <section id="pdp-reviews" className="py-24 bg-gradient-to-b from-ink-800/30 to-ink scroll-mt-20">
+        <div className="container-x">
+          <div className="max-w-2xl mb-8">
+            <div className="eyebrow mb-5">Customer reviews</div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
+              Real men. Real results.
+            </h2>
+          </div>
+          {pdp.reviewPhotos?.length > 0 && (
+            <div className="mb-10">
+              <div className="text-[10px] uppercase tracking-[0.25em] text-bone/45 font-brand font-semibold mb-3">From our customers</div>
+              <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {pdp.reviewPhotos.map((src) => (
+                  <div key={src} className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden border border-bone/15">
+                    <Picture src={src} alt="Customer photo of T-REX" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {shownReviews.map((r) => (
+              <article key={r.name} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/40 flex flex-col">
+                {r.rating > 0 && (
+                  <div className="flex items-center gap-1 text-amber mb-3">
+                    {Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}
+                    {Array.from({ length: 5 - r.rating }).map((_, i) => <span key={i} className="text-bone/15">★</span>)}
+                  </div>
+                )}
+                {r.title && <h3 className="font-display font-semibold text-lg leading-snug mb-3">"{r.title}"</h3>}
+                <p className="text-bone/65 text-[14px] leading-relaxed flex-1 mb-5">{r.title ? r.body : `“${r.body}”`}</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-bone/5">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber/40 to-rust/30 flex items-center justify-center font-display font-bold text-bone text-sm">
+                    {r.name[0]}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.name}</div>
+                    <div className="text-[11px] text-bone/40">{r.source || [r.city, r.age].filter(Boolean).join(' · ')}</div>
+                  </div>
+                  {r.rating > 0 && (
+                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-forest/80">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+                      Verified
+                    </div>
+                  )}
+                </div>
+                {r.time && <div className="text-[10px] uppercase tracking-widest text-bone/30 mt-2">{r.time}</div>}
+              </article>
+            ))}
+          </div>
+          {allReviews.length > 6 && (
+            <div className="mt-8 text-center">
+              <button type="button" onClick={() => setShowAllReviews((v) => !v)} className="btn-ghost text-sm">
+                {showAllReviews ? 'Show fewer reviews' : `Show all ${allReviews.length} reviews`}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+  ) : null
 
   return (
     <>
@@ -128,9 +200,14 @@ export default function ProductDetail({ productId }) {
                 <ProductGallery product={product} />
               </div>
               {pdp?.metrics && (
-                <div className="grid grid-cols-2 gap-3 mt-6 max-w-md mx-auto">
-                  {pdp.metrics.map((m) => (
-                    <div key={m.label} className="p-4 rounded-xl border border-bone/10 bg-ink-800/40">
+                <div className={`grid ${pdp.metrics.length === 5 ? 'grid-cols-6' : 'grid-cols-2'} gap-3 mt-6 max-w-md mx-auto`}>
+                  {pdp.metrics.map((m, i) => (
+                    <div
+                      key={m.label}
+                      className={`p-4 rounded-xl border border-bone/10 bg-ink-800/40 ${
+                        pdp.metrics.length === 5 ? (i < 3 ? 'col-span-2' : 'col-span-3') : ''
+                      }`}
+                    >
                       <div className="font-display font-bold text-amber text-xl leading-none">{m.value}</div>
                       <div className="text-[10px] uppercase tracking-widest text-bone/45 mt-1.5">{m.label}</div>
                     </div>
@@ -141,7 +218,7 @@ export default function ProductDetail({ productId }) {
 
             {/* Content */}
             <div className="lg:col-span-6">
-              {product.tier && (
+              {product.tier && false && (
                 <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold mb-5 px-3 py-1 rounded-full bg-amber/15 text-amber border border-amber/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber" />
                   {tiers[product.tier]?.label || product.tier} · {tiers[product.tier]?.role}
@@ -162,10 +239,10 @@ export default function ProductDetail({ productId }) {
                     {'★'.repeat(5)}
                   </span>
                   <span className="text-sm font-semibold text-bone">
-                    {(pdp.reviews.reduce((s, r) => s + r.rating, 0) / pdp.reviews.length).toFixed(1)}
+                    {(() => { const rated = pdp.reviews.filter((r) => r.rating > 0); return rated.length ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(1) : '' })()}
                   </span>
                   <span className="text-[11px] uppercase tracking-widest text-bone/50 group-hover:text-amber transition underline underline-offset-4 decoration-bone/25">
-                    {pdp.reviews.length} verified review{pdp.reviews.length > 1 ? 's' : ''}
+                    {pdp.reviews.length} customer review{pdp.reviews.length > 1 ? 's' : ''}
                   </span>
                 </button>
               )}
@@ -196,6 +273,9 @@ export default function ProductDetail({ productId }) {
                             )}
                           </div>
                           <div className="text-[11px] uppercase tracking-widest text-bone/45">{v.sub}</div>
+                          {v.prepaidOnly && (
+                            <div className="text-[10px] text-amber-light/80 mt-0.5">Online payment only</div>
+                          )}
                         </div>
                         <div className="text-right">
                           <div className="font-display font-bold text-bone">₹{v.price.toLocaleString('en-IN')}</div>
@@ -234,6 +314,22 @@ export default function ProductDetail({ productId }) {
               >
                 {adding ? '✓ Added to cart' : `Add to Cart — ₹${variant.price.toLocaleString('en-IN')}`}
               </button>
+
+              {/* The ₹200 prepaid saving, shown at the price instead of only in the footer */}
+              {!variant.prepaidOnly && (
+                <p className="mt-2 text-center text-[13px] text-bone/70">
+                  Pay online: <span className="text-amber font-semibold">₹{(variant.price - 200).toLocaleString('en-IN')}</span>
+                  <span className="text-bone/45"> · save ₹200</span>
+                </p>
+              )}
+
+              {/* Said here rather than sprung at checkout — finding COD gone after
+                  typing an address is how carts get abandoned. */}
+              {variant.prepaidOnly && (
+                <p className="mt-2 text-center text-[11px] text-bone/50">
+                  {variant.label} is online payment only — Cash on Delivery isn’t available for this pack.
+                </p>
+              )}
 
               {/* Dispatch urgency — a concrete reason to act now */}
               <div className="mt-3 flex items-center justify-center gap-2 text-[11px] uppercase tracking-widest text-bone/55 font-brand">
@@ -280,7 +376,7 @@ export default function ProductDetail({ productId }) {
                 </div>
                 <div className="p-3 border border-bone/10 rounded-xl">
                   <div className="text-amber font-bold mb-1">COD</div>
-                  Available nationwide
+                  No extra charge
                 </div>
                 <button
                   onClick={() => navigate('label', { id: product.id })}
@@ -305,14 +401,90 @@ export default function ProductDetail({ productId }) {
         </div>
       </section>
 
+      {/* ── Problem story first (hook → day on low → signs), then benefits read as the answer ── */}
+      {pdp?.problem?.signs && (
+        <ProblemStory
+          problem={pdp.problem}
+          onCta={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        />
+      )}
+
+      {/* ── Benefits: ad traffic needs to know what it does early ── */}
+      {pdp?.benefits && <BenefitsSection benefits={pdp.benefits} timeline={pdp.timeline} heading={pdp.benefitsHeading} image={pdp.benefitsImage} imageAlt={pdp.benefitsImageAlt} />}
+
+      {/* ── Mid-page buy: no scrolling back up after reading the benefits ── */}
+      {pdp?.midCta && variant && (
+        <section className="pb-20">
+          <div className="container-x">
+            <div className="rounded-3xl border border-amber/30 bg-gradient-to-r from-amber/[0.12] via-ink-800/60 to-ink p-6 lg:p-8 flex flex-col md:flex-row md:items-center justify-between gap-5 md:gap-8">
+              {pdp.midCta.image && (
+                <div className="rounded-2xl overflow-hidden border border-bone/10 w-full max-w-sm mx-auto md:mx-0 md:w-56 shrink-0">
+                  <Picture
+                    src={pdp.midCta.image}
+                    alt={pdp.midCta.imageAlt || ''}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                </div>
+              )}
+              <div className="md:flex-1">
+                <div className="font-display text-2xl lg:text-3xl font-bold tracking-tightest leading-tight">{pdp.midCta.title}</div>
+                {pdp.midCta.sub && <p className="text-bone/60 text-sm mt-2 leading-relaxed">{pdp.midCta.sub}</p>}
+              </div>
+              <button type="button" onClick={handleAdd} className="btn-primary whitespace-nowrap">
+                {pdp.midCta.button || 'Add to cart'} · ₹{variant.price.toLocaleString('en-IN')}
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Forged band (volcano video / tinted ingredient photo) ── */}
       <ForgeBand product={product} />
 
-      {/* ── Proof: full COA breakdown (T-Rex has its own report component) ── */}
-      {product.id === 'trex-liquid' && <LabTested />}
+      {/* ── Problem (with image + everyday situations) ───── */}
+      {pdp?.problem?.image && !pdp.problem.signs && (
+        <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
+          <div className="container-x grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="rounded-3xl overflow-hidden border border-bone/10">
+              <Picture
+                src={pdp.problem.image}
+                alt={pdp.problem.imageAlt || ''}
+                loading="lazy"
+                decoding="async"
+                className="w-full aspect-[4/5] object-cover"
+              />
+            </div>
+            <div>
+              <div className="eyebrow mb-5">The Problem</div>
+              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05] mb-6">
+                {pdp.problem.title}
+              </h2>
+              <p className="text-lg text-bone/70 leading-relaxed mb-8">{pdp.problem.body}</p>
+              {pdp.problem.situations?.length > 0 && (
+                <ul className="divide-y divide-bone/10 border-y border-bone/10">
+                  {pdp.problem.situations.map((s, i) => (
+                    <li key={s.h} className="flex gap-5 py-4">
+                      <span className="font-display font-bold text-amber text-sm pt-0.5 tabular-nums">0{i + 1}</span>
+                      <div>
+                        <div className="font-semibold text-bone">{s.h}</div>
+                        <div className="text-bone/60 text-[15px] leading-relaxed">{s.b}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {pdp.problem.closing && (
+                <p className="mt-7 pl-5 border-l-2 border-amber/60 text-bone/70 leading-relaxed">{pdp.problem.closing}</p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* ── Problem ───────────────────────────────────────── */}
-      {pdp?.problem && (
+      {/* ── Problem (text only) ───────────────────────────── */}
+      {pdp?.problem && !pdp.problem.image && !pdp.problem.signs && (
         <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
           <div className="container-x max-w-4xl">
             <div className="eyebrow mb-5">The Problem</div>
@@ -329,7 +501,7 @@ export default function ProductDetail({ productId }) {
         <section className="py-24">
           <div className="container-x">
             <div className="max-w-2xl mb-12">
-              <div className="eyebrow mb-5">The Mechanism</div>
+              <div className="eyebrow mb-5">{pdp.mechanism.eyebrow || 'The Mechanism'}</div>
               <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
                 {pdp.mechanism.title}
               </h2>
@@ -408,12 +580,79 @@ export default function ProductDetail({ productId }) {
                 )
               })}
             </div>
+            {product.id === 'trex-liquid' && (
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                <button onClick={() => navigate('shilajit-guide')} className="btn-ghost text-sm">
+                  Read the Shilajit purity guide →
+                </button>
+                <span className="text-[13px] text-bone/50">How our Shilajit is collected, purified over 15 days, and how to spot fake.</span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── Protocol, early placement (right after the mechanism) ── */}
+      {pdp?.protocol?.early && (
+        <section className="pb-24">
+          <div className={pdp.protocol.image ? 'container-x grid lg:grid-cols-2 gap-12 lg:gap-16 items-center' : 'container-x max-w-3xl'}>
+            {pdp.protocol.image && (
+              <div className="rounded-3xl overflow-hidden border border-bone/10 lg:order-2">
+                <Picture
+                  src={pdp.protocol.image}
+                  alt={pdp.protocol.imageAlt || ''}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+              </div>
+            )}
+            <ProtocolSteps protocol={pdp.protocol} />
           </div>
         </section>
       )}
 
       {/* ── What's inside (ingredients showcase) ──────────── */}
       <IngredientShowcase product={product} />
+
+      {/* ── Reviews, early slot: proof right after the ingredients ── */}
+      {pdp?.reviewsEarly && reviewsSection}
+
+      {/* ── T-REX videos ── */}
+      {product.id === 'trex-liquid' && (
+        <HomeReels ids={['hand', 'customer-ad', 'gym-ritual', 'match-day', 'brand-film', 'stack-creator', 'interview', 'dad-secret', 'stack-36']} eyebrow="Watch" title={['T-REX', 'in action.']} currentId="trex-liquid" />
+      )}
+
+      {/* ── Lifestyle image grid ──────────────────────────── */}
+      {pdp?.lifestyle?.items?.length > 0 && (
+        <section className="py-24">
+          <div className="container-x">
+            <div className="max-w-2xl mb-12">
+              <div className="eyebrow mb-5">{pdp.lifestyle.eyebrow}</div>
+              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
+                {pdp.lifestyle.title?.[0]}{' '}
+                <span className="italic font-medium text-amber-light">{pdp.lifestyle.title?.[1]}</span>
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {pdp.lifestyle.items.map((it) => (
+                <figure key={it.src} className="group relative rounded-2xl overflow-hidden border border-bone/10">
+                  <Picture
+                    src={it.src}
+                    alt={it.alt || ''}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
+                  <figcaption className="absolute inset-x-0 bottom-0 px-4 pb-3 pt-10 bg-gradient-to-t from-black/75 to-transparent text-[11px] uppercase tracking-[0.2em] text-bone/90">
+                    {it.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Evidence ──────────────────────────────────────── */}
       {pdp?.evidence?.length > 0 && (
@@ -447,102 +686,10 @@ export default function ProductDetail({ productId }) {
       {/* ── Protocol + Who-for/Not-for ─────────────────────── */}
       <section className="py-24">
         <div className="container-x grid lg:grid-cols-2 gap-12">
-          {pdp?.protocol && (
-            <div>
-              <div className="eyebrow mb-5">The Protocol</div>
-              <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
-                When, how, with what.
-              </h3>
-              <div className="space-y-4">
-                {[
-                  {
-                    label: 'When', value: pdp.protocol.when,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Sunrise */}
-                        <path d="M9 27C9 21.48 13.03 17 18 17C22.97 17 27 21.48 27 27" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M5 27H31" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M18 13V10" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M9.5 16.5L7.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M26.5 16.5L28.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M5.5 20.5H8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M28 20.5H30.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: 'How', value: pdp.protocol.how,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Dropper / sublingual */}
-                        <path d="M22 4L26 8L14 20L10 16L22 4Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M10 16L8 24L16 22L10 16Z" fill="rgba(245,176,55,0.1)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <circle cx="21" cy="29" r="2.5" fill="rgba(245,176,55,0.25)" stroke="rgb(245,176,55)" strokeWidth="1.3"/>
-                        <path d="M21 25V26.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: 'With', value: pdp.protocol.withWhat,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Shaker bottle with motion lines */}
-                        <path d="M14 7H22V11H14V7Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M12 11H24L26 29C26 29.55 25.55 30 25 30H11C10.45 30 10 29.55 10 29L12 11Z" fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
-                        <path d="M5 18H8.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
-                        <path d="M4 22H7" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
-                        <path d="M27.5 18H31" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
-                        <path d="M29 22H32" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: 'Cycle', value: pdp.protocol.cycle,
-                    icon: (
-                      <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
-                        {/* Circular refresh arrows */}
-                        <path d="M28 18C28 23.52 23.52 28 18 28C12.48 28 8 23.52 8 18C8 12.48 12.48 8 18 8C21.5 8 24.6 9.74 26.5 12.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
-                        <path d="M24 8L27 12.5L22 13" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    ),
-                  },
-                ].map(({ label, value, icon }, i) => (
-                  <div key={label} className="flex items-center gap-3 md:gap-4 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 py-4 md:px-5">
-                    {/* Dashed-ring icon */}
-                    <div className="relative flex-shrink-0 w-[58px] h-[58px]">
-                      <svg viewBox="0 0 58 58" className="absolute inset-0 w-full h-full" aria-hidden>
-                        <circle cx="29" cy="29" r="27" stroke="rgb(245,176,55)" strokeOpacity="0.35"
-                                strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
-                      </svg>
-                      <div className="absolute inset-[8px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
-                        {icon}
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
-
-                    {/* Step number */}
-                    <span className="font-display font-black text-[1.85rem] leading-none text-amber flex-shrink-0 tracking-tighter">
-                      0{i + 1}<span className="text-amber/45">.</span>
-                    </span>
-
-                    {/* Divider */}
-                    <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
-
-                    {/* Label + value */}
-                    <div className="min-w-0">
-                      <div className="font-display font-bold text-[0.8rem] uppercase tracking-widest text-bone mb-1">{label}</div>
-                      <div className="text-bone/60 text-[13px] leading-relaxed">{value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {pdp?.protocol && !pdp.protocol.early && <ProtocolSteps protocol={pdp.protocol} />}
 
           {(pdp?.whoFor || pdp?.whoNotFor) && (
-            <div className="grid gap-6">
+            <div className={`grid gap-6 ${pdp?.protocol?.early ? 'lg:col-span-2 lg:grid-cols-2' : ''}`}>
               {pdp?.whoFor && (
                 <div className="p-6 rounded-2xl border border-amber/20 bg-amber/5">
                   <div className="eyebrow mb-3 text-amber">Built for</div>
@@ -573,7 +720,7 @@ export default function ProductDetail({ productId }) {
       </section>
 
       {/* ── Timeline (for T-Rex Liquid) ─────────────────────── */}
-      {pdp?.timeline && (
+      {pdp?.timeline && !pdp?.benefits && (
         <section className="py-24 bg-gradient-to-b from-ink to-ink-800/30">
           <div className="container-x">
             <div className="max-w-2xl mb-12">
@@ -687,45 +834,8 @@ export default function ProductDetail({ productId }) {
         </section>
       )}
 
-      {/* ── Reviews ──────────────────────────────────────── */}
-      {pdp?.reviews?.length > 0 && (
-        <section id="pdp-reviews" className="py-24 bg-gradient-to-b from-ink-800/30 to-ink">
-          <div className="container-x">
-            <div className="max-w-2xl mb-10">
-              <div className="eyebrow mb-5">Verified buyers</div>
-              <h2 className="font-display text-4xl lg:text-5xl font-bold tracking-tightest leading-[1.05]">
-                Real men. Real results.
-              </h2>
-            </div>
-            <div data-reveal-stagger className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {pdp.reviews.map((r) => (
-                <article key={r.name} className="card-lift p-6 rounded-2xl border border-bone/10 bg-ink-800/40 flex flex-col">
-                  <div className="flex items-center gap-1 text-amber mb-3">
-                    {Array.from({ length: r.rating }).map((_, i) => <span key={i}>★</span>)}
-                    {Array.from({ length: 5 - r.rating }).map((_, i) => <span key={i} className="text-bone/15">★</span>)}
-                  </div>
-                  <h3 className="font-display font-semibold text-lg leading-snug mb-3">"{r.title}"</h3>
-                  <p className="text-bone/65 text-[14px] leading-relaxed flex-1 mb-5">{r.body}</p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-bone/5">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber/40 to-rust/30 flex items-center justify-center font-display font-bold text-bone text-sm">
-                      {r.name[0]}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{r.name}</div>
-                      <div className="text-[11px] text-bone/40">{r.city} · {r.age}</div>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-forest/80">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                      Verified
-                    </div>
-                  </div>
-                  <div className="text-[10px] uppercase tracking-widest text-bone/30 mt-2">{r.time}</div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ── Reviews (late slot; T-REX shows them earlier) ── */}
+      {!pdp?.reviewsEarly && reviewsSection}
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       {pdp?.faq?.length > 0 && (
@@ -754,6 +864,10 @@ export default function ProductDetail({ productId }) {
         </section>
       )}
 
+      {/* ── Proof: full COA breakdown (T-Rex has its own report component).
+          Sits below the selling content so ad traffic reads benefits first. ── */}
+      {product.id === 'trex-liquid' && <LabTested />}
+
       {/* ── Final CTA ────────────────────────────────────── */}
       <section className="py-24">
         <div className="container-x">
@@ -772,7 +886,7 @@ export default function ProductDetail({ productId }) {
               <div className="mt-5 flex items-center justify-center gap-4 text-[11px] uppercase tracking-widest text-bone/40 font-brand">
                 <span>Free shipping</span>
                 <span>·</span>
-                <span>Cash on delivery</span>
+                <span>Pay online and save ₹200</span>
                 <span>·</span>
                 <span>3rd Party tested</span>
               </div>
@@ -794,63 +908,79 @@ const FORGE_BANDS = {
   'trex-liquid': {
     video: '/brand/volcano-forge.mp4',
     poster: '/brand/volcano-forge-poster.webp',
-    eyebrow: 'Forged, not formulated',
-    title: (<>Built in the heat.<br /><span className="text-shimmer">Made for the grind.</span></>),
-    body: 'Himalayan Shilajit is pressure-born — squeezed from rock over centuries. T-Rex carries that same raw intensity into every serving.',
+    eyebrow: "The modern man's problem",
+    title: (<>Ignite your inner<br /><span className="text-shimmer">strength & vitality.</span></>),
+    body: 'Rare herbs, sourced at origin. Extracted the slow, traditional way. Lab-tested every batch. Nothing synthetic. Nothing hidden.',
   },
   'trex-maca': {
     image: '/products/forge/trex-maca.jpg',
-    eyebrow: 'Andean fire',
-    title: (<>Rooted in altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
-    body: 'Black maca grows where the air thins and the cold bites — high in the Andes. That adversity is exactly what makes it potent.',
+    eyebrow: 'The Andes, Peru',
+    title: (<>Grown at<br /><span className="text-shimmer">4,100 metres.</span></>),
+    body: 'Black maca grows on the Junín plateau where the air is thin and the cold bites. That harsh start is what makes the root so potent.',
   },
   'trex-cordyceps': {
     image: '/products/forge/trex-cordyceps.jpg',
-    eyebrow: 'Born in thin air',
-    title: (<>Thrives where<br /><span className="text-shimmer">oxygen runs low.</span></>),
-    body: 'Cordyceps evolved on the high Himalayan plateau to wring energy from scarce air — and it trains your body to do the same.',
+    origin: { base: '/products/origin/cordyceps', caption: 'Himalayan & Tibetan plateau' },
+    eyebrow: 'Keedajadi',
+    title: (<>Born at altitude.<br /><span className="text-shimmer">Built for stamina.</span></>),
+    body: 'Cordyceps sinensis is a rare medicinal fungus traditionally found on the high Himalayan and Tibetan plateau, prized for centuries for stamina.',
   },
   'hydra-muscle': {
     image: '/products/forge/hydra-muscle.jpg',
-    eyebrow: 'Pure as the source',
-    title: (<>Hydration,<br /><span className="text-shimmer">stripped to essentials.</span></>),
-    body: 'Real output starts with water and electrolytes and nothing artificial in the way. Clean in, full performance out.',
+    eyebrow: 'Pure and simple',
+    title: (<>Strength with<br /><span className="text-shimmer">the salts to match.</span></>),
+    body: 'Creatine builds strength. Pink salt, coconut water and magnesium keep you hydrated through the session.',
   },
   'trex-ginseng': {
     image: '/products/forge/trex-ginseng.jpg',
-    eyebrow: 'Forest-forged',
+    eyebrow: 'Mountains of Korea',
     title: (<>Slow-grown.<br /><span className="text-shimmer">Deeply rooted.</span></>),
-    body: 'Korean red ginseng takes years in mountain-forest soil to mature. That patience is what powers clean, lasting energy.',
+    body: 'Korean Panax takes years in mountain soil to mature. That patience is what gives clean, lasting energy.',
   },
   'trex-liver': {
     image: '/products/forge/trex-liver.jpg',
-    eyebrow: 'Cellular clean',
-    title: (<>Cleared at the<br /><span className="text-shimmer">cellular level.</span></>),
-    body: 'Your liver filters everything you put your body through. This is the support that keeps that engine running clean.',
+    eyebrow: 'Classical Ayurveda',
+    title: (<>The scrubber<br /><span className="text-shimmer">for your liver.</span></>),
+    body: 'Thirteen classical Ayurvedic herbs, Kalmegh, Giloy, Bhuiamla and Katki among them, blended with milk thistle.',
   },
   'trex-royal-jelly': {
     image: '/products/forge/trex-royal-jelly.jpg',
-    eyebrow: 'Liquid gold',
-    title: (<>The hive’s<br /><span className="text-shimmer">rawest fuel.</span></>),
-    body: 'Royal jelly is what turns an ordinary bee into a queen — concentrated vitality, straight from the comb.',
+    origin: { base: '/products/origin/royaljelly', caption: 'Forest hives, India' },
+    eyebrow: 'Made by bees',
+    title: (<>Food fit<br /><span className="text-shimmer">for a queen.</span></>),
+    body: 'Royal jelly is what worker bees feed their queen. Rich in protein, amino acids and B vitamins.',
   },
   'trex-tongkat': {
     image: '/products/forge/trex-tongkat.jpg',
-    eyebrow: 'Root of fire',
-    title: (<>Forged under<br /><span className="text-shimmer">pressure & heat.</span></>),
-    body: 'Tongkat Ali earns its potency the hard way — a deep-jungle root that takes years to mature. Raw, unforgiving conditions, concentrated into clean drive.',
+    eyebrow: "Ali's walking stick",
+    title: (<>From the heart of the<br /><span className="text-shimmer">Malaysian rainforest.</span></>),
+    body: 'Tongkat Ali (Eurycoma longifolia) is a rare rainforest root, harvested only after 5–7 years of growth. For centuries, Malay healers have trusted it as their herb for male strength and vitality.',
   },
 }
 
 function ForgeBand({ product }) {
   const band = FORGE_BANDS[product.id]
+  const ref = useRef(null)
+  // The volcano video is ~4 MB — only start loading it once the band is near
+  // the viewport; until then the poster image is shown.
+  const [nearView, setNearView] = useState(false)
+  useEffect(() => {
+    if (!band?.video || nearView) return
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setNearView(true); return }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setNearView(true); io.disconnect() }
+    }, { rootMargin: '400px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [band, nearView])
   if (!band) return null
   return (
-    <section className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
+    <section ref={ref} className="relative h-[60vh] min-h-[420px] max-h-[680px] overflow-hidden">
       {/* Background media */}
       {band.video ? (
         <video
-          src={band.video}
+          src={nearView ? band.video : undefined}
           poster={band.poster}
           autoPlay
           loop
@@ -859,6 +989,15 @@ function ForgeBand({ product }) {
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
         />
+      ) : band.origin ? (
+        <picture>
+          <source media="(max-width: 767px)" type="image/avif" srcSet={`${band.origin.base}-mob.avif`} />
+          <source media="(max-width: 767px)" type="image/webp" srcSet={`${band.origin.base}-mob.webp`} />
+          <source media="(max-width: 767px)" srcSet={`${band.origin.base}-mob.jpg`} />
+          <source type="image/avif" srcSet={`${band.origin.base}-dsk.avif`} />
+          <source type="image/webp" srcSet={`${band.origin.base}-dsk.webp`} />
+          <img src={`${band.origin.base}-dsk.jpg`} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover object-bottom md:object-center" />
+        </picture>
       ) : (
         <Picture
           src={band.image}
@@ -870,15 +1009,25 @@ function ForgeBand({ product }) {
       )}
 
       {/* Primal gradient stack — ink edges, brand-red/rust heat, grain */}
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
-      <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
-      <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+      {band.origin ? (
+        <>
+          {/* Real origin photo: keep it vivid, darken only the text side */}
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/60 to-ink/45 md:bg-gradient-to-r md:from-ink/85 md:via-ink/35 md:to-transparent" />
+          <div className="absolute bottom-4 right-4 md:right-6 px-3 py-1.5 rounded-full bg-ink/60 backdrop-blur text-[10px] uppercase tracking-[0.22em] text-bone/85 font-brand">{band.origin.caption}</div>
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-transparent to-transparent" />
+          <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-br from-amber/30 via-transparent to-rust/25" />
+          <div className="absolute inset-0 grain pointer-events-none opacity-60" />
+        </>
+      )}
 
       {/* Copy */}
       <div className="container-x relative h-full flex items-center">
         <div className="max-w-xl">
-          <div className="eyebrow mb-5 text-amber">
+          <div className={`eyebrow mb-5 ${band.origin ? 'text-white' : 'text-amber'}`}>
             <span className="inline-block w-2 h-2 rounded-full bg-gradient-primal mr-3 align-middle animate-shimmer" />
             {band.eyebrow}
           </div>
@@ -894,11 +1043,177 @@ function ForgeBand({ product }) {
   )
 }
 
+function ProtocolSteps({ protocol }) {
+  return (
+    <div>
+      <div className="eyebrow mb-5">{protocol.eyebrow || 'The Protocol'}</div>
+      <h3 className="font-display text-3xl font-bold mb-8 tracking-tightest leading-tight">
+        {protocol.title || 'When, how, with what.'}
+      </h3>
+      <div className="space-y-4">
+        {[
+          {
+            label: protocol.labels?.[0] || 'When', value: protocol.when,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Sunrise */}
+                <path d="M9 27C9 21.48 13.03 17 18 17C22.97 17 27 21.48 27 27" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M5 27H31" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M18 13V10" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M9.5 16.5L7.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M26.5 16.5L28.5 14.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M5.5 20.5H8" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M28 20.5H30.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[1] || 'How', value: protocol.how,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Dropper / sublingual */}
+                <path d="M22 4L26 8L14 20L10 16L22 4Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M10 16L8 24L16 22L10 16Z" fill="rgba(245,176,55,0.1)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <circle cx="21" cy="29" r="2.5" fill="rgba(245,176,55,0.25)" stroke="rgb(245,176,55)" strokeWidth="1.3"/>
+                <path d="M21 25V26.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[2] || 'With', value: protocol.withWhat,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Shaker bottle with motion lines */}
+                <path d="M14 7H22V11H14V7Z" fill="rgba(245,176,55,0.15)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M12 11H24L26 29C26 29.55 25.55 30 25 30H11C10.45 30 10 29.55 10 29L12 11Z" fill="rgba(245,176,55,0.08)" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinejoin="round"/>
+                <path d="M5 18H8.5" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                <path d="M4 22H7" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+                <path d="M27.5 18H31" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.55"/>
+                <path d="M29 22H32" stroke="rgb(245,176,55)" strokeWidth="1.3" strokeLinecap="round" strokeOpacity="0.35"/>
+              </svg>
+            ),
+          },
+          {
+            label: protocol.labels?.[3] || 'Cycle', value: protocol.cycle,
+            icon: (
+              <svg viewBox="0 0 36 36" fill="none" className="w-7 h-7" aria-hidden>
+                {/* Circular refresh arrows */}
+                <path d="M28 18C28 23.52 23.52 28 18 28C12.48 28 8 23.52 8 18C8 12.48 12.48 8 18 8C21.5 8 24.6 9.74 26.5 12.5" stroke="rgb(245,176,55)" strokeWidth="1.5" strokeLinecap="round"/>
+                <path d="M24 8L27 12.5L22 13" stroke="rgb(245,176,55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            ),
+          },
+        ].map(({ label, value, icon }, i) => (
+          <div key={label} className="flex items-center gap-3 md:gap-4 rounded-2xl border border-amber/20 bg-ink-800/50 px-4 py-4 md:px-5">
+            {/* Dashed-ring icon */}
+            <div className="relative flex-shrink-0 w-[58px] h-[58px]">
+              <svg viewBox="0 0 58 58" className="absolute inset-0 w-full h-full" aria-hidden>
+                <circle cx="29" cy="29" r="27" stroke="rgb(245,176,55)" strokeOpacity="0.35"
+                        strokeWidth="1.5" strokeDasharray="4 5" fill="none"/>
+              </svg>
+              <div className="absolute inset-[8px] rounded-full bg-amber/5 border border-amber/25 flex items-center justify-center">
+                {icon}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+            {/* Step number */}
+            <span className="font-display font-black text-[1.85rem] leading-none text-amber flex-shrink-0 tracking-tighter">
+              0{i + 1}<span className="text-amber/45">.</span>
+            </span>
+
+            {/* Divider */}
+            <div className="w-px h-9 bg-amber/35 flex-shrink-0" />
+
+            {/* Label + value */}
+            <div className="min-w-0">
+              <div className="font-display font-bold text-[0.8rem] uppercase tracking-widest text-bone mb-1">{label}</div>
+              <div className="text-bone/60 text-[13px] leading-relaxed">{value}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Row({ label, value }) {
   return (
     <div className="grid grid-cols-3 gap-4 py-3 border-b border-bone/10">
       <dt className="text-[11px] uppercase tracking-widest text-bone/45 self-center">{label}</dt>
       <dd className="col-span-2 text-bone/85 text-[15px]">{value}</dd>
     </div>
+  )
+}
+
+
+function BenefitIcon({ name, className }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={`text-amber ${className}`} aria-hidden>
+      {BENEFIT_ICONS[name]}
+    </svg>
+  )
+}
+
+function BenefitsSection({ benefits, timeline, heading = 'What T-REX does for you.', image, imageAlt }) {
+  const cards = (
+    <div data-reveal-stagger className={`grid grid-cols-2 ${image ? '' : 'lg:grid-cols-3'} gap-4 lg:gap-5`}>
+      {benefits.map((b) => (
+        <div
+          key={b.title}
+          className="group relative p-5 lg:p-7 rounded-2xl border border-amber/20 bg-gradient-to-br from-amber/[0.08] via-ink-800/60 to-ink hover:border-amber/50 transition"
+        >
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-amber/15 border border-amber/30 flex items-center justify-center mb-4 lg:mb-5">
+            <BenefitIcon name={b.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
+          </div>
+          <h3 className="font-display font-bold text-lg lg:text-2xl leading-tight text-bone mb-2">{b.title}</h3>
+          <p className="text-[13px] lg:text-[15px] text-bone/65 leading-relaxed">{b.line}</p>
+        </div>
+      ))}
+    </div>
+  )
+  return (
+    <section id="benefits" className="relative py-24 overflow-hidden scroll-mt-20">
+      <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(225,29,46,0.16),transparent_65%)] pointer-events-none" />
+      <div className="container-x relative">
+        <div className="max-w-2xl mb-12">
+          <div className="eyebrow mb-5">The benefits</div>
+          <h2 className="font-display text-4xl lg:text-6xl font-bold tracking-tightest leading-[1.02]">
+            {heading}
+          </h2>
+        </div>
+        {image ? (
+          /* Optional poster beside the cards on desktop, below them on mobile. */
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+            <div className="lg:col-span-2">{cards}</div>
+            <div className="rounded-3xl overflow-hidden border border-bone/10 max-w-md mx-auto w-full lg:max-w-none lg:sticky lg:top-24">
+              <Picture src={image} alt={imageAlt || ''} loading="lazy" decoding="async" className="w-full aspect-[4/5] object-cover" />
+            </div>
+          </div>
+        ) : cards}
+        {timeline?.length > 0 && (
+          <div className="mt-10 rounded-2xl border border-bone/10 bg-ink-800/40 p-5 lg:p-6">
+            <div className="text-[10px] uppercase tracking-[0.25em] text-amber font-brand font-bold mb-4">What to expect</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {timeline.map((t) => (
+                <div key={t.week} className="flex items-start gap-3">
+                  {t.icon && (
+                    <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-amber/15 border border-amber/30 flex items-center justify-center">
+                      <BenefitIcon name={t.icon} className="w-6 h-6" />
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-display font-bold text-bone text-sm uppercase tracking-wide">{t.week}</div>
+                    <div className="text-[13px] text-bone/65 leading-snug mt-1">{t.what}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }

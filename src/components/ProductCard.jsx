@@ -32,7 +32,7 @@ export default function ProductCard({ product }) {
       <div className="p-3 pt-5 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-display font-bold text-xl leading-tight">{product.name}</h3>
-          {product.tier && (
+          {false && product.tier && (
             <span className="text-[9px] uppercase tracking-widest text-amber/80 border border-amber/30 rounded-full px-2 py-0.5 font-bold shrink-0">
               {tiers[product.tier]?.label || product.tier}
             </span>

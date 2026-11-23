@@ -15,10 +15,24 @@ const LABEL_DATA = {
     netVolume: '500ml',
     ingredients: [
       {
-        name: 'Himalayan Shilajit',
+        name: 'Fulvic Acid',
+        scientificName: 'Shilajit-derived fulvic complex',
+        amount: '2.2g',
+        perLabelDose: '2.2g',
+        standardization: 'Fulvic complex from Himalayan shilajit',
+        origin: 'Himalayan shilajit resin',
+        keyBenefit: 'Mineral transport · Absorption carrier',
+        mechanism:
+          'Fulvic acid is the active fraction of shilajit rather than a separate herb, which is why it appears on the panel at a far larger weight than the botanicals. It acts as a chelator and carrier, binding minerals and helping move the other compounds across the gut wall.',
+        traditionalUse:
+          'Shilajit resin has been collected from Himalayan rock seams and used in Ayurveda as a rasayana for centuries; fulvic acid is the constituent modern analysis credits with much of its activity.',
+        emoji: '⚡',
+      },
+      {
+        name: 'Himalayan Liquid Shilajit',
         scientificName: 'Asphaltum punjabianum',
-        amount: '50mg',
-        perLabelDose: '150mg',
+        amount: '100mg',
+        perLabelDose: '100mg',
         standardization: 'Fulvic acid ≥ 40%',
         origin: 'Himalayan Range, 3,000–5,000m',
         keyBenefit: 'Cellular energy & free testosterone',
@@ -36,8 +50,8 @@ const LABEL_DATA = {
       {
         name: 'Ashwagandha',
         scientificName: 'Withania somnifera',
-        amount: '100mg',
-        perLabelDose: '300mg',
+        amount: '200mg',
+        perLabelDose: '200mg',
         standardization: 'Withanolides ≥ 2.5%',
         origin: 'Rajasthan, India',
         keyBenefit: 'Cortisol reduction & recovery',
@@ -55,8 +69,8 @@ const LABEL_DATA = {
       {
         name: 'Arjun Chal',
         scientificName: 'Terminalia arjuna',
-        amount: '100mg',
-        perLabelDose: '300mg',
+        amount: '200mg',
+        perLabelDose: '200mg',
         standardization: 'Arjunolic acid ≥ 1%',
         origin: 'River-bank forests, Central India',
         keyBenefit: 'Cardiac output & VO₂ support',
@@ -72,10 +86,10 @@ const LABEL_DATA = {
         emoji: '🌳',
       },
       {
-        name: 'Gokhru',
+        name: 'Gokhru (Tribulus Terrestris)',
         scientificName: 'Tribulus terrestris',
-        amount: '50mg',
-        perLabelDose: '150mg',
+        amount: '100mg',
+        perLabelDose: '100mg',
         standardization: 'Saponins ≥ 40%',
         origin: 'Rajasthan dry-land harvest',
         keyBenefit: 'Libido & urogenital vitality',
@@ -93,8 +107,8 @@ const LABEL_DATA = {
       {
         name: 'Draksha',
         scientificName: 'Vitis vinifera',
-        amount: '100mg',
-        perLabelDose: '300mg',
+        amount: '200mg',
+        perLabelDose: '200mg',
         standardization: 'OPC (proanthocyanidins) ≥ 85%',
         origin: 'Nashik Valley, Maharashtra',
         keyBenefit: 'Antioxidant recovery & muscle repair',
@@ -112,8 +126,8 @@ const LABEL_DATA = {
       {
         name: 'Safed Musli',
         scientificName: 'Chlorophytum borivilianum',
-        amount: '100mg',
-        perLabelDose: '300mg',
+        amount: '200mg',
+        perLabelDose: '200mg',
         standardization: 'Saponins ≥ 20%',
         origin: 'Madhya Pradesh forest tubers',
         keyBenefit: 'Testosterone & sperm quality',
@@ -129,10 +143,10 @@ const LABEL_DATA = {
         emoji: '🌾',
       },
       {
-        name: 'Kath Badam',
+        name: 'Kath Badam (Almond Extract)',
         scientificName: 'Buchanania lanzan',
-        amount: '50mg',
-        perLabelDose: '150mg',
+        amount: '200mg',
+        perLabelDose: '200mg',
         standardization: 'Fatty acids ≥ 30%',
         origin: 'Chhattisgarh & Madhya Pradesh dry forests',
         keyBenefit: 'Cholesterol support & T-precursor',
@@ -175,7 +189,7 @@ const LABEL_DATA = {
     },
     otherIngredients: 'Purified water, hazelnut flavour (natural), citric acid (preservative).',
     warnings: [
-      'Not for use by persons under 16 years of age.',
+      'Not for use by persons under 18 years of age.',
       'Keep out of reach of children.',
       'If you are pregnant, nursing, or taking any medications, consult a physician before use.',
       'Not a substitute for a varied diet.',
@@ -244,16 +258,16 @@ const LABEL_DATA = {
     ingredients: [
       {
         name: 'Cordyceps Extract',
-        scientificName: 'Cordyceps militaris',
-        amount: '400mg',
-        perLabelDose: '400mg',
+        scientificName: 'Cordyceps sinensis',
+        amount: '1,000mg',
+        perLabelDose: '1,000mg (per 2-capsule serving)',
         standardization: 'Cordycepin ≥ 0.3% · Adenosine ≥ 0.3%',
-        origin: 'Cultivated (food-grade), not wild-harvested',
+        origin: 'High-altitude caterpillar fungus (keedajadi)',
         keyBenefit: 'ATP production · VO₂ max · Stamina',
         mechanism:
           'Cordycepin (3′-deoxyadenosine) is a structural adenosine analogue that supports mitochondrial ATP synthesis. Improves oxygen utilization efficiency — measurable as VO₂ max uplift within 3–6 weeks.',
         traditionalUse:
-          'Tibetan Sherpas have used Cordyceps sinensis for high-altitude endurance for centuries. Our strain (militaris) is the cultivated equivalent — same bioactives, no wild-harvest ethical concern.',
+          'Cordyceps sinensis, known as keedajadi, is a rare medicinal fungus traditionally found on the high Himalayan and Tibetan plateau, and prized for centuries for stamina and energy.',
         study: {
           citation: 'Chen S. et al., J. Altern. Complement. Med., 2010',
           finding:
@@ -292,8 +306,8 @@ const LABEL_DATA = {
       {
         name: 'Korean Red Ginseng Root',
         scientificName: 'Panax ginseng C.A.Mey',
-        amount: '400mg',
-        perLabelDose: '400mg',
+        amount: '1,000mg',
+        perLabelDose: '1,000mg (per 2-capsule serving)',
         standardization: 'Ginsenosides ≥ 5% (Rg1 + Rb1)',
         origin: '6-year aged roots, Goryeo, South Korea',
         keyBenefit: 'Brain focus · Libido · Adaptogenic balance',
@@ -338,8 +352,8 @@ const LABEL_DATA = {
       {
         name: 'Black Maca Root',
         scientificName: 'Lepidium meyenii Walp.',
-        amount: '1500mg',
-        perLabelDose: '1500mg',
+        amount: '1,000mg',
+        perLabelDose: '1,000mg (per 2-capsule serving)',
         standardization: 'Black variety only · macamides ≥ 0.6%',
         origin: 'Junín Plateau, Peru, 4,100m altitude',
         keyBenefit: 'Stamina · Libido · Mood stabilisation',
@@ -608,8 +622,8 @@ const LABEL_DATA = {
       {
         name: 'Royal Jelly Powder',
         scientificName: 'Apis mellifera secretion, lyophilized',
-        amount: '500mg',
-        perLabelDose: '500mg',
+        amount: '1,000mg',
+        perLabelDose: '1,000mg (per 2-capsule serving)',
         standardization: '10-HDA (10-hydroxy-2-decenoic acid) ≥ 5%',
         origin: 'Apiary-sourced, freeze-dried',
         keyBenefit: 'Androgen receptor upregulation · Recovery',
@@ -648,9 +662,9 @@ const LABEL_DATA = {
     tagline: 'Creatine + Electrolyte Formula',
     licenseNo: '',
     category: 'Sports Nutrition',
-    servingSize: '1 scoop (5g)',
-    servingsPerBottle: 30,
-    netVolume: '150g',
+    servingSize: '1 scoop (10g)',
+    servingsPerBottle: 25,
+    netVolume: '250g',
     ingredients: [
       {
         name: 'Creatine Monohydrate',
@@ -711,8 +725,8 @@ const LABEL_DATA = {
       },
     ],
     supplementFacts: {
-      servingSize: '1 scoop (5g)',
-      servingsPerContainer: 30,
+      servingSize: '1 scoop (10g)',
+      servingsPerContainer: 25,
       caloriesPerServing: 5,
       rows: [
         { name: 'Sodium (from Himalayan Pink Salt)', amount: '160mg', dv: '7%', indent: false },
@@ -916,9 +930,9 @@ export default function LabelPage({ productId }) {
         {/* Trust badges */}
         <section className="grid grid-cols-2 gap-3">
           {[
-            { icon: '🧪', label: 'Third-Party Lab Tested', sub: 'COA on request' },
-            { icon: '🚫', label: 'No Banned Substances', sub: 'WADA compliant' },
-            { icon: '🌿', label: '100% Ayurvedic', sub: 'AYUSH registered' },
+            { icon: '🧪', label: 'Third-Party Lab Tested', sub: 'Every batch' },
+            { icon: '🚫', label: 'No Steroids or Stimulants', sub: 'Ayurvedic proprietary medicine' },
+            { icon: '🌿', label: '100% Ayurvedic', sub: 'Mfg. Lic. AL946M' },
             { icon: '🇮🇳', label: 'Made in India', sub: 'GMP facility' },
           ].map(({ icon, label, sub }) => (
             <div key={label} className="bg-bone/3 border border-bone/8 rounded-xl p-3 text-center">
@@ -967,7 +981,7 @@ export default function LabelPage({ productId }) {
         <div className="text-[10px] text-bone/30 leading-relaxed">
           Primal Nutrition India · Authentic Ayurvedic Supplements<br />
           primalnutrition.in · support@primalnutrition.in<br />
-          <span className="text-amber/40">This label is digitally verified. Counterfeit products will not load this page.</span>
+          <span className="text-amber/40">Product details provided by Primal Nutrition.</span>
         </div>
       </div>
     </div>

@@ -32,6 +32,16 @@ export default function CartDrawer() {
   const [procStep, setProcStep] = useState(0)  // advances the "Processing…" label so it never looks frozen
   const [confirmedOrder, setConfirmedOrder] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('online')  // 'online' | 'cod'
+
+  // Some variants (the Hydra Double Pack) can't ship COD — a two-unit BOGO that
+  // comes back as an RTO costs both units plus round-trip freight. A single such
+  // line makes the whole order prepaid, because an order can't be part-collected.
+  const prepaidOnlyLine = lineItems.find((l) => l.variant.prepaidOnly)
+  const codBlocked = Boolean(prepaidOnlyLine)
+
+  useEffect(() => {
+    if (codBlocked && paymentMethod === 'cod') setPaymentMethod('online')
+  }, [codBlocked, paymentMethod])
   const firedPurchases = useRef(new Set())
   const saved = compareSubtotal - subtotal
 
@@ -85,8 +95,30 @@ export default function CartDrawer() {
 
   // Calculate payment method adjustments
   const PREPAID_DISCOUNT = 200  // ₹200 discount for online payment
-  const COD_FEE = 99             // ₹99 convenience charge for COD
-  const adjustedPayable = paymentMethod === 'online' ? payable - PREPAID_DISCOUNT : payable + COD_FEE
+  const COD_FEE = 0              // COD is free — must mirror COD_FEE in api/src/services/orderService.js
+  // A prepaid-only cart gets no prepaid discount: the discount exists to move
+  // people off COD, and here there is no COD to move them off. Only when EVERY
+  // line is prepaid-only — a mixed cart did give up a real COD option, and
+  // charging it more than two separate orders would be perverse.
+  const allPrepaidOnly = lineItems.length > 0 && lineItems.every((l) => l.variant.prepaidOnly)
+  const prepaidDiscount = allPrepaidOnly ? 0 : PREPAID_DISCOUNT
+  const adjustedPayable = paymentMethod === 'online' ? payable - prepaidDiscount : payable + COD_FEE
+
+  // Abandoned-checkout capture: once there is a valid phone + name, tell the
+  // server (debounced, fire-and-forget) so a reminder can follow if they don't pay.
+  useEffect(() => {
+    if (step !== 'form' || !/^[6-9]\d{9}$/.test(form.phone) || form.name.trim().length < 2) return
+    const t = setTimeout(() => {
+      api.post('/api/checkout/lead', {
+        fullName: form.name.trim(),
+        phone: form.phone,
+        email: /^\S+@\S+\.\S+$/.test(form.email) ? form.email : undefined,
+        pincode: /^\d{6}$/.test(form.pincode) ? form.pincode : undefined,
+        items: lineItems.map((l) => ({ productId: l.productId, variantId: l.variantId, qty: l.qty })),
+      }).catch(() => {})
+    }, 1500)
+    return () => clearTimeout(t)
+  }, [step, form.name, form.phone, form.email, form.pincode, lineItems])
 
   const validate = () => {
     const e = {}
@@ -356,23 +388,39 @@ export default function CartDrawer() {
                   >
                     <div className="font-semibold">Pay online</div>
                     <div className="text-[11px] text-bone/50">UPI · Card · Netbanking</div>
-                    <div className="text-[10px] text-amber font-medium mt-1">Save ₹{PREPAID_DISCOUNT}</div>
+                    {prepaidDiscount > 0 && (
+                      <div className="text-[10px] text-amber font-medium mt-1">Save ₹{prepaidDiscount}</div>
+                    )}
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('cod')}
-                    disabled={submitting}
+                    disabled={submitting || codBlocked}
                     className={`text-left px-3 py-2.5 rounded-lg border text-sm transition ${
-                      paymentMethod === 'cod'
-                        ? 'border-amber bg-amber/10 text-bone'
-                        : 'border-bone/15 text-bone/70 hover:border-bone/30'
+                      codBlocked
+                        ? 'border-bone/10 text-bone/30 cursor-not-allowed'
+                        : paymentMethod === 'cod'
+                          ? 'border-amber bg-amber/10 text-bone'
+                          : 'border-bone/15 text-bone/70 hover:border-bone/30'
                     }`}
                   >
                     <div className="font-semibold">Cash on Delivery</div>
-                    <div className="text-[11px] text-bone/50">Pay when it arrives</div>
-                    <div className="text-[10px] text-rust font-medium mt-1">+₹{COD_FEE} charge</div>
+                    <div className="text-[11px] text-bone/50">{codBlocked ? 'Unavailable' : 'Pay when it arrives'}</div>
+                    {!codBlocked && (
+                      <div className="text-[10px] text-bone/60 font-medium mt-1">
+                        {COD_FEE > 0 ? `+₹${COD_FEE} charge` : 'No extra charge'}
+                      </div>
+                    )}
                   </button>
                 </div>
+
+                {/* Name the cause and the way out. A disabled control with no
+                    explanation just reads as a broken site. */}
+                {codBlocked && (
+                  <p className="mt-2 text-[11px] text-bone/50 leading-relaxed">
+                    {prepaidOnlyLine.variant.label} is online payment only. Remove it from your cart to pay on delivery.
+                  </p>
+                )}
               </div>
               {stackDiscount > 0 && (
                 <div className="flex items-center justify-between text-sm">
@@ -381,10 +429,12 @@ export default function CartDrawer() {
                 </div>
               )}
               {paymentMethod === 'online' ? (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-bone/55">Prepaid discount</span>
-                  <span className="font-semibold text-amber">−₹{PREPAID_DISCOUNT.toLocaleString('en-IN')}</span>
-                </div>
+                prepaidDiscount > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-bone/55">Prepaid discount</span>
+                    <span className="font-semibold text-amber">−₹{prepaidDiscount.toLocaleString('en-IN')}</span>
+                  </div>
+                )
               ) : (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-bone/55">COD convenience charge</span>
@@ -440,13 +490,15 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
               {lineItems.map((l, i) => (
                 <div key={`${l.productId}-${l.variantId}-${i}`} className="flex gap-3 p-3 rounded-xl border border-bone/10 bg-ink/40">
-                  <div className={`flex-shrink-0 w-16 h-16 rounded-lg bg-gradient-to-br ${l.product.accent} flex items-center justify-center font-display font-black text-ink/70 text-2xl`}>
-                    {l.product.name[0]}
-                  </div>
+                  {l.product.image ? (
+                    <img src={l.product.image} alt={l.product.name} className="flex-shrink-0 w-16 h-16 rounded-lg object-cover bg-ink-800" loading="lazy" />
+                  ) : (
+                    <div className={`flex-shrink-0 w-16 h-16 rounded-lg bg-gradient-to-br ${l.product.accent} flex items-center justify-center font-display font-black text-ink/70 text-2xl`}>{l.product.name[0]}</div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="font-semibold leading-tight">{l.product.name}</div>
-                      <button onClick={() => removeItem(i)} aria-label="Remove" className="text-bone/40 hover:text-rust transition shrink-0">
+                      <button onClick={() => removeItem(i)} aria-label="Remove" className="text-bone/40 hover:text-rust transition shrink-0 p-2 -m-2">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 3h6"/></svg>
                       </button>
                     </div>
@@ -488,7 +540,7 @@ export default function CartDrawer() {
               </div>
               <div className="text-[11px] uppercase tracking-widest text-bone/40 flex items-center gap-2">
                 <svg className="w-3 h-3 text-forest" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                Free shipping over ₹1000 · 3rd party tested
+                Free delivery · Third-party tested
               </div>
               <button
                 onClick={() => {
@@ -549,7 +601,7 @@ function QtyStepper({ qty, onChange }) {
         onClick={() => onChange(qty - 1)}
         disabled={qty <= 1}
         aria-label="Decrease quantity"
-        className="w-7 h-7 flex items-center justify-center text-bone/60 hover:text-amber disabled:opacity-30 transition"
+        className="w-9 h-9 flex items-center justify-center text-bone/60 hover:text-amber disabled:opacity-30 transition"
       >−</button>
       <span className="px-2 min-w-[1.5rem] text-center font-medium tabular-nums">{qty}</span>
       <button

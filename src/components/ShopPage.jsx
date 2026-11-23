@@ -40,14 +40,14 @@ export default function ShopPage() {
         <div className="container-x relative">
           <div className="eyebrow mb-5">
             <span className="inline-block w-2 h-2 rounded-full bg-amber mr-3 align-middle animate-shimmer" />
-            The Catalog · 10 SKUs
+            The Range · 8 Products
           </div>
           <h1 className="font-display text-5xl lg:text-7xl font-black tracking-tightest leading-[0.95] mb-5">
             Shop the<br />
             <span className="italic font-medium text-shimmer">complete stack.</span>
           </h1>
           <p className="text-lg text-bone/70 max-w-2xl leading-relaxed">
-            One liquid hero. Eight standardized adaptogens. One multivitamin floor. One creatine layer. Pick what your protocol needs.
+            Our T-REX liquid, six rare-herb capsules and a creatine hydration mix. Pick what you need.
           </p>
 
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-wrap gap-x-10 gap-y-4 text-sm text-bone/65">
