@@ -575,7 +575,7 @@ export function buildIthinkShipment(order) {
       product_sku: String(i.variant?.id ?? 'PRIMAL-SKU'),
       product_quantity: String(i.qty),
       product_price: String(Number(i.unit_price)),
-      product_tax_rate: '',
+      product_tax_rate: '0',
       product_hsn_code: '',
       product_discount: '0',
     })),
