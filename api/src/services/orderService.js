@@ -279,6 +279,20 @@ export async function applyShipmentDetails(internalOrderId, details) {
 }
 
 /**
+ * Record the result of an iThink Sync Order call on the order row.
+ * @param {string} internalOrderId
+ * @param {{ ok: boolean, error?: string }} result
+ */
+export async function markIthinkSync(internalOrderId, { ok, error }) {
+  const supabase = requireSupabase()
+  const patch = ok
+    ? { ithink_synced_at: new Date().toISOString(), ithink_sync_error: null }
+    : { ithink_sync_error: String(error ?? 'sync_failed').slice(0, 500) }
+  const { error: dbErr } = await supabase.from('orders').update(patch).eq('id', internalOrderId)
+  if (dbErr) throw dbErr
+}
+
+/**
  * Find an internal order by its Razorpay order id (used by the webhook).
  */
 export async function findOrderByRazorpayId(razorpayOrderId) {
@@ -315,7 +329,8 @@ export async function getOrderForShipment(internalOrderId) {
     .from('orders')
     .select(`
       id, order_number, total, subtotal, shipping_fee, discount,
-      payment_method, shiprocket_order_id, awb_code,
+      payment_method, shiprocket_order_id, awb_code, placed_at, cancelled_at,
+      ithink_synced_at,
       customer:customers (id, name, email, phone),
       shipping_address:addresses (line1, line2, city, state, pincode, country),
       order_items (
@@ -467,7 +482,7 @@ export async function listOrdersAwaitingFulfillment({ days = 7, limit = 50 } = {
   const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
   const { data, error } = await supabase
     .from('orders')
-    .select('id, order_number, status, payment_method, shiprocket_order_id, awb_code, placed_at')
+    .select('id, order_number, status, payment_method, shiprocket_order_id, awb_code, ithink_synced_at, placed_at')
     .is('awb_code', null)
     .is('cancelled_at', null)
     .gte('placed_at', since)
@@ -492,7 +507,7 @@ export async function getOrderById(id) {
       `
       id, order_number, status, subtotal, discount, shipping_fee, tax, total,
       payment_method, razorpay_order_id, razorpay_payment_id,
-      shiprocket_order_id, awb_code, courier_name,
+      shiprocket_order_id, awb_code, courier_name, ithink_synced_at, ithink_sync_error,
       attribution, utm_source, utm_medium, utm_campaign, attribution_channel, landing_page,
       placed_at, paid_at, shipped_at, delivered_at, cancelled_at,
       customer:customers (id, name, email, phone, first_touch, acquisition_channel),
@@ -530,6 +545,8 @@ export async function getOrderById(id) {
     razorpay_order_id: data.razorpay_order_id,
     razorpay_payment_id: data.razorpay_payment_id,
     shiprocket_order_id: data.shiprocket_order_id,
+    ithink_synced_at: data.ithink_synced_at ?? null,
+    ithink_sync_error: data.ithink_sync_error ?? null,
     awb_code: data.awb_code,
     courier_name: data.courier_name,
     attribution: data.attribution ?? null,

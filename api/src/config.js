@@ -43,6 +43,13 @@ const schema = z.object({
   SHIPROCKET_PICKUP_PINCODE: z.string().optional().default(''),
   SHIPROCKET_PICKUP_LOCATION: z.string().optional().default('Primal Nutrition HQ'),
 
+  // iThink Logistics — Sync Order API (orders land in the panel, courier booked manually)
+  ITHINK_ACCESS_TOKEN: z.string().optional().default(''),
+  ITHINK_SECRET_KEY: z.string().optional().default(''),
+  ITHINK_BASE_URL: z.string().optional().default('https://my.ithinklogistics.com'),
+  // Which shipping panel new orders go to: 'ithink' or 'shiprocket'
+  SHIPPING_PROVIDER: z.enum(['ithink', 'shiprocket']).optional().default('shiprocket'),
+
   // CORS
   ALLOWED_ORIGINS: z
     .string()
@@ -99,6 +106,12 @@ export const config = {
     webhookSecret: parsed.data.RAZORPAY_WEBHOOK_SECRET,
   },
 
+  ithink: {
+    accessToken: parsed.data.ITHINK_ACCESS_TOKEN,
+    secretKey: parsed.data.ITHINK_SECRET_KEY,
+    baseUrl: parsed.data.ITHINK_BASE_URL.replace(/\/+$/, ''),
+  },
+  shippingProvider: parsed.data.SHIPPING_PROVIDER,
   shiprocket: {
     email: parsed.data.SHIPROCKET_EMAIL,
     password: parsed.data.SHIPROCKET_PASSWORD,

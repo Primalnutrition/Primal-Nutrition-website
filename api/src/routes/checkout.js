@@ -20,6 +20,7 @@ import {
   createShipment,
   assignAwb,
 } from '../lib/shiprocket.js'
+import { syncOrders, ithinkDate, isIthinkConfigured } from '../lib/ithink.js'
 import {
   createDraftOrder,
   attachRazorpayOrder,
@@ -27,6 +28,7 @@ import {
   applyShipmentDetails,
   getOrderForShipment,
   listOrdersAwaitingFulfillment,
+  markIthinkSync,
 } from '../services/orderService.js'
 import { fireWelcomeEmail, fireOrderConfirmationEmail } from '../services/emailHooks.js'
 import { sendPurchaseEvent } from '../lib/metaCapi.js'
@@ -345,7 +347,7 @@ router.post('/verify-payment', async (req, res, next) => {
     // Always attempt it (even if alreadyPaid): the call is idempotent, and the
     // Razorpay webhook may have marked the order paid first without shipping it.
     void createShipmentForOrder(internalOrderId).catch((err) =>
-      logger.error({ err: err.message, internalOrderId }, 'Shiprocket shipment creation failed (will retry via cron)')
+      logger.error({ err: err.message, internalOrderId }, 'Shipment/iThink sync failed (will retry via cron)')
     )
 
     res.json({
@@ -421,14 +423,22 @@ router.post('/create-cod-order', async (req, res, next) => {
 
     logger.info(
       { internalOrderId: draft.internalOrderId, total: draft.totalRupees },
-      'COD order created — sending to Shiprocket'
+      'COD order created — sending to shipping panel'
     )
 
     // Fire shipment creation now (no payment step). Surface failures so the
     // user sees "Shiprocket couldn't accept this order" rather than a silent
     // pending state.
     try {
-      await createShipmentForOrder(draft.internalOrderId, { paymentMethod: 'COD', deferAwb: true })
+      if (config.shippingProvider === 'ithink') {
+        // Never block the customer on the shipping panel: sync in the background,
+        // the reconcile cron retries anything that fails.
+        void syncOrderToIthink(draft.internalOrderId).catch((err) =>
+          logger.error({ err: err.message, internalOrderId: draft.internalOrderId }, 'iThink sync failed (will retry via cron)')
+        )
+      } else {
+        await createShipmentForOrder(draft.internalOrderId, { paymentMethod: 'COD', deferAwb: true })
+      }
     } catch (shipErr) {
       logger.error({ err: shipErr.message, internalOrderId: draft.internalOrderId }, 'COD shipment creation failed')
       return res.status(502).json({
@@ -496,7 +506,127 @@ router.post('/create-cod-order', async (req, res, next) => {
  * @param {string} internalOrderId
  * @param {{ paymentMethod?: 'Prepaid' | 'COD', deferAwb?: boolean }} opts
  */
-export async function createShipmentForOrder(internalOrderId, { paymentMethod = 'Prepaid', deferAwb = false } = {}) {
+/**
+ * Send a confirmed order to the shipping panel.
+ *
+ * SHIPPING_PROVIDER=ithink  → copied into iThink via Sync Order (no courier booked;
+ *                             the team books it manually in the panel).
+ * SHIPPING_PROVIDER=shiprocket → legacy: Shiprocket order + automatic AWB.
+ */
+export async function createShipmentForOrder(internalOrderId, opts = {}) {
+  if (config.shippingProvider === 'ithink') return syncOrderToIthink(internalOrderId)
+  return createShiprocketShipment(internalOrderId, opts)
+}
+
+/** Build iThink's shipment object from our order row. */
+export function buildIthinkShipment(order) {
+  const addr = order.shipping_address
+  const customer = order.customer ?? {}
+  const isCOD = String(order.payment_method ?? '').toLowerCase() === 'cod'
+  const total = Number(order.total)
+  const items = order.order_items ?? []
+  const units = items.reduce((sum, i) => sum + Number(i.qty || 0), 0) || 1
+  const phone = String(customer.phone ?? '').replace(/\D/g, '').slice(-10)
+
+  const person = {
+    name: customer.name ?? 'Customer',
+    add: addr.line1 ?? '',
+    add2: addr.line2 ?? '',
+    pin: String(addr.pincode ?? ''),
+    city: addr.city ?? '',
+    state: addr.state ?? '',
+    country: addr.country || 'India',
+    phone,
+    email: customer.email ?? '',
+  }
+
+  return {
+    order: order.order_number,
+    sub_order: '',
+    order_date: ithinkDate(order.placed_at ?? new Date()),
+    total_amount: String(total),
+    name: person.name,
+    company_name: '',
+    add: person.add,
+    add2: person.add2,
+    add3: '',
+    pin: person.pin,
+    city: person.city,
+    state: person.state,
+    country: person.country,
+    phone: person.phone,
+    alt_phone: '',
+    email: person.email,
+    is_billing_same_as_shipping: 'yes',
+    billing_name: person.name,
+    billing_company_name: '',
+    billing_add: person.add,
+    billing_add2: person.add2,
+    billing_add3: '',
+    billing_pin: person.pin,
+    billing_city: person.city,
+    billing_state: person.state,
+    billing_country: person.country,
+    billing_phone: person.phone,
+    billing_alt_phone: '',
+    billing_email: person.email,
+    products: items.map((i) => ({
+      product_name: [i.product_name_snapshot, i.variant_label_snapshot].filter(Boolean).join(' - '),
+      product_sku: String(i.variant?.id ?? 'PRIMAL-SKU'),
+      product_quantity: String(i.qty),
+      product_price: String(Number(i.unit_price)),
+      product_tax_rate: '',
+      product_hsn_code: '',
+      product_discount: '0',
+    })),
+    shipment_length: '15',
+    shipment_width: '10',
+    shipment_height: '10',
+    weight: String(Math.max(0.5, units * 0.5)),
+    shipping_charges: String(Number(order.shipping_fee ?? 0)),
+    giftwrap_charges: '0',
+    transaction_charges: '0',
+    total_discount: String(Number(order.discount ?? 0)),
+    first_attemp_discount: '0',
+    cod_charges: '0',
+    advance_amount: '0',
+    cod_amount: isCOD ? String(total) : '0',
+    payment_mode: isCOD ? 'COD' : 'Prepaid',
+    reseller_name: '',
+    eway_bill_number: '',
+    gst_number: '',
+  }
+}
+
+/**
+ * Copy an order into iThink (Store Order, no AWB). Idempotent via
+ * orders.ithink_synced_at. Records failures on the order and rethrows so
+ * callers/cron can log them; the customer's checkout never depends on this.
+ */
+export async function syncOrderToIthink(internalOrderId, { force = false } = {}) {
+  if (!isIthinkConfigured()) {
+    logger.warn('iThink not configured — skipping order sync')
+    return { skipped: true }
+  }
+  const order = await getOrderForShipment(internalOrderId)
+  if (!order?.shipping_address) throw new Error(`Order ${internalOrderId} has no shipping address`)
+  if (order.ithink_synced_at && !force) {
+    logger.info({ internalOrderId }, 'Order already synced to iThink — skipping')
+    return { skipped: true, alreadySynced: true }
+  }
+  try {
+    await syncOrders([buildIthinkShipment(order)])
+    await markIthinkSync(internalOrderId, { ok: true })
+    logger.info({ internalOrderId, orderNumber: order.order_number }, 'Order synced to iThink')
+    return { synced: true }
+  } catch (err) {
+    await markIthinkSync(internalOrderId, { ok: false, error: err.message }).catch(() => {})
+    throw err
+  }
+}
+
+/** Legacy Shiprocket path (order + automatic AWB). */
+async function createShiprocketShipment(internalOrderId, { paymentMethod = 'Prepaid', deferAwb = false } = {}) {
   if (!config.shiprocket.email || !config.shiprocket.password) {
     logger.warn('Shiprocket not configured — skipping shipment creation')
     return
@@ -627,7 +757,13 @@ export async function reconcilePendingShipments() {
 
   for (const o of orders) {
     try {
-      if (!o.shiprocket_order_id) {
+      if (config.shippingProvider === 'ithink') {
+        // Orders already handled in Shiprocket before the switch are left alone.
+        if (o.ithink_synced_at || o.shiprocket_order_id) continue
+        await syncOrderToIthink(o.id)
+        summary.reconciled++
+        summary.details.push({ orderNumber: o.order_number, action: 'synced_to_ithink' })
+      } else if (!o.shiprocket_order_id) {
         // No shipment at all — safe to create it (this also assigns the AWB).
         await createShipmentForOrder(o.id, { paymentMethod: o.payment_method === 'cod' ? 'COD' : 'Prepaid' })
         summary.reconciled++

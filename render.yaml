@@ -37,6 +37,10 @@ services:
         sync: false
       - key: SHIPROCKET_PICKUP_LOCATION
         value: Primal Nutrition HQ
+      - key: ITHINK_ACCESS_TOKEN
+        sync: false
+      - key: ITHINK_SECRET_KEY
+        sync: false
       - key: CRON_SECRET
         sync: false
       - key: RESEND_API_KEY
