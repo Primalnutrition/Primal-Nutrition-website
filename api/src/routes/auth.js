@@ -19,6 +19,7 @@ import { createError } from '../middleware/error.js'
 const ALLOWED_EMAILS = new Set([
   'pranavkk3199@gmail.com',
   'saleshead@primalnutrition.in',
+  'team@primalnutrition.in',
 ])
 
 const OTP_TTL_MS = 10 * 60 * 1000     // 10 minutes
