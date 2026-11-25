@@ -47,6 +47,8 @@ const schema = z.object({
   ITHINK_ACCESS_TOKEN: z.string().optional().default(''),
   ITHINK_SECRET_KEY: z.string().optional().default(''),
   ITHINK_BASE_URL: z.string().optional().default('https://my.ithinklogistics.com'),
+  // HSN on iThink invoices. Label: "Ayurvedic proprietary medicine" → chapter 3004.
+  ITHINK_HSN_CODE: z.string().optional().default('3004'),
   // Which shipping panel new orders go to: 'ithink' or 'shiprocket'
   SHIPPING_PROVIDER: z.enum(['ithink', 'shiprocket']).optional().default('shiprocket'),
 
@@ -109,6 +111,7 @@ export const config = {
   ithink: {
     accessToken: parsed.data.ITHINK_ACCESS_TOKEN,
     secretKey: parsed.data.ITHINK_SECRET_KEY,
+    hsnCode: parsed.data.ITHINK_HSN_CODE,
     baseUrl: parsed.data.ITHINK_BASE_URL.replace(/\/+$/, ''),
   },
   shippingProvider: parsed.data.SHIPPING_PROVIDER,

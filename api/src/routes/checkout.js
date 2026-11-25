@@ -576,7 +576,7 @@ export function buildIthinkShipment(order) {
       product_quantity: String(i.qty),
       product_price: String(Number(i.unit_price)),
       product_tax_rate: '0',
-      product_hsn_code: '',
+      product_hsn_code: config.ithink.hsnCode,
       product_discount: '0',
     })),
     shipment_length: '15',
