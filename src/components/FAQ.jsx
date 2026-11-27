@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: 'How do I take it? Dosage?',
-    a: 'As printed on the label: 15ml twice daily, mixed with milk or other beverages, as directed by an Ayurvedic physician. Shake well before use. Many of our customers also take a single 10ml shot in the morning sublingual (under the tongue) to make the bottle last a full 50 servings.',
+    a: '10 ml once a day, straight or mixed into milk, coffee or a shake. Shake well before use. One 500 ml bottle lasts 50 days.',
   },
   {
     q: 'Why is it liquid, not capsules?',
