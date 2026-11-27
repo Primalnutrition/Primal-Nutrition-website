@@ -37,7 +37,7 @@ const faqs = [
   },
   {
     q: 'How long does one 500ml bottle last?',
-    a: 'At 10ml daily (single AM serving) — 50 days. At the label dose of 15ml twice daily — approximately 16 days. Most users start at one serving daily and adjust under guidance.',
+    a: 'At 10 ml once a day, as on the label, one 500 ml bottle lasts 50 days.',
   },
   {
     q: 'Shipping + payment?',

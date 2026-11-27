@@ -10,7 +10,7 @@ const LABEL_DATA = {
     flavour: 'Hazelnut',
     licenseNo: 'Mfg. Lic. AL946M',
     category: 'Ayurvedic Proprietary Medicine',
-    servingSize: '10ml (daily) / 15ml × 2 (label dose)',
+    servingSize: '10 ml once a day',
     servingsPerBottle: 50,
     netVolume: '500ml',
     ingredients: [
