@@ -61,10 +61,10 @@ export const products = [
     pdp: {
       heroClaim: 'Ancient strength, made modern. Himalayan Shilajit and six Ayurvedic herbs in one daily hazelnut shot, for strength, stamina, testosterone support and drive. No caffeine, no crash.',
       metrics: [
-        { label: 'Ayurvedic formula', value: '7 Herbs' },
+        { label: 'Shilajit + 6 herbs', value: '7-in-1' },
         { label: 'Flavour', value: 'Hazelnut' },
         { label: 'Daily dose', value: '10 ml' },
-        { label: 'Servings', value: '50' },
+        { label: 'Bottle', value: '500 ml' },
         { label: 'Formula', value: 'Daily Vitality' },
       ],
       // Caption card under the gallery, keyed by image. 'default' shows on every
@@ -136,7 +136,7 @@ export const products = [
         steps: [
           { h: 'Liquid, not pills', b: 'One smooth 10 ml shot. Easy to take, and mixes into coffee, milk or a shake.' },
           { h: 'Made the traditional way', b: 'Himalayan Shilajit, purified the slow Ayurvedic way. It takes longer and costs more, so nothing is cut short.' },
-          { h: '7 herbs, one daily habit', b: 'Ashwagandha for calm energy. Safed Musli and Gokhru for drive. Arjun for stamina. Draksha for recovery. Shilajit ties it together.' },
+          { h: 'Shilajit + 6 herbs, one daily habit', b: 'Himalayan Shilajit at the core, with Ashwagandha, Safed Musli, Gokhru, Arjun, Draksha and Kath Badam. A 7-in-1 natural liquid.' },
         ],
       },
       evidence: [

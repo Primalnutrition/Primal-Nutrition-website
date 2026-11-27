@@ -214,7 +214,7 @@ const process = [
   { span: 'Day 1-3', title: 'Collection', body: 'Local villagers hand-collect resin from cracks in Himalayan/Bhutanese rocks at 18,000+ ft altitude. Summer-only harvest.' },
   { span: 'Day 4-9', title: 'Granthit Purification', body: 'The traditional 15-day water-based dissolution + filtration cycle. Heavy minerals + impurities settle out. Repeated until clear.' },
   { span: 'Day 10-12', title: 'Reduction', body: 'The purified solution is slow-evaporated over low heat — no chemical extraction, no synthetic acidifiers. Concentration only.' },
-  { span: 'Day 13-15', title: 'Liquid Standardization', body: 'Tested for fulvic acid %, heavy metals, microbial load. Standardized to clinical dose. Sealed in amber glass.' },
+  { span: 'Day 13-15', title: 'Liquid Standardization', body: 'Tested for fulvic acid %, heavy metals, microbial load. Sealed in amber glass.' },
 ]
 
 const tests = [
